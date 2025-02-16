@@ -1,0 +1,427 @@
+2025-02-16 10:49:54,971 - INFO - ==================================================
+2025-02-16 10:49:54,971 - INFO - 日志系统初始化完成 - 2025-02-16 10:49:54
+2025-02-16 10:49:54,971 - INFO - ==================================================
+2025-02-16 10:49:55,473 - ERROR - 取消所有订单失败: binanceusdm requires "apiKey" credential
+2025-02-16 10:49:55,473 - ERROR - 交易器初始化失败: binanceusdm requires "apiKey" credential
+2025-02-16 10:50:52,278 - INFO - ==================================================
+2025-02-16 10:50:52,278 - INFO - 日志系统初始化完成 - 2025-02-16 10:50:52
+2025-02-16 10:50:52,278 - INFO - ==================================================
+2025-02-16 10:50:55,072 - ERROR - 取消所有订单失败: binanceusdm requires "apiKey" credential
+2025-02-16 10:50:55,073 - ERROR - 交易器初始化失败: binanceusdm requires "apiKey" credential
+2025-02-16 10:55:27,332 - INFO - ==================================================
+2025-02-16 10:55:27,332 - INFO - 日志系统初始化完成 - 2025-02-16 10:55:27
+2025-02-16 10:55:27,332 - INFO - ==================================================
+2025-02-16 10:55:28,736 - INFO - 没有未成交的订单
+2025-02-16 10:55:28,846 - INFO - 当前已经是单向持仓模式
+2025-02-16 10:55:28,978 - INFO - 设置杠杆倍数 5倍 成功
+2025-02-16 10:55:29,098 - INFO - 当前已经是CROSSED保证金模式
+2025-02-16 10:55:29,438 - INFO - USDT余额: 可用=41.47489553, 总额=143.52100764
+2025-02-16 10:55:29,438 - INFO - 当前账户余额: 可用=41.47489553 USDT, 总额=143.52100764 USDT
+2025-02-16 10:55:30,239 - INFO - 当前价格: 0.7347, AI信号: 0
+2025-02-16 10:55:30,642 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73490000', 'unRealizedProfit': '-1.87353000', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-509.94711000', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -1.87353, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 509.94711, 'markPrice': 0.7349, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 101.989422, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.0994711, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.035, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -1.83, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:55:30,783 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73490000', 'unRealizedProfit': '-1.87353000', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-509.94711000', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -1.87353, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 509.94711, 'markPrice': 0.7349, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 101.989422, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.0994711, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.035, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -1.83, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:55:30,783 - ERROR - 下单失败: 下单数量 693.9 超过最大持仓限制 200
+2025-02-16 10:55:30,783 - ERROR - 平仓失败: 下单数量 693.9 超过最大持仓限制 200
+2025-02-16 10:55:30,784 - INFO - 平仓失败: 下单数量 693.9 超过最大持仓限制 200
+2025-02-16 10:55:30,911 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73490000', 'unRealizedProfit': '-1.87353000', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-509.94711000', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -1.87353, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 509.94711, 'markPrice': 0.7349, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 101.989422, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.0994711, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.035, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -1.83, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:55:30,911 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73490000', 'unRealizedProfit': '-1.87353000', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-509.94711000', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -1.87353, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 509.94711, 'markPrice': 0.7349, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 101.989422, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.0994711, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.035, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -1.83, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:56:32,226 - INFO - 当前价格: 0.7374, AI信号: 0
+2025-02-16 10:56:32,358 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73725731', 'unRealizedProfit': '-3.50926740', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-511.58284740', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -3.5092674, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 511.5828474, 'markPrice': 0.73725731, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 102.31656948, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.115828474, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.0352, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -3.42, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:56:32,496 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73725731', 'unRealizedProfit': '-3.50926740', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-511.58284740', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -3.5092674, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 511.5828474, 'markPrice': 0.73725731, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 102.31656948, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.115828474, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.0352, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -3.42, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:56:32,496 - ERROR - 下单失败: 下单数量 693.9 超过最大持仓限制 200
+2025-02-16 10:56:32,496 - ERROR - 平仓失败: 下单数量 693.9 超过最大持仓限制 200
+2025-02-16 10:56:32,496 - INFO - 平仓失败: 下单数量 693.9 超过最大持仓限制 200
+2025-02-16 10:56:32,635 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73725731', 'unRealizedProfit': '-3.50926740', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-511.58284740', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -3.5092674, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 511.5828474, 'markPrice': 0.73725731, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 102.31656948, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.115828474, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.0352, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -3.42, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:56:32,636 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73725731', 'unRealizedProfit': '-3.50926740', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-511.58284740', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -3.5092674, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 511.5828474, 'markPrice': 0.73725731, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 102.31656948, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.115828474, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.0352, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -3.42, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:57:33,166 - INFO - 当前价格: 0.7358, AI信号: 0
+2025-02-16 10:57:33,312 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73543948', 'unRealizedProfit': '-2.24787517', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-510.32145517', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -2.24787517, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 510.32145517, 'markPrice': 0.73543948, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 102.06429103, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.1032145517, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.0351, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -2.2, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:57:33,460 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73543948', 'unRealizedProfit': '-2.24787517', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-510.32145517', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -2.24787517, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 510.32145517, 'markPrice': 0.73543948, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 102.06429103, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.1032145517, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.0351, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -2.2, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:57:33,460 - ERROR - 下单失败: 下单数量 693.9 超过最大持仓限制 200
+2025-02-16 10:57:33,460 - ERROR - 平仓失败: 下单数量 693.9 超过最大持仓限制 200
+2025-02-16 10:57:33,460 - INFO - 平仓失败: 下单数量 693.9 超过最大持仓限制 200
+2025-02-16 10:57:33,699 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73543948', 'unRealizedProfit': '-2.24787517', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-510.32145517', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -2.24787517, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 510.32145517, 'markPrice': 0.73543948, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 102.06429103, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.1032145517, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.0351, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -2.2, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:57:33,699 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73543948', 'unRealizedProfit': '-2.24787517', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-510.32145517', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -2.24787517, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 510.32145517, 'markPrice': 0.73543948, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 102.06429103, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.1032145517, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.0351, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -2.2, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:58:34,207 - INFO - 当前价格: 0.7371, AI信号: 0
+2025-02-16 10:58:34,348 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73690000', 'unRealizedProfit': '-3.26133000', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-511.33491000', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -3.26133, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 511.33491, 'markPrice': 0.7369, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 102.266982, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.1133491, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.0351, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -3.18, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:58:34,545 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73690000', 'unRealizedProfit': '-3.26133000', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-511.33491000', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -3.26133, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 511.33491, 'markPrice': 0.7369, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 102.266982, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.1133491, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.0351, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -3.18, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:58:34,545 - ERROR - 下单失败: 下单数量 693.9 超过最大持仓限制 200
+2025-02-16 10:58:34,545 - ERROR - 平仓失败: 下单数量 693.9 超过最大持仓限制 200
+2025-02-16 10:58:34,545 - INFO - 平仓失败: 下单数量 693.9 超过最大持仓限制 200
+2025-02-16 10:58:34,683 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73690000', 'unRealizedProfit': '-3.26133000', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-511.33491000', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -3.26133, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 511.33491, 'markPrice': 0.7369, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 102.266982, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.1133491, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.0351, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -3.18, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:58:34,683 - INFO - 当前持仓: {'info': {'symbol': 'LAYERUSDT', 'positionAmt': '-693.9', 'entryPrice': '0.7322', 'breakEvenPrice': '0.7320195932642', 'markPrice': '0.73690000', 'unRealizedProfit': '-3.26133000', 'liquidationPrice': '0.93260417', 'leverage': '5', 'maxNotionalValue': '600000', 'marginType': 'cross', 'isolatedMargin': '0.00000000', 'isAutoAddMargin': 'false', 'positionSide': 'BOTH', 'notional': '-511.33491000', 'isolatedWallet': '0', 'updateTime': '1739672164022', 'isolated': False, 'adlQuantile': '1'}, 'id': None, 'symbol': 'LAYER/USDT:USDT', 'contracts': 693.9, 'contractSize': 1.0, 'unrealizedPnl': -3.26133, 'leverage': 5.0, 'liquidationPrice': 0.93260417, 'collateral': 145.53179389, 'notional': 511.33491, 'markPrice': 0.7369, 'entryPrice': 0.7322, 'timestamp': 1739672164022, 'initialMargin': 102.266982, 'initialMarginPercentage': 0.2, 'maintenanceMargin': 5.1133491, 'maintenanceMarginPercentage': 0.01, 'marginRatio': 0.0351, 'datetime': '2025-02-16T02:16:04.022Z', 'marginMode': 'cross', 'marginType': 'cross', 'side': 'short', 'hedged': False, 'percentage': -3.18, 'stopLossPrice': None, 'takeProfitPrice': None, 'positionAmt': 693.9}
+2025-02-16 10:59:35,167 - INFO - 当前价格: 0.7393, AI信号: 0
+2025-02-16 10:59:35,509 - INFO - 当前持仓: None
+2025-02-16 11:00:35,977 - INFO - 当前价格: 0.7373, AI信号: 0
+2025-02-16 11:00:36,229 - INFO - 当前持仓: None
+2025-02-16 11:01:36,836 - INFO - 当前价格: 0.7349, AI信号: 0
+2025-02-16 11:01:37,146 - INFO - 当前持仓: None
+2025-02-16 11:02:37,608 - INFO - 当前价格: 0.7399, AI信号: 0
+2025-02-16 11:02:37,891 - INFO - 当前持仓: None
+2025-02-16 11:03:38,386 - INFO - 当前价格: 0.7391, AI信号: 0
+2025-02-16 11:03:38,669 - INFO - 当前持仓: None
+2025-02-16 11:04:39,125 - INFO - 当前价格: 0.737, AI信号: 0
+2025-02-16 11:04:39,392 - INFO - 当前持仓: None
+2025-02-16 11:05:40,116 - INFO - 当前价格: 0.7362, AI信号: 0
+2025-02-16 11:05:40,370 - INFO - 当前持仓: None
+2025-02-16 11:06:40,858 - INFO - 当前价格: 0.7351, AI信号: 0
+2025-02-16 11:06:41,180 - INFO - 当前持仓: None
+2025-02-16 11:07:41,736 - INFO - 当前价格: 0.7352, AI信号: 0
+2025-02-16 11:07:42,030 - INFO - 当前持仓: None
+2025-02-16 11:08:42,495 - INFO - 当前价格: 0.7363, AI信号: 0
+2025-02-16 11:08:42,779 - INFO - 当前持仓: None
+2025-02-16 11:09:43,226 - INFO - 当前价格: 0.7361, AI信号: 0
+2025-02-16 11:09:43,502 - INFO - 当前持仓: None
+2025-02-16 11:10:43,966 - INFO - 当前价格: 0.7339, AI信号: 0
+2025-02-16 11:10:44,241 - INFO - 当前持仓: None
+2025-02-16 11:11:44,676 - INFO - 当前价格: 0.7337, AI信号: 0
+2025-02-16 11:11:44,968 - INFO - 当前持仓: None
+2025-02-16 11:12:45,630 - INFO - 当前价格: 0.7344, AI信号: 0
+2025-02-16 11:12:45,935 - INFO - 当前持仓: None
+2025-02-16 11:13:00,066 - INFO - 
+程序被用户中断
+2025-02-16 11:13:00,187 - INFO - 没有未成交的订单
+2025-02-16 11:13:00,347 - INFO - 程序已安全退出
+2025-02-16 11:25:08,757 - INFO - ==================================================
+2025-02-16 11:25:08,757 - INFO - 日志系统初始化完成 - 2025-02-16 11:25:08
+2025-02-16 11:25:08,757 - INFO - ==================================================
+2025-02-16 11:25:10,149 - INFO - 没有未成交的订单
+2025-02-16 11:25:10,259 - INFO - 当前已经是单向持仓模式
+2025-02-16 11:25:10,359 - INFO - 设置杠杆倍数 5倍 成功
+2025-02-16 11:25:10,459 - INFO - 当前已经是CROSSED保证金模式
+2025-02-16 11:25:10,719 - ERROR - 监控策略执行失败: get_klines() got an unexpected keyword argument 'timeframe'
+2025-02-16 11:26:01,218 - INFO - 收到退出信号，正在关闭交易系统...
+2025-02-16 11:26:01,320 - INFO - 当前没有持仓
+2025-02-16 11:26:01,321 - INFO - 交易系统已安全停止
+2025-02-16 11:26:28,894 - INFO - ==================================================
+2025-02-16 11:26:28,894 - INFO - 日志系统初始化完成 - 2025-02-16 11:26:28
+2025-02-16 11:26:28,894 - INFO - ==================================================
+2025-02-16 11:26:30,139 - INFO - 没有未成交的订单
+2025-02-16 11:26:30,251 - INFO - 当前已经是单向持仓模式
+2025-02-16 11:26:30,373 - INFO - 设置杠杆倍数 5倍 成功
+2025-02-16 11:26:30,514 - INFO - 当前已经是CROSSED保证金模式
+2025-02-16 11:26:30,841 - INFO - USDT余额: 可用=140.46064922, 总额=140.4889769
+2025-02-16 11:26:30,841 - INFO - 当前账户余额: 可用=140.46064922 USDT, 总额=140.48897690 USDT
+2025-02-16 11:26:31,511 - INFO - 当前价格: 0.7349, AI信号: 0
+2025-02-16 11:26:32,247 - INFO - 当前持仓: None
+2025-02-16 11:26:47,979 - INFO - 
+程序被用户中断
+2025-02-16 11:26:48,093 - INFO - 没有未成交的订单
+2025-02-16 11:26:48,243 - INFO - 程序已安全退出
+2025-02-16 11:27:04,720 - INFO - ==================================================
+2025-02-16 11:27:04,720 - INFO - 日志系统初始化完成 - 2025-02-16 11:27:04
+2025-02-16 11:27:04,720 - INFO - ==================================================
+2025-02-16 11:27:06,240 - INFO - 没有未成交的订单
+2025-02-16 11:27:06,341 - INFO - 当前已经是单向持仓模式
+2025-02-16 11:27:06,453 - INFO - 设置杠杆倍数 5倍 成功
+2025-02-16 11:27:06,573 - INFO - 当前已经是CROSSED保证金模式
+2025-02-16 11:27:06,741 - INFO - USDT余额: 可用=140.46065037, 总额=140.4889769
+2025-02-16 11:27:06,741 - INFO - 当前账户余额: 可用=140.46065037 USDT, 总额=140.48897690 USDT
+2025-02-16 11:27:07,250 - INFO - 当前价格: 0.7353, AI信号: 0
+2025-02-16 11:27:07,882 - INFO - 当前持仓: None
+2025-02-16 11:27:32,797 - INFO - ==================================================
+2025-02-16 11:27:32,797 - INFO - 日志系统初始化完成 - 2025-02-16 11:27:32
+2025-02-16 11:27:32,797 - INFO - ==================================================
+2025-02-16 11:27:35,111 - INFO - 没有未成交的订单
+2025-02-16 11:27:35,224 - INFO - 当前已经是单向持仓模式
+2025-02-16 11:27:35,336 - INFO - 设置杠杆倍数 5倍 成功
+2025-02-16 11:27:35,443 - INFO - 当前已经是CROSSED保证金模式
+2025-02-16 11:27:35,624 - INFO - USDT余额: 可用=140.46065039, 总额=140.4889769
+2025-02-16 11:27:35,624 - INFO - 当前账户余额: 可用=140.46065039 USDT, 总额=140.48897690 USDT
+2025-02-16 11:27:36,093 - INFO - 当前价格: 0.7354, AI信号: 0
+2025-02-16 11:27:36,494 - INFO - 当前持仓: None
+2025-02-16 11:28:08,357 - INFO - 当前价格: 0.7354, AI信号: 0
+2025-02-16 11:28:08,558 - INFO - 当前持仓: None
+2025-02-16 11:28:37,332 - INFO - 当前价格: 0.7359, AI信号: 0
+2025-02-16 11:28:37,549 - INFO - 当前持仓: None
+2025-02-16 11:29:23,901 - INFO - ==================================================
+2025-02-16 11:29:23,901 - INFO - 日志系统初始化完成 - 2025-02-16 11:29:23
+2025-02-16 11:29:23,901 - INFO - ==================================================
+2025-02-16 11:29:27,419 - INFO - 没有未成交的订单
+2025-02-16 11:29:27,540 - INFO - 当前已经是单向持仓模式
+2025-02-16 11:29:27,650 - INFO - 设置杠杆倍数 5倍 成功
+2025-02-16 11:29:27,771 - INFO - 当前已经是CROSSED保证金模式
+2025-02-16 11:29:27,950 - INFO - USDT余额: 可用=140.46065045, 总额=140.4889769
+2025-02-16 11:29:27,951 - INFO - 当前账户余额: 可用=140.46065045 USDT, 总额=140.48897690 USDT
+2025-02-16 11:29:28,512 - INFO - 当前价格: 0.7343, AI信号: 0
+2025-02-16 11:29:29,160 - INFO - 当前持仓: None
+2025-02-16 11:30:30,251 - INFO - 当前价格: 0.7339, AI信号: 0
+2025-02-16 11:30:30,541 - INFO - 当前持仓: None
+2025-02-16 11:31:31,041 - INFO - 当前价格: 0.7334, AI信号: 0
+2025-02-16 11:31:31,241 - INFO - 当前持仓: None
+2025-02-16 11:32:31,822 - INFO - 当前价格: 0.7327, AI信号: 0
+2025-02-16 11:32:32,032 - INFO - 当前持仓: None
+2025-02-16 11:33:32,622 - INFO - 当前价格: 0.7336, AI信号: 0
+2025-02-16 11:33:32,842 - INFO - 当前持仓: None
+2025-02-16 11:34:33,484 - INFO - 当前价格: 0.7339, AI信号: 0
+2025-02-16 11:34:33,703 - INFO - 当前持仓: None
+2025-02-16 11:35:34,223 - INFO - 当前价格: 0.7347, AI信号: 0
+2025-02-16 11:35:34,425 - INFO - 当前持仓: None
+2025-02-16 11:36:35,095 - INFO - 当前价格: 0.7322, AI信号: 0
+2025-02-16 11:36:35,323 - INFO - 当前持仓: None
+2025-02-16 11:37:35,935 - INFO - 当前价格: 0.7326, AI信号: 0
+2025-02-16 11:37:36,154 - INFO - 当前持仓: None
+2025-02-16 11:38:36,686 - INFO - 当前价格: 0.733, AI信号: 0
+2025-02-16 11:38:36,897 - INFO - 当前持仓: None
+2025-02-16 11:39:37,426 - INFO - 当前价格: 0.7342, AI信号: 0
+2025-02-16 11:39:37,646 - INFO - 当前持仓: None
+2025-02-16 11:40:38,308 - INFO - 当前价格: 0.7357, AI信号: 0
+2025-02-16 11:40:38,547 - INFO - 当前持仓: None
+2025-02-16 11:41:39,228 - INFO - 当前价格: 0.7352, AI信号: 0
+2025-02-16 11:41:39,437 - INFO - 当前持仓: None
+2025-02-16 11:42:39,978 - INFO - 当前价格: 0.7371, AI信号: 0
+2025-02-16 11:42:40,208 - INFO - 当前持仓: None
+2025-02-16 11:43:40,778 - INFO - 当前价格: 0.7357, AI信号: 0
+2025-02-16 11:43:40,983 - INFO - 当前持仓: None
+2025-02-16 11:44:41,699 - INFO - 当前价格: 0.7345, AI信号: 0
+2025-02-16 11:44:41,898 - INFO - 当前持仓: None
+2025-02-16 11:45:42,639 - INFO - 当前价格: 0.736, AI信号: 0
+2025-02-16 11:45:42,872 - INFO - 当前持仓: None
+2025-02-16 11:46:43,590 - INFO - 当前价格: 0.738, AI信号: 0
+2025-02-16 11:46:43,812 - INFO - 当前持仓: None
+2025-02-16 11:47:44,399 - INFO - 当前价格: 0.7374, AI信号: 0
+2025-02-16 11:47:44,608 - INFO - 当前持仓: None
+2025-02-16 11:48:45,180 - INFO - 当前价格: 0.7367, AI信号: 0
+2025-02-16 11:48:45,401 - INFO - 当前持仓: None
+2025-02-16 11:49:45,921 - INFO - 当前价格: 0.7363, AI信号: 0
+2025-02-16 11:49:46,130 - INFO - 当前持仓: None
+2025-02-16 11:50:47,531 - INFO - 当前价格: 0.737, AI信号: 0
+2025-02-16 11:50:47,730 - INFO - 当前持仓: None
+2025-02-16 11:51:48,221 - INFO - 当前价格: 0.7395, AI信号: 0
+2025-02-16 11:51:48,422 - INFO - 当前持仓: None
+2025-02-16 11:52:48,961 - INFO - 当前价格: 0.7392, AI信号: 0
+2025-02-16 11:52:49,192 - INFO - 当前持仓: None
+2025-02-16 11:53:49,682 - INFO - 当前价格: 0.7384, AI信号: 0
+2025-02-16 11:53:49,882 - INFO - 当前持仓: None
+2025-02-16 11:54:50,383 - INFO - 当前价格: 0.7394, AI信号: 0
+2025-02-16 11:54:50,583 - INFO - 当前持仓: None
+2025-02-16 11:55:51,343 - INFO - 当前价格: 0.7387, AI信号: 0
+2025-02-16 11:55:51,555 - INFO - 当前持仓: None
+2025-02-16 11:56:52,086 - INFO - 当前价格: 0.7385, AI信号: 0
+2025-02-16 11:56:52,444 - INFO - 当前持仓: None
+2025-02-16 11:57:53,096 - INFO - 当前价格: 0.7388, AI信号: 0
+2025-02-16 11:57:53,325 - INFO - 当前持仓: None
+2025-02-16 11:58:55,914 - INFO - 当前价格: 0.7389, AI信号: 0
+2025-02-16 11:58:56,135 - INFO - 当前持仓: None
+2025-02-16 11:59:56,645 - INFO - 当前价格: 0.739, AI信号: 0
+2025-02-16 11:59:56,848 - INFO - 当前持仓: None
+2025-02-16 12:00:57,367 - INFO - 当前价格: 0.7373, AI信号: 0
+2025-02-16 12:00:57,567 - INFO - 当前持仓: None
+2025-02-16 12:01:58,277 - INFO - 当前价格: 0.736, AI信号: 0
+2025-02-16 12:01:58,498 - INFO - 当前持仓: None
+2025-02-16 12:02:58,967 - INFO - 当前价格: 0.7358, AI信号: 0
+2025-02-16 12:02:59,167 - INFO - 当前持仓: None
+2025-02-16 12:03:59,705 - INFO - 当前价格: 0.7389, AI信号: 0
+2025-02-16 12:03:59,937 - INFO - 当前持仓: None
+2025-02-16 12:05:00,875 - INFO - 当前价格: 0.7396, AI信号: 0
+2025-02-16 12:05:01,076 - INFO - 当前持仓: None
+2025-02-16 12:06:02,506 - INFO - 当前价格: 0.7422, AI信号: 0
+2025-02-16 12:06:02,716 - INFO - 当前持仓: None
+2025-02-16 12:07:03,307 - INFO - 当前价格: 0.7405, AI信号: 0
+2025-02-16 12:07:03,527 - INFO - 当前持仓: None
+2025-02-16 12:08:04,018 - INFO - 当前价格: 0.7425, AI信号: 0
+2025-02-16 12:08:04,217 - INFO - 当前持仓: None
+2025-02-16 12:09:04,867 - INFO - 当前价格: 0.7438, AI信号: 0
+2025-02-16 12:09:05,090 - INFO - 当前持仓: None
+2025-02-16 12:10:05,639 - INFO - 当前价格: 0.7427, AI信号: 0
+2025-02-16 12:10:05,838 - INFO - 当前持仓: None
+2025-02-16 12:11:06,328 - INFO - 当前价格: 0.7436, AI信号: 0
+2025-02-16 12:11:06,530 - INFO - 当前持仓: None
+2025-02-16 12:12:07,129 - INFO - 当前价格: 0.7442, AI信号: 0
+2025-02-16 12:12:07,330 - INFO - 当前持仓: None
+2025-02-16 12:13:07,809 - INFO - 当前价格: 0.7436, AI信号: 0
+2025-02-16 12:13:08,080 - INFO - 当前持仓: None
+2025-02-16 12:14:08,610 - INFO - 当前价格: 0.7417, AI信号: 0
+2025-02-16 12:14:08,833 - INFO - 当前持仓: None
+2025-02-16 12:15:12,423 - INFO - 当前价格: 0.7417, AI信号: 0
+2025-02-16 12:15:12,636 - INFO - 当前持仓: None
+2025-02-16 12:16:16,692 - INFO - 当前价格: 0.7437, AI信号: 0
+2025-02-16 12:16:16,924 - INFO - 当前持仓: None
+2025-02-16 12:17:17,593 - INFO - 当前价格: 0.7417, AI信号: 0
+2025-02-16 12:17:17,813 - INFO - 当前持仓: None
+2025-02-16 12:18:19,377 - INFO - 当前价格: 0.7409, AI信号: 0
+2025-02-16 12:18:19,594 - INFO - 当前持仓: None
+2025-02-16 12:29:36,539 - INFO - ==================================================
+2025-02-16 12:29:36,539 - INFO - 日志系统初始化完成 - 2025-02-16 12:29:36
+2025-02-16 12:29:36,539 - INFO - ==================================================
+2025-02-16 12:29:37,992 - INFO - 没有未成交的订单
+2025-02-16 12:29:38,112 - INFO - 当前已经是单向持仓模式
+2025-02-16 12:29:38,213 - INFO - 设置杠杆倍数 5倍 成功
+2025-02-16 12:29:38,321 - INFO - 当前已经是CROSSED保证金模式
+2025-02-16 12:29:38,493 - INFO - USDT余额: 可用=140.46064971, 总额=140.4889769
+2025-02-16 12:29:38,493 - INFO - 当前账户余额: 可用=140.46064971 USDT, 总额=140.48897690 USDT
+2025-02-16 12:29:39,183 - INFO - 当前价格: 0.7401, AI信号: 0
+2025-02-16 12:29:39,633 - INFO - 当前持仓: None
+2025-02-16 12:30:40,084 - INFO - 当前价格: 0.7411, AI信号: 0
+2025-02-16 12:30:40,302 - INFO - 当前持仓: None
+2025-02-16 12:30:52,542 - INFO - 
+程序被用户中断
+2025-02-16 12:30:52,652 - INFO - 没有未成交的订单
+2025-02-16 12:30:52,763 - INFO - 程序已安全退出
+2025-02-16 12:32:41,285 - INFO - ==================================================
+2025-02-16 12:32:41,285 - INFO - 日志系统初始化完成 - 2025-02-16 12:32:41
+2025-02-16 12:32:41,285 - INFO - ==================================================
+2025-02-16 12:32:46,297 - ERROR - 取消所有订单失败: binanceusdm GET https://api.binance.com/sapi/v1/capital/config/getall?timestamp=1739680361293&recvWindow=5000&signature=82f8f8897beeb1d0e6bf62b87e7c1843a88a4214900f9d2ae37d4d60e5da39a0
+2025-02-16 12:32:46,297 - ERROR - 交易器初始化失败: binanceusdm GET https://api.binance.com/sapi/v1/capital/config/getall?timestamp=1739680361293&recvWindow=5000&signature=82f8f8897beeb1d0e6bf62b87e7c1843a88a4214900f9d2ae37d4d60e5da39a0
+2025-02-16 12:33:18,158 - INFO - ==================================================
+2025-02-16 12:33:18,158 - INFO - 日志系统初始化完成 - 2025-02-16 12:33:18
+2025-02-16 12:33:18,158 - INFO - ==================================================
+2025-02-16 12:33:19,824 - INFO - 没有未成交的订单
+2025-02-16 12:33:19,974 - INFO - 当前已经是单向持仓模式
+2025-02-16 12:33:20,146 - INFO - 设置杠杆倍数 5倍 成功
+2025-02-16 12:33:20,254 - INFO - 当前已经是CROSSED保证金模式
+2025-02-16 12:33:20,254 - INFO - 交易器初始化成功
+2025-02-16 12:33:20,477 - INFO - USDT余额: 可用=140.46064997, 总额=140.4889769
+2025-02-16 12:33:20,477 - INFO - 当前账户余额: 可用=140.46064997 USDT, 总额=140.48897690 USDT
+2025-02-16 12:33:20,886 - INFO - 当前价格: 0.7417, AI信号: 0
+2025-02-16 12:33:21,284 - INFO - 当前持仓: None
+2025-02-16 12:34:21,776 - INFO - 当前价格: 0.7434, AI信号: 0
+2025-02-16 12:34:21,974 - INFO - 当前持仓: None
+2025-02-16 12:35:22,417 - INFO - 当前价格: 0.7435, AI信号: 0
+2025-02-16 12:35:22,634 - INFO - 当前持仓: None
+2025-02-16 12:36:23,496 - INFO - 当前价格: 0.7437, AI信号: 0
+2025-02-16 12:36:23,693 - INFO - 当前持仓: None
+2025-02-16 12:37:24,146 - INFO - 当前价格: 0.745, AI信号: 0
+2025-02-16 12:37:24,353 - INFO - 当前持仓: None
+2025-02-16 12:38:24,837 - INFO - 当前价格: 0.7448, AI信号: 0
+2025-02-16 12:38:25,053 - INFO - 当前持仓: None
+2025-02-16 12:39:25,504 - INFO - 当前价格: 0.7443, AI信号: 0
+2025-02-16 12:39:25,712 - INFO - 当前持仓: None
+2025-02-16 12:39:45,843 - INFO - 
+程序被用户中断
+2025-02-16 12:39:45,953 - INFO - 没有未成交的订单
+2025-02-16 12:39:46,052 - INFO - 程序已安全退出
+2025-02-16 12:43:57,312 - INFO - ==================================================
+2025-02-16 12:43:57,312 - INFO - 日志系统初始化完成 - 2025-02-16 12:43:57
+2025-02-16 12:43:57,312 - INFO - ==================================================
+2025-02-16 12:43:58,791 - INFO - 没有未成交的订单
+2025-02-16 12:43:58,901 - INFO - 当前已经是单向持仓模式
+2025-02-16 12:43:59,012 - INFO - 设置杠杆倍数 5倍 成功
+2025-02-16 12:43:59,124 - INFO - 当前已经是CROSSED保证金模式
+2025-02-16 12:43:59,125 - INFO - 交易器初始化成功
+2025-02-16 12:43:59,464 - INFO - USDT余额: 可用=140.46064898, 总额=140.4889769
+2025-02-16 12:43:59,464 - INFO - 当前账户余额: 可用=140.46064898 USDT, 总额=140.48897690 USDT
+2025-02-16 12:44:00,501 - INFO - 当前价格: 0.7447, AI信号: 0
+2025-02-16 12:44:01,216 - INFO - 当前持仓: None
+2025-02-16 12:44:11,886 - INFO - 
+程序被用户中断
+2025-02-16 12:44:11,984 - INFO - 没有未成交的订单
+2025-02-16 12:44:12,134 - INFO - 程序已安全退出
+2025-02-16 12:45:19,390 - INFO - ==================================================
+2025-02-16 12:45:19,390 - INFO - 日志系统初始化完成 - 2025-02-16 12:45:19
+2025-02-16 12:45:19,390 - INFO - ==================================================
+2025-02-16 12:45:20,782 - INFO - 没有未成交的订单
+2025-02-16 12:45:20,891 - INFO - 当前已经是单向持仓模式
+2025-02-16 12:45:20,991 - INFO - 设置杠杆倍数 5倍 成功
+2025-02-16 12:45:21,185 - INFO - 当前已经是CROSSED保证金模式
+2025-02-16 12:45:21,186 - INFO - 交易器初始化成功
+2025-02-16 12:45:21,562 - INFO - USDT余额: 可用=140.46064953, 总额=140.4889769
+2025-02-16 12:45:21,563 - INFO - 当前账户余额: 可用=140.46064953 USDT, 总额=140.48897690 USDT
+2025-02-16 12:45:21,965 - INFO - AI预测值: 0.4692
+2025-02-16 12:45:21,965 - INFO - 预测观望信号
+2025-02-16 12:45:22,142 - INFO - 当前价格: 0.7449, AI信号: 0
+2025-02-16 12:45:22,589 - INFO - 当前持仓: None
+2025-02-16 12:46:23,213 - INFO - AI预测值: 0.4680
+2025-02-16 12:46:23,213 - INFO - 预测观望信号
+2025-02-16 12:46:23,394 - INFO - 当前价格: 0.746, AI信号: 0
+2025-02-16 12:46:23,763 - INFO - 当前持仓: None
+2025-02-16 12:47:24,149 - INFO - AI预测值: 0.4663
+2025-02-16 12:47:24,149 - INFO - 预测观望信号
+2025-02-16 12:47:24,262 - INFO - 当前价格: 0.7462, AI信号: 0
+2025-02-16 12:47:24,557 - INFO - 当前持仓: None
+2025-02-16 12:48:24,920 - INFO - AI预测值: 0.4656
+2025-02-16 12:48:24,920 - INFO - 预测观望信号
+2025-02-16 12:48:25,020 - INFO - 当前价格: 0.7464, AI信号: 0
+2025-02-16 12:48:25,315 - INFO - 当前持仓: None
+2025-02-16 12:49:25,664 - INFO - AI预测值: 0.4658
+2025-02-16 12:49:25,665 - INFO - 预测观望信号
+2025-02-16 12:49:25,765 - INFO - 当前价格: 0.7443, AI信号: 0
+2025-02-16 12:49:26,107 - INFO - 当前持仓: None
+2025-02-16 12:50:41,152 - INFO - AI预测值: 0.4680
+2025-02-16 12:50:41,154 - INFO - 预测观望信号
+2025-02-16 12:50:41,309 - INFO - 当前价格: 0.7457, AI信号: 0
+2025-02-16 12:50:41,584 - INFO - 当前持仓: None
+2025-02-16 12:51:41,963 - INFO - AI预测值: 0.4685
+2025-02-16 12:51:41,964 - INFO - 预测观望信号
+2025-02-16 12:51:42,077 - INFO - 当前价格: 0.7455, AI信号: 0
+2025-02-16 12:51:42,506 - INFO - 当前持仓: None
+2025-02-16 12:52:42,973 - INFO - AI预测值: 0.4688
+2025-02-16 12:52:42,974 - INFO - 预测观望信号
+2025-02-16 12:52:43,078 - INFO - 当前价格: 0.7432, AI信号: 0
+2025-02-16 12:52:43,360 - INFO - 当前持仓: None
+2025-02-16 12:53:43,775 - INFO - AI预测值: 0.4688
+2025-02-16 12:53:43,775 - INFO - 预测观望信号
+2025-02-16 12:53:43,877 - INFO - 当前价格: 0.7424, AI信号: 0
+2025-02-16 12:53:44,141 - INFO - 当前持仓: None
+2025-02-16 12:54:44,514 - INFO - AI预测值: 0.4719
+2025-02-16 12:54:44,514 - INFO - 预测观望信号
+2025-02-16 12:54:44,628 - INFO - 当前价格: 0.7431, AI信号: 0
+2025-02-16 12:54:44,936 - INFO - 当前持仓: None
+2025-02-16 12:55:45,416 - INFO - AI预测值: 0.4753
+2025-02-16 12:55:45,416 - INFO - 预测观望信号
+2025-02-16 12:55:45,507 - INFO - 当前价格: 0.743, AI信号: 0
+2025-02-16 12:55:45,761 - INFO - 当前持仓: None
+2025-02-16 12:56:46,113 - INFO - AI预测值: 0.4785
+2025-02-16 12:56:46,113 - INFO - 预测观望信号
+2025-02-16 12:56:46,217 - INFO - 当前价格: 0.7434, AI信号: 0
+2025-02-16 12:56:46,492 - INFO - 当前持仓: None
+2025-02-16 12:57:47,653 - INFO - AI预测值: 0.4785
+2025-02-16 12:57:47,653 - INFO - 预测观望信号
+2025-02-16 12:57:47,766 - INFO - 当前价格: 0.7431, AI信号: 0
+2025-02-16 12:57:48,089 - INFO - 当前持仓: None
+2025-02-16 12:58:48,452 - INFO - AI预测值: 0.4807
+2025-02-16 12:58:48,452 - INFO - 预测观望信号
+2025-02-16 12:58:48,556 - INFO - 当前价格: 0.7433, AI信号: 0
+2025-02-16 12:58:48,833 - INFO - 当前持仓: None
+2025-02-16 12:59:49,294 - INFO - AI预测值: 0.4839
+2025-02-16 12:59:49,295 - INFO - 预测观望信号
+2025-02-16 12:59:49,398 - INFO - 当前价格: 0.7423, AI信号: 0
+2025-02-16 12:59:49,672 - INFO - 当前持仓: None
+2025-02-16 13:00:50,001 - INFO - AI预测值: 0.4858
+2025-02-16 13:00:50,003 - INFO - 预测观望信号
+2025-02-16 13:00:50,106 - INFO - 当前价格: 0.7424, AI信号: 0
+2025-02-16 13:00:50,401 - INFO - 当前持仓: None
+2025-02-16 13:01:50,809 - INFO - AI预测值: 0.4875
+2025-02-16 13:01:50,809 - INFO - 预测观望信号
+2025-02-16 13:01:50,905 - INFO - 当前价格: 0.7404, AI信号: 0
+2025-02-16 13:01:51,169 - INFO - 当前持仓: None
+2025-02-16 13:02:51,541 - INFO - AI预测值: 0.4951
+2025-02-16 13:02:51,542 - INFO - 预测观望信号
+2025-02-16 13:02:51,643 - INFO - 当前价格: 0.7419, AI信号: 0
+2025-02-16 13:02:51,912 - INFO - 当前持仓: None
+2025-02-16 13:03:52,799 - INFO - AI预测值: 0.5005
+2025-02-16 13:03:52,799 - INFO - 预测观望信号
+2025-02-16 13:03:52,902 - INFO - 当前价格: 0.7418, AI信号: 0
+2025-02-16 13:03:53,194 - INFO - 当前持仓: None
+2025-02-16 13:04:53,573 - INFO - AI预测值: 0.5000
+2025-02-16 13:04:53,573 - INFO - 预测观望信号
+2025-02-16 13:04:53,675 - INFO - 当前价格: 0.7421, AI信号: 0
+2025-02-16 13:04:53,956 - INFO - 当前持仓: None
+2025-02-16 13:05:55,777 - INFO - AI预测值: 0.5020
+2025-02-16 13:05:55,777 - INFO - 预测观望信号
+2025-02-16 13:05:55,874 - INFO - 当前价格: 0.7427, AI信号: 0
+2025-02-16 13:05:56,233 - INFO - 当前持仓: None
+2025-02-16 13:06:56,803 - INFO - AI预测值: 0.5005
+2025-02-16 13:06:56,803 - INFO - 预测观望信号
+2025-02-16 13:06:56,914 - INFO - 当前价格: 0.7424, AI信号: 0
+2025-02-16 13:06:57,209 - INFO - 当前持仓: None
+2025-02-16 13:10:13,453 - INFO - AI预测值: 0.4895
+2025-02-16 13:10:13,453 - INFO - 预测观望信号
+2025-02-16 13:10:13,565 - INFO - 当前价格: 0.7448, AI信号: 0
+2025-02-16 13:10:13,877 - INFO - 当前持仓: None
+2025-02-16 13:11:14,412 - INFO - AI预测值: 0.4866
+2025-02-16 13:11:14,412 - INFO - 预测观望信号
+2025-02-16 13:11:14,513 - INFO - 当前价格: 0.7458, AI信号: 0
+2025-02-16 13:11:14,816 - INFO - 当前持仓: None
+2025-02-16 13:11:50,883 - INFO - 
+程序被用户中断
+2025-02-16 13:11:51,005 - INFO - 没有未成交的订单
+2025-02-16 13:11:51,161 - INFO - 程序已安全退出
+2025-02-16 13:11:53,720 - INFO - ==================================================
+2025-02-16 13:11:53,720 - INFO - 日志系统初始化完成 - 2025-02-16 13:11:53
+2025-02-16 13:11:53,720 - INFO - ==================================================
+2025-02-16 13:11:55,181 - INFO - 没有未成交的订单
+2025-02-16 13:11:55,291 - INFO - 当前已经是单向持仓模式
+2025-02-16 13:11:55,412 - INFO - 设置杠杆倍数 5倍 成功
+2025-02-16 13:11:55,521 - INFO - 当前已经是CROSSED保证金模式
+2025-02-16 13:11:55,521 - INFO - 交易器初始化成功
+2025-02-16 13:11:55,521 - INFO - 获取到 397 个USDT合约交易对

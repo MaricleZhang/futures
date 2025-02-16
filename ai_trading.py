@@ -14,20 +14,43 @@ def main():
     
     def close_with_retry(trader, logger, max_retries=3):
         """带重试机制的平仓函数"""
+        last_error = None
         for attempt in range(max_retries):
             try:
+                # 获取当前持仓信息并记录
+                position = trader.get_position()
+                if position:
+                    logger.info(f"尝试平仓前的持仓状态: {position}")
+                else:
+                    logger.info("尝试平仓前没有持仓")
+                    return None
+
                 close_order = trader.close_position()
-                logger.info(f"平仓成功: {close_order}")
-                return close_order
+                if close_order:
+                    logger.info(f"平仓成功: {close_order}")
+                    return close_order
+                else:
+                    logger.warning("平仓函数返回空值")
+                    return None
+
             except ccxt.NetworkError as e:
+                last_error = e
                 if attempt == max_retries - 1:
-                    logger.error(f"平仓失败(网络错误): {str(e)}")
+                    logger.error(f"平仓失败(网络错误，已重试{max_retries}次): {str(e)}")
                     raise
                 logger.warning(f"平仓重试({attempt + 1}/{max_retries}): {str(e)}")
                 time.sleep(1)
             except Exception as e:
+                last_error = e
                 logger.error(f"平仓失败(其他错误): {str(e)}")
-                raise
+                if attempt == max_retries - 1:
+                    raise
+                logger.warning(f"平仓重试({attempt + 1}/{max_retries}): {str(e)}")
+                time.sleep(1)
+
+        if last_error:
+            raise last_error
+        return None
     
     try:
         # 初始化AI策略

@@ -14,7 +14,7 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 
 # 交易设置
-SYMBOL = 'LAYERUSDT'  # 交易对
+SYMBOL = 'HEIUSDT'  # 交易对
 LEVERAGE = 5  # 杠杆倍数
 MARGIN_TYPE = 'CROSSED'  # 保证金模式：CROSSED(全仓) ISOLATED(逐仓)
 POSITION_SIDE = 'BOTH'  # 持仓模式：BOTH(单向持仓) LONG/SHORT(双向持仓)
@@ -27,8 +27,8 @@ TIME_IN_FORCE = 'GTC'  # 订单有效期: GTC(永久有效) GTX(立即成交或�
 # 风控设置
 MAX_POSITION_SIZE = 200  # 最大持仓量(BTC)
 MAX_LEVERAGE = 10  # 最大允许杠杆
-DEFAULT_STOP_LOSS_PERCENT = 2  # 默认止损百分比
-DEFAULT_TAKE_PROFIT_PERCENT = 3  # 默认止盈百分比
+DEFAULT_STOP_LOSS_PERCENT = 50  # 默认止损百分比
+DEFAULT_TAKE_PROFIT_PERCENT = 10000  # 默认止盈百分比
 
 # K线设置
 DEFAULT_TIMEFRAME = '1m'  # 默认K线周期

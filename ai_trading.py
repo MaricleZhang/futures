@@ -12,6 +12,23 @@ def main():
     # 初始化交易器
     trader = BinanceFuturesTrader()
     
+    def close_with_retry(trader, logger, max_retries=3):
+        """带重试机制的平仓函数"""
+        for attempt in range(max_retries):
+            try:
+                close_order = trader.close_position()
+                logger.info(f"平仓成功: {close_order}")
+                return close_order
+            except ccxt.NetworkError as e:
+                if attempt == max_retries - 1:
+                    logger.error(f"平仓失败(网络错误): {str(e)}")
+                    raise
+                logger.warning(f"平仓重试({attempt + 1}/{max_retries}): {str(e)}")
+                time.sleep(1)
+            except Exception as e:
+                logger.error(f"平仓失败(其他错误): {str(e)}")
+                raise
+    
     try:
         # 初始化AI策略
         strategy = AIStrategy(trader)
@@ -84,17 +101,23 @@ def main():
                     except Exception as e:
                         logger.info(f"开空仓失败: {str(e)}")
                 
-                elif signal == 0 and position_amount != 0:  # 平仓信号
+                # 当前持仓方向与信号相反时平仓
+                elif (signal == -1 and position_amount > 0) or (signal == 1 and position_amount < 0):
                     try:
-                        close_order = trader.close_position()
-                        logger.info(f"平仓: {close_order}")
+                        close_order = close_with_retry(trader, logger)
+                        if close_order:
+                            logger.info(f"平仓: {close_order}")
                     except Exception as e:
-                        logger.info(f"平仓失败: {str(e)}")
+                        logger.error(f"平仓最终失败: {str(e)}")
+                        continue
+                
+                # 中性信号保持当前仓位
+                elif signal == 0:
+                    logger.info("观望信号，保持当前仓位")
                 
                 # 打印当前持仓信息
                 try:
                     position = trader.get_position()
-                    logger.info(f"当前持仓: {position}")
                 except Exception as e:
                     logger.info(f"获取持仓信息失败: {str(e)}")
                 
@@ -115,7 +138,9 @@ def main():
             trader.cancel_all_orders()
             position = trader.get_position()
             if position and float(position.get('positionAmt', 0)) != 0:
-                trader.close_position()
+                close_order = close_with_retry(trader, logger)
+                if close_order:
+                    logger.info(f"平仓: {close_order}")
         except Exception as e:
             logger.info(f"清理订单和持仓时发生错误: {str(e)}")
         logger.info("程序已安全退出")

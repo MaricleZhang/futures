@@ -221,30 +221,30 @@ class BinanceFuturesTrader:
             order = self.exchange.create_order(**order_params)
             self.logger.info(f"订单创建成功: {order}")
             
-            # 如果没有指定止损价格，使用默认百分比
-            if stop_loss is None and config.DEFAULT_STOP_LOSS_PERCENT > 0:
-                current_price = self.get_market_price()
-                stop_loss = current_price * (1 - config.DEFAULT_STOP_LOSS_PERCENT/100) if side.upper() == 'BUY' else current_price * (1 + config.DEFAULT_STOP_LOSS_PERCENT/100)
+            # # 如果没有指定止损价格，使用默认百分比
+            # if stop_loss is None and config.DEFAULT_STOP_LOSS_PERCENT > 0:
+            #     current_price = self.get_market_price()
+            #     stop_loss = current_price * (1 - config.DEFAULT_STOP_LOSS_PERCENT/100) if side.upper() == 'BUY' else current_price * (1 + config.DEFAULT_STOP_LOSS_PERCENT/100)
             
-            # 如果没有指定止盈价格，使用默认百分比
-            if take_profit is None and config.DEFAULT_TAKE_PROFIT_PERCENT > 0:
-                current_price = self.get_market_price()
-                take_profit = current_price * (1 + config.DEFAULT_TAKE_PROFIT_PERCENT/100) if side.upper() == 'BUY' else current_price * (1 - config.DEFAULT_TAKE_PROFIT_PERCENT/100)
+            # # 如果没有指定止盈价格，使用默认百分比
+            # if take_profit is None and config.DEFAULT_TAKE_PROFIT_PERCENT > 0:
+            #     current_price = self.get_market_price()
+            #     take_profit = current_price * (1 + config.DEFAULT_TAKE_PROFIT_PERCENT/100) if side.upper() == 'BUY' else current_price * (1 - config.DEFAULT_TAKE_PROFIT_PERCENT/100)
             
-            # 设置止损单
-            if stop_loss is not None:
-                stop_loss_params = {
-                    'symbol': self.symbol,
-                    'type': 'STOP_MARKET',
-                    'side': 'SELL' if side.upper() == 'BUY' else 'BUY',
-                    'amount': amount,
-                    'params': {
-                        'stopPrice': stop_loss,
-                        'workingType': 'MARK_PRICE',
-                    }
-                }
-                stop_order = self.exchange.create_order(**stop_loss_params)
-                self.logger.info(f"止损订单创建成功: {stop_order}")
+            # # 设置止损单
+            # if stop_loss is not None:
+            #     stop_loss_params = {
+            #         'symbol': self.symbol,
+            #         'type': 'STOP_MARKET',
+            #         'side': 'SELL' if side.upper() == 'BUY' else 'BUY',
+            #         'amount': amount,
+            #         'params': {
+            #             'stopPrice': stop_loss,
+            #             'workingType': 'MARK_PRICE',
+            #         }
+            #     }
+            #     stop_order = self.exchange.create_order(**stop_loss_params)
+            #     self.logger.info(f"止损订单创建成功: {stop_order}")
                 
             # # 设置止盈单
             # if take_profit is not None:

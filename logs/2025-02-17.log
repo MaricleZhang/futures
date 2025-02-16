@@ -1,0 +1,195 @@
+2025-02-17 00:15:14,868 - INFO - ==================================================
+2025-02-17 00:15:14,868 - INFO - 日志系统初始化完成 - 2025-02-17 00:15:14
+2025-02-17 00:15:14,868 - INFO - ==================================================
+2025-02-17 00:15:19,876 - ERROR - 取消所有订单失败: binanceusdm GET https://api.binance.com/sapi/v1/capital/config/getall?timestamp=1739722514873&recvWindow=5000&signature=82253a98bbf34c5ab3129366a3af6531772b9419b5787fa757bafbe0f17869c9
+2025-02-17 00:15:19,877 - WARNING - cancel_all_orders 调用失败，1/3次尝试: binanceusdm GET https://api.binance.com/sapi/v1/capital/config/getall?timestamp=1739722514873&recvWindow=5000&signature=82253a98bbf34c5ab3129366a3af6531772b9419b5787fa757bafbe0f17869c9
+2025-02-17 00:15:29,886 - ERROR - 取消所有订单失败: binanceusdm GET https://api.binance.com/sapi/v1/capital/config/getall?timestamp=1739722524882&recvWindow=5000&signature=d37dfab1d52bdd3568fd11f618865193ba91763bcbb419b61a19b2bad09349dd
+2025-02-17 00:15:29,886 - WARNING - cancel_all_orders 调用失败，2/3次尝试: binanceusdm GET https://api.binance.com/sapi/v1/capital/config/getall?timestamp=1739722524882&recvWindow=5000&signature=d37dfab1d52bdd3568fd11f618865193ba91763bcbb419b61a19b2bad09349dd
+2025-02-17 00:15:39,892 - ERROR - 取消所有订单失败: binanceusdm GET https://api.binance.com/sapi/v1/capital/config/getall?timestamp=1739722534886&recvWindow=5000&signature=031798c975148ac5bd0760980b6c3cfdfa4b319c5fb7a0e1b92ff4d48073e242
+2025-02-17 00:15:39,892 - ERROR - cancel_all_orders 调用失败，已达到最大重试次数: binanceusdm GET https://api.binance.com/sapi/v1/capital/config/getall?timestamp=1739722534886&recvWindow=5000&signature=031798c975148ac5bd0760980b6c3cfdfa4b319c5fb7a0e1b92ff4d48073e242
+2025-02-17 00:15:39,892 - ERROR - 交易器初始化失败: binanceusdm GET https://api.binance.com/sapi/v1/capital/config/getall?timestamp=1739722534886&recvWindow=5000&signature=031798c975148ac5bd0760980b6c3cfdfa4b319c5fb7a0e1b92ff4d48073e242
+2025-02-17 00:17:55,659 - INFO - ==================================================
+2025-02-17 00:17:55,659 - INFO - 日志系统初始化完成 - 2025-02-17 00:17:55
+2025-02-17 00:17:55,659 - INFO - ==================================================
+2025-02-17 00:18:00,668 - ERROR - 取消所有订单失败: binanceusdm GET https://api.binance.com/sapi/v1/capital/config/getall?timestamp=1739722675664&recvWindow=5000&signature=07a08653ffa35114cee376bd5ff05afe620c65d8075e98cab9414588459f2a85
+2025-02-17 00:18:00,669 - WARNING - cancel_all_orders 调用失败，1/3次尝试: binanceusdm GET https://api.binance.com/sapi/v1/capital/config/getall?timestamp=1739722675664&recvWindow=5000&signature=07a08653ffa35114cee376bd5ff05afe620c65d8075e98cab9414588459f2a85
+2025-02-17 00:18:06,735 - INFO - 没有未成交的订单
+2025-02-17 00:18:06,855 - INFO - 当前已经是单向持仓模式
+2025-02-17 00:18:06,958 - INFO - 设置杠杆倍数 5倍 成功
+2025-02-17 00:18:07,071 - INFO - 当前已经是CROSSED保证金模式
+2025-02-17 00:18:07,071 - INFO - 交易器初始化成功
+2025-02-17 00:18:07,467 - INFO - USDT余额: 可用=132.16378353, 总额=133.48060829
+2025-02-17 00:18:07,467 - INFO - 当前账户余额: 可用=132.16378353 USDT, 总额=133.48060829 USDT
+2025-02-17 00:18:07,866 - INFO - 当前持仓方向: 空, 持仓金额: 6.44949914, 保证金: 0.0
+2025-02-17 00:18:07,867 - INFO - 成交量不足，避免交易
+2025-02-17 00:18:07,966 - INFO - 当前价格: 0.7085, AI信号: 0
+2025-02-17 00:18:08,104 - INFO - 当前持仓方向: 空, 持仓金额: 6.44698882, 保证金: 0.0
+2025-02-17 00:18:08,104 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:18:08,253 - INFO - 当前持仓方向: 空, 持仓金额: 6.44698882, 保证金: 0.0
+2025-02-17 00:19:13,267 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:19:13,268 - WARNING - get_klines 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:19:18,671 - INFO - 当前持仓方向: 空, 持仓金额: 6.42410641, 保证金: 0.0
+2025-02-17 00:19:18,672 - INFO - 成交量不足，避免交易
+2025-02-17 00:19:18,776 - INFO - 当前价格: 0.7059, AI信号: 0
+2025-02-17 00:19:18,916 - INFO - 当前持仓方向: 空, 持仓金额: 6.42410641, 保证金: 0.0
+2025-02-17 00:19:18,916 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:19:19,047 - INFO - 当前持仓方向: 空, 持仓金额: 6.42410641, 保证金: 0.0
+2025-02-17 00:20:24,063 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:20:24,064 - WARNING - get_klines 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:20:34,080 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:20:34,081 - WARNING - get_klines 调用失败，2/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:20:43,238 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:20:43,239 - ERROR - get_klines 调用失败，已达到最大重试次数: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:20:43,239 - INFO - 交易过程中发生错误: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:21:48,249 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:21:48,250 - WARNING - get_klines 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:21:55,155 - INFO - 当前持仓方向: 空, 持仓金额: 6.40664024, 保证金: 0.0
+2025-02-17 00:21:55,157 - INFO - 成交量不足，避免交易
+2025-02-17 00:21:55,267 - INFO - 当前价格: 0.7036, AI信号: 0
+2025-02-17 00:21:55,413 - INFO - 当前持仓方向: 空, 持仓金额: 6.40664024, 保证金: 0.0
+2025-02-17 00:21:55,413 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:21:55,559 - INFO - 当前持仓方向: 空, 持仓金额: 6.40664024, 保证金: 0.0
+2025-02-17 00:23:00,572 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:23:00,573 - WARNING - get_klines 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:23:05,888 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:23:05,890 - WARNING - get_klines 调用失败，2/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:23:15,905 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:23:15,906 - ERROR - get_klines 调用失败，已达到最大重试次数: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:23:15,906 - INFO - 交易过程中发生错误: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:24:20,918 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:24:20,919 - WARNING - get_klines 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:24:30,928 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:24:30,928 - WARNING - get_klines 调用失败，2/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:24:36,396 - INFO - 当前持仓方向: 空, 持仓金额: 6.38730965, 保证金: 0.0
+2025-02-17 00:24:36,397 - INFO - 趋势强度不足，避免交易
+2025-02-17 00:24:36,506 - INFO - 当前价格: 0.7016, AI信号: 0
+2025-02-17 00:24:36,654 - INFO - 当前持仓方向: 空, 持仓金额: 6.38730965, 保证金: 0.0
+2025-02-17 00:24:36,654 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:24:36,809 - INFO - 当前持仓方向: 空, 持仓金额: 6.38730965, 保证金: 0.0
+2025-02-17 00:25:37,272 - INFO - 当前持仓方向: 空, 持仓金额: 6.3886155, 保证金: 0.0
+2025-02-17 00:25:37,273 - INFO - 趋势强度不足，避免交易
+2025-02-17 00:25:37,376 - INFO - 当前价格: 0.7021, AI信号: 0
+2025-02-17 00:25:37,516 - INFO - 当前持仓方向: 空, 持仓金额: 6.3886155, 保证金: 0.0
+2025-02-17 00:25:37,516 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:25:37,658 - INFO - 当前持仓方向: 空, 持仓金额: 6.3886155, 保证金: 0.0
+2025-02-17 00:26:38,266 - INFO - 当前持仓方向: 空, 持仓金额: 6.4026103, 保证金: 0.0
+2025-02-17 00:26:38,267 - INFO - 趋势强度不足，避免交易
+2025-02-17 00:26:38,366 - INFO - 当前价格: 0.7033, AI信号: 0
+2025-02-17 00:26:38,529 - INFO - 当前持仓方向: 空, 持仓金额: 6.4026103, 保证金: 0.0
+2025-02-17 00:26:38,529 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:26:38,666 - INFO - 当前持仓方向: 空, 持仓金额: 6.4026103, 保证金: 0.0
+2025-02-17 00:27:39,185 - INFO - 当前持仓方向: 空, 持仓金额: 6.4024839, 保证金: 0.0
+2025-02-17 00:27:39,186 - INFO - 趋势强度不足，避免交易
+2025-02-17 00:27:39,288 - INFO - 当前价格: 0.7036, AI信号: 0
+2025-02-17 00:27:39,429 - INFO - 当前持仓方向: 空, 持仓金额: 6.4024839, 保证金: 0.0
+2025-02-17 00:27:39,429 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:27:39,572 - INFO - 当前持仓方向: 空, 持仓金额: 6.4024839, 保证金: 0.0
+2025-02-17 00:28:40,074 - INFO - 当前持仓方向: 空, 持仓金额: 6.40276, 保证金: 0.0
+2025-02-17 00:28:40,075 - INFO - 趋势强度不足，避免交易
+2025-02-17 00:28:40,176 - INFO - 当前价格: 0.7032, AI信号: 0
+2025-02-17 00:28:40,310 - INFO - 当前持仓方向: 空, 持仓金额: 6.40185, 保证金: 0.0
+2025-02-17 00:28:40,311 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:28:40,437 - INFO - 当前持仓方向: 空, 持仓金额: 6.40185, 保证金: 0.0
+2025-02-17 00:29:40,998 - INFO - 当前持仓方向: 空, 持仓金额: 6.40367, 保证金: 0.0
+2025-02-17 00:29:40,999 - INFO - 趋势强度不足，避免交易
+2025-02-17 00:29:41,127 - INFO - 当前价格: 0.7034, AI信号: 0
+2025-02-17 00:29:41,301 - INFO - 当前持仓方向: 空, 持仓金额: 6.40367, 保证金: 0.0
+2025-02-17 00:29:41,301 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:29:41,452 - INFO - 当前持仓方向: 空, 持仓金额: 6.40367, 保证金: 0.0
+2025-02-17 00:30:41,911 - INFO - 当前持仓方向: 空, 持仓金额: 6.39184, 保证金: 0.0
+2025-02-17 00:30:41,912 - INFO - 趋势强度不足，避免交易
+2025-02-17 00:30:42,017 - INFO - 当前价格: 0.7018, AI信号: 0
+2025-02-17 00:30:42,152 - INFO - 当前持仓方向: 空, 持仓金额: 6.39184, 保证金: 0.0
+2025-02-17 00:30:42,153 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:30:42,300 - INFO - 当前持仓方向: 空, 持仓金额: 6.39184, 保证金: 0.0
+2025-02-17 00:31:42,698 - INFO - 当前持仓方向: 空, 持仓金额: 6.38804402, 保证金: 0.0
+2025-02-17 00:31:42,699 - INFO - 趋势强度不足，避免交易
+2025-02-17 00:31:42,798 - INFO - 当前价格: 0.7018, AI信号: 0
+2025-02-17 00:31:42,932 - INFO - 当前持仓方向: 空, 持仓金额: 6.38804402, 保证金: 0.0
+2025-02-17 00:31:42,932 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:31:43,069 - INFO - 当前持仓方向: 空, 持仓金额: 6.38804402, 保证金: 0.0
+2025-02-17 00:32:43,713 - INFO - 当前持仓方向: 空, 持仓金额: 6.37809554, 保证金: 0.0
+2025-02-17 00:32:43,714 - INFO - 成交量不足，避免交易
+2025-02-17 00:32:43,858 - INFO - 当前价格: 0.7007, AI信号: 0
+2025-02-17 00:32:44,067 - INFO - 当前持仓方向: 空, 持仓金额: 6.37809554, 保证金: 0.0
+2025-02-17 00:32:44,067 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:32:44,448 - INFO - 当前持仓方向: 空, 持仓金额: 6.3812334, 保证金: 0.0
+2025-02-17 00:33:44,891 - INFO - 当前持仓方向: 空, 持仓金额: 6.3712285, 保证金: 0.0
+2025-02-17 00:33:44,892 - INFO - 成交量不足，避免交易
+2025-02-17 00:33:44,987 - INFO - 当前价格: 0.7007, AI信号: 0
+2025-02-17 00:33:45,125 - INFO - 当前持仓方向: 空, 持仓金额: 6.36997333, 保证金: 0.0
+2025-02-17 00:33:45,125 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:33:45,257 - INFO - 当前持仓方向: 空, 持仓金额: 6.36997333, 保证金: 0.0
+2025-02-17 00:34:45,682 - INFO - 当前持仓方向: 空, 持仓金额: 6.35362, 保证金: 0.0
+2025-02-17 00:34:49,050 - INFO - 模型训练完成 - Loss: 0.5371, Accuracy: 0.7273, Val Accuracy: 0.6944
+2025-02-17 00:34:49,366 - INFO - 预测置信度过低，建议观望
+2025-02-17 00:34:49,366 - INFO - AI预测值: 0.5000
+2025-02-17 00:34:49,457 - INFO - 当前价格: 0.6982, AI信号: 0
+2025-02-17 00:34:49,598 - INFO - 当前持仓方向: 空, 持仓金额: 6.35453, 保证金: 0.0
+2025-02-17 00:34:49,598 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:34:49,726 - INFO - 当前持仓方向: 空, 持仓金额: 6.35453, 保证金: 0.0
+2025-02-17 00:35:54,740 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:35:54,741 - WARNING - get_klines 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:36:00,153 - INFO - 当前持仓方向: 空, 持仓金额: 6.35726, 保证金: 0.0
+2025-02-17 00:36:00,854 - INFO - 模型训练完成 - Loss: 0.5791, Accuracy: 0.6923, Val Accuracy: 0.6944
+2025-02-17 00:36:00,882 - INFO - 预测置信度过低，建议观望
+2025-02-17 00:36:00,882 - INFO - AI预测值: 0.5000
+2025-02-17 00:36:00,978 - INFO - 当前价格: 0.6985, AI信号: 0
+2025-02-17 00:36:01,101 - INFO - 当前持仓方向: 空, 持仓金额: 6.35736974, 保证金: 0.0
+2025-02-17 00:36:01,101 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:36:01,232 - INFO - 当前持仓方向: 空, 持仓金额: 6.35736974, 保证金: 0.0
+2025-02-17 00:37:06,248 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:37:06,248 - WARNING - get_klines 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:37:11,919 - INFO - 当前持仓方向: 空, 持仓金额: 6.38404175, 保证金: 0.0
+2025-02-17 00:37:11,920 - INFO - 趋势强度不足，避免交易
+2025-02-17 00:37:12,018 - INFO - 当前价格: 0.7024, AI信号: 0
+2025-02-17 00:37:12,492 - INFO - 当前持仓方向: 空, 持仓金额: 6.38843478, 保证金: 0.0
+2025-02-17 00:37:12,492 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:37:12,638 - INFO - 当前持仓方向: 空, 持仓金额: 6.38843478, 保证金: 0.0
+2025-02-17 00:38:17,653 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:38:17,654 - WARNING - get_klines 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:38:26,589 - INFO - 当前持仓方向: 空, 持仓金额: 6.38183, 保证金: 0.0
+2025-02-17 00:38:26,590 - INFO - 趋势强度不足，避免交易
+2025-02-17 00:38:26,698 - INFO - 当前价格: 0.7017, AI信号: 0
+2025-02-17 00:38:26,859 - INFO - 当前持仓方向: 空, 持仓金额: 6.38183, 保证金: 0.0
+2025-02-17 00:38:26,859 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:38:27,000 - INFO - 当前持仓方向: 空, 持仓金额: 6.38183, 保证金: 0.0
+2025-02-17 00:39:27,427 - INFO - 当前持仓方向: 空, 持仓金额: 6.38001, 保证金: 0.0
+2025-02-17 00:39:27,428 - INFO - 趋势强度不足，避免交易
+2025-02-17 00:39:27,529 - INFO - 当前价格: 0.7013, AI信号: 0
+2025-02-17 00:39:27,665 - INFO - 当前持仓方向: 空, 持仓金额: 6.38001, 保证金: 0.0
+2025-02-17 00:39:27,665 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:39:27,799 - INFO - 当前持仓方向: 空, 持仓金额: 6.38001, 保证金: 0.0
+2025-02-17 00:40:28,270 - INFO - 当前持仓方向: 空, 持仓金额: 6.38504348, 保证金: 0.0
+2025-02-17 00:40:28,272 - INFO - 趋势强度不足，避免交易
+2025-02-17 00:40:28,379 - INFO - 当前价格: 0.702, AI信号: 0
+2025-02-17 00:40:28,522 - INFO - 当前持仓方向: 空, 持仓金额: 6.38504348, 保证金: 0.0
+2025-02-17 00:40:28,522 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:40:28,661 - INFO - 当前持仓方向: 空, 持仓金额: 6.38504348, 保证金: 0.0
+2025-02-17 00:41:29,271 - INFO - 当前持仓方向: 空, 持仓金额: 6.37728, 保证金: 0.0
+2025-02-17 00:41:29,272 - INFO - 趋势强度不足，避免交易
+2025-02-17 00:41:29,380 - INFO - 当前价格: 0.7009, AI信号: 0
+2025-02-17 00:41:29,571 - INFO - 当前持仓方向: 空, 持仓金额: 6.37728, 保证金: 0.0
+2025-02-17 00:41:29,571 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:41:29,746 - INFO - 当前持仓方向: 空, 持仓金额: 6.37728, 保证金: 0.0
+2025-02-17 00:42:34,681 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:42:34,681 - WARNING - get_klines 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:42:40,292 - INFO - 当前持仓方向: 空, 持仓金额: 6.36636, 保证金: 0.0
+2025-02-17 00:42:41,002 - INFO - 模型训练完成 - Loss: 0.5970, Accuracy: 0.6993, Val Accuracy: 0.5833
+2025-02-17 00:42:41,031 - INFO - 预测置信度过低，建议观望
+2025-02-17 00:42:41,031 - INFO - AI预测值: 0.5000
+2025-02-17 00:42:41,136 - INFO - 当前价格: 0.699, AI信号: 0
+2025-02-17 00:42:41,289 - INFO - 当前持仓方向: 空, 持仓金额: 6.36363, 保证金: 0.0
+2025-02-17 00:42:41,290 - INFO - 观望信号，保持当前仓位
+2025-02-17 00:42:41,430 - INFO - 当前持仓方向: 空, 持仓金额: 6.36363, 保证金: 0.0
+2025-02-17 00:43:46,443 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:43:46,443 - WARNING - get_klines 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:43:56,459 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:43:56,459 - WARNING - get_klines 调用失败，2/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:44:01,575 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:44:01,576 - ERROR - get_klines 调用失败，已达到最大重试次数: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:44:01,577 - INFO - 交易过程中发生错误: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:45:06,873 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:45:06,874 - WARNING - get_klines 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:45:16,884 - ERROR - 获取K线数据失败: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT
+2025-02-17 00:45:16,885 - WARNING - get_klines 调用失败，2/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/klines?interval=1m&limit=200&symbol=HEIUSDT

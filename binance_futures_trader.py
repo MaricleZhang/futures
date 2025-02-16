@@ -116,12 +116,19 @@ class BinanceFuturesTrader:
         """获取当前持仓"""
         try:
             positions = self.exchange.fetch_positions([self.symbol])
+            if not positions:
+                self.logger.info("当前没有持仓信息")
+                return None
+                
             for position in positions:
-                if abs(float(position['contracts'] or 0)) > 0:
-                    # 添加positionAmt字段以兼容旧代码
-                    position['positionAmt'] = position['contracts']
-                    direction = "多" if float(position['contracts']) > 0 else "空"
-                    self.logger.info(f"当前持仓方向: {direction}, 持仓量: {abs(float(position['contracts']))}")
+                if position is None or 'info' not in position or 'positionAmt' not in position['info']:
+                    continue
+                    
+                position_amt = float(position['info'].get('positionAmt', 0))
+                if abs(position_amt) > 0:
+                    # 使用positionAmt判断方向
+                    direction = "多" if position_amt > 0 else "空"
+                    self.logger.info(f"当前持仓方向: {direction}, 持仓金额: {abs(float(position['info'].get('notional', 0)))}, 保证金: {abs(float(position['info'].get('initialMargin', 0)))}")
                     return position
             return None
         except Exception as e:
@@ -262,13 +269,13 @@ class BinanceFuturesTrader:
         """平掉当前所有持仓"""
         try:
             position = self.get_position()
-            if position is None or float(position['contracts']) == 0:
+            if position is None or float(position['info'].get('positionAmt', 0)) == 0:
                 self.logger.info("当前没有持仓")
                 return
                 
             # 确定平仓方向
-            side = 'sell' if position['side'] == 'long' else 'buy'
-            amount = abs(float(position['contracts']))
+            side = 'sell' if float(position['info'].get('positionAmt', 0)) > 0 else 'buy'
+            amount = abs(float(position['info'].get('positionAmt', 0)))
             
             # 市价平仓
             order = self.place_order(side=side, amount=amount)

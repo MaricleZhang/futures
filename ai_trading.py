@@ -80,7 +80,7 @@ def main():
                 # 获取当前持仓
                 try:
                     position = trader.get_position()
-                    position_amount = float(position.get('positionAmt', 0)) if position else 0
+                    position_amount = float(position['info'].get('positionAmt', 0)) if position else 0
                 except Exception as e:
                     logger.info(f"获取持仓信息失败: {str(e)}")
                     position_amount = 0

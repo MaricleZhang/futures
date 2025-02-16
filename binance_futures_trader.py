@@ -7,9 +7,34 @@ from utils.logger import Logger
 from utils.exchange import init_exchange, check_exchange_status
 import config
 import logging
+import time
+from functools import wraps
 
 # 加载环境变量
 load_dotenv()
+
+def retry_on_error(max_retries=None, retry_delay=None):
+    """重试装饰器，用于处理API调用失败的情况"""
+    max_retries = max_retries or config.PROXY_MAX_RETRIES
+    retry_delay = retry_delay or config.PROXY_RETRY_DELAY
+    
+    def decorator(func):
+        @wraps(func)
+        def wrapper(self, *args, **kwargs):
+            last_error = None
+            for attempt in range(max_retries):
+                try:
+                    return func(self, *args, **kwargs)
+                except Exception as e:
+                    last_error = e
+                    if attempt < max_retries - 1:
+                        self.logger.warning(f"{func.__name__} 调用失败，{attempt + 1}/{max_retries}次尝试: {str(e)}")
+                        time.sleep(retry_delay)
+                    else:
+                        self.logger.error(f"{func.__name__} 调用失败，已达到最大重试次数: {str(e)}")
+            raise last_error
+        return wrapper
+    return decorator
 
 class BinanceFuturesTrader:
     def __init__(self):
@@ -21,6 +46,10 @@ class BinanceFuturesTrader:
             
             # 初始化日志
             self.logger = Logger.get_logger()
+            
+            # 打印API密钥
+            print("API Key:", os.getenv('BINANCE_API_KEY'))
+            print("Secret Key:", os.getenv('BINANCE_SECRET_KEY'))
             
             # 初始化交易所
             self.exchange = ccxt.binanceusdm({
@@ -60,66 +89,7 @@ class BinanceFuturesTrader:
             self.logger.error(f"交易器初始化失败: {str(e)}")
             raise
             
-    def setup_trading_config(self):
-        """设置交易配置"""
-        try:
-            # 取消所有未成交订单
-            self.cancel_all_orders()
-            
-            # 设置持仓模式为单向持仓
-            try:
-                self.exchange.set_position_mode(False)  # False 表示单向持仓
-                self.logger.info("设置持仓模式: 单向持仓")
-            except Exception as e:
-                error_msg = str(e)
-                if 'No need to change position side' in error_msg or 'already' in error_msg:
-                    self.logger.info("当前已经是单向持仓模式")
-                else:
-                    self.logger.error(f"设置持仓模式失败: {error_msg}")
-                    raise
-            
-            # 设置杠杆
-            try:
-                self.exchange.set_leverage(config.LEVERAGE, self.symbol)
-                self.logger.info(f"设置杠杆倍数: {config.LEVERAGE}")
-            except Exception as e:
-                error_msg = str(e)
-                if 'already' in error_msg:
-                    self.logger.info(f"杠杆倍数已经是 {config.LEVERAGE}")
-                else:
-                    self.logger.error(f"设置杠杆失败: {error_msg}")
-                    raise
-        
-            # 设置保证金模式
-            try:
-                self.exchange.set_margin_mode(config.MARGIN_TYPE.lower(), self.symbol)
-                self.logger.info(f"设置保证金模式: {config.MARGIN_TYPE}")
-            except Exception as e:
-                error_msg = str(e)
-                if 'already' in error_msg:
-                    self.logger.info(f"保证金模式已经是 {config.MARGIN_TYPE}")
-                else:
-                    self.logger.error(f"设置保证金模式失败: {error_msg}")
-                    raise
-        except Exception as e:
-            self.logger.error(f"设置交易配置失败: {str(e)}")
-            raise
-        
-        # 设置保证金模式
-        try:
-            params = {
-                'symbol': self.symbol.replace('/', ''),
-                'marginType': config.MARGIN_TYPE.upper()
-            }
-            self.exchange.set_margin_mode(config.MARGIN_TYPE.lower(), self.symbol)
-            self.logger.info(f"设置保证金模式: {config.MARGIN_TYPE}")
-        except Exception as e:
-            if 'already' in str(e):
-                self.logger.info(f"保证金模式已经是 {config.MARGIN_TYPE}")
-            else:
-                self.logger.error(f"设置保证金模式失败: {str(e)}")
-                raise
-            
+    @retry_on_error()
     def get_market_price(self):
         """获取当前市场价格"""
         try:
@@ -129,6 +99,7 @@ class BinanceFuturesTrader:
             self.logger.error(f"获取市场价格失败: {str(e)}")
             raise
             
+    @retry_on_error()
     def get_balance(self):
         """获取账户余额"""
         try:
@@ -140,6 +111,7 @@ class BinanceFuturesTrader:
             self.logger.error(f"获取账户余额失败: {str(e)}")
             raise
             
+    @retry_on_error()
     def get_position(self):
         """获取当前持仓"""
         try:
@@ -148,13 +120,15 @@ class BinanceFuturesTrader:
                 if abs(float(position['contracts'] or 0)) > 0:
                     # 添加positionAmt字段以兼容旧代码
                     position['positionAmt'] = position['contracts']
-                    self.logger.info(f"当前持仓: {position}")
+                    direction = "多" if float(position['contracts']) > 0 else "空"
+                    self.logger.info(f"当前持仓方向: {direction}, 持仓量: {abs(float(position['contracts']))}")
                     return position
             return None
         except Exception as e:
             self.logger.error(f"获取持仓信息失败: {str(e)}")
             raise
             
+    @retry_on_error()
     def get_market_info(self):
         """获取交易对信息"""
         try:
@@ -164,6 +138,21 @@ class BinanceFuturesTrader:
             self.logger.error(f"获取交易对信息失败: {str(e)}")
             raise
             
+    @retry_on_error()
+    def fetch_klines(self, symbol=None, timeframe=None, limit=None):
+        """获取K线数据，带重试机制"""
+        symbol = symbol or self.symbol
+        timeframe = timeframe or config.DEFAULT_TIMEFRAME
+        limit = limit or config.DEFAULT_KLINE_LIMIT
+        
+        try:
+            klines = self.exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit)
+            return pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+        except Exception as e:
+            self.logger.error(f"获取K线数据失败: {symbol} {timeframe}, 错误: {str(e)}")
+            raise
+            
+    @retry_on_error()
     def check_order_amount(self, amount):
         """检查下单数量是否符合要求"""
         try:
@@ -178,6 +167,7 @@ class BinanceFuturesTrader:
             self.logger.error(f"检查下单数量失败: {str(e)}")
             raise
             
+    @retry_on_error()
     def place_order(self, side, amount, order_type=None, price=None, stop_loss=None, take_profit=None):
         """
         下单函数
@@ -267,6 +257,7 @@ class BinanceFuturesTrader:
             self.logger.error(f"下单失败: {str(e)}")
             raise
             
+    @retry_on_error()
     def close_position(self):
         """平掉当前所有持仓"""
         try:
@@ -288,6 +279,7 @@ class BinanceFuturesTrader:
             self.logger.error(f"平仓失败: {str(e)}")
             raise
             
+    @retry_on_error()
     def cancel_all_orders(self):
         """
         取消所有未完成的订单（包括止损止盈委托）
@@ -311,6 +303,7 @@ class BinanceFuturesTrader:
             self.logger.error(f"取消所有订单失败: {str(e)}")
             raise
             
+    @retry_on_error()
     def get_klines(self, interval='1m', limit=100):
         """
         获取K线数据
@@ -356,6 +349,7 @@ class BinanceFuturesTrader:
         """平空仓"""
         return self.place_order(side='buy', amount=amount)
         
+    @retry_on_error()
     def set_position_mode(self, dual_side_position=False):
         """设置持仓模式
         Args:
@@ -374,6 +368,7 @@ class BinanceFuturesTrader:
                 self.logger.error(f"设置持仓模式失败: {str(e)}")
                 raise
 
+    @retry_on_error()
     def set_leverage(self, leverage):
         """设置杠杆倍数
         Args:
@@ -389,6 +384,7 @@ class BinanceFuturesTrader:
             self.logger.error(f"设置杠杆倍数失败: {str(e)}")
             raise
 
+    @retry_on_error()
     def set_margin_type(self, margin_type):
         """设置保证金模式
         Args:
@@ -408,6 +404,7 @@ class BinanceFuturesTrader:
                 self.logger.error(f"设置保证金模式失败: {str(e)}")
                 raise
 
+    @retry_on_error()
     def get_all_symbols(self):
         """获取所有可交易的合约交易对
         

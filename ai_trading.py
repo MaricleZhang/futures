@@ -109,7 +109,7 @@ def main():
                     # 如果有多仓，先平仓
                     if position_amount > 0:
                         logger.info("平多仓...")
-                        trader.close_long()
+                        trader.close_long(abs(position_amount))
                         time.sleep(1)  # 等待订单执行
                         
                     # 开空仓

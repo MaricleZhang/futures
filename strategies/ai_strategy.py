@@ -110,17 +110,10 @@ class AIStrategy(BaseStrategy):
             Dense(1, activation='sigmoid')
         ])
         
-        # 使用Adam优化器，使用learning_rate_schedule代替decay
-        initial_learning_rate = 0.001
-        lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
-            initial_learning_rate=initial_learning_rate,
-            decay_steps=1000,
-            decay_rate=0.9,
-            staircase=True
-        )
+        # 使用Adam优化器，使用固定学习率
+        optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
         
-        optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
-        
+        # 使用float32编译模型
         self.model.compile(
             optimizer=optimizer,
             loss='binary_crossentropy',

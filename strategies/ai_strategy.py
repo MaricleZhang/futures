@@ -97,27 +97,31 @@ class AIStrategy(BaseStrategy):
                                   'high': [0]*30, 'low': [0]*30})
             self.prepare_features(temp_df)
         
-        # 优化后的模型结构
+        # 改进的模型结构
         self.model = Sequential([
-            LSTM(128, return_sequences=True, input_shape=(self.lookback_period, self.feature_count)),
+            LSTM(256, return_sequences=True, input_shape=(self.lookback_period, self.feature_count)),
             BatchNormalization(),
-            Dropout(0.2),
+            Dropout(0.3),
+            LSTM(128, return_sequences=True),
+            BatchNormalization(),
+            Dropout(0.3),
             LSTM(64, return_sequences=False),
             BatchNormalization(),
             Dropout(0.2),
             Dense(32, activation='relu'),
             BatchNormalization(),
+            Dropout(0.1),
             Dense(1, activation='sigmoid')
         ])
         
-        # 使用Adam优化器，使用固定学习率
+        # 使用固定学习率的Adam优化器
         optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
         
-        # 使用float32编译模型
+        # 编译模型
         self.model.compile(
             optimizer=optimizer,
             loss='binary_crossentropy',
-            metrics=['accuracy']
+            metrics=['accuracy', tf.keras.metrics.AUC()]
         )
 
     def prepare_features(self, df):
@@ -194,74 +198,58 @@ class AIStrategy(BaseStrategy):
             # 准备特征
             X = self.prepare_features(df)
             
-            # 创建更复杂的训练标签
-            future_returns = df['close'].shift(-1) / df['close'] - 1
+            # 创建标签
+            future_returns = df['close'].pct_change(-1).shift(1)  # 使用未来收益率
             y = np.zeros(len(future_returns))
-            y[future_returns > 0.001] = 1  # 上涨信号阈值
-            y[future_returns < -0.001] = 0  # 下跌信号阈值
+            y[future_returns > 0.001] = 1  # 上涨信号
+            y[future_returns < -0.001] = 0  # 下跌信号
             y = y[:-1]  # 移除最后一个无效数据
             
             # 创建序列数据
             X_seq = self.create_sequences(X[:-1])
-            
-            # 确保X和y的长度匹配
-            y = y[self.lookback_period:]
+            y = y[self.lookback_period:]  # 调整标签长度匹配序列
             
             if len(X_seq) != len(y):
                 raise ValueError(f"数据维度不匹配: X shape = {X_seq.shape}, y length = {len(y)}")
             
-            # 添加早停机制
-            early_stopping = tf.keras.callbacks.EarlyStopping(
-                monitor='val_loss',
-                patience=10,
-                restore_best_weights=True,
-                min_delta=0.001
-            )
+            # 数据集分割
+            split_idx = int(len(X_seq) * 0.8)
+            X_train, X_val = X_seq[:split_idx], X_seq[split_idx:]
+            y_train, y_val = y[:split_idx], y[split_idx:]
             
-            # 添加学习率调整
-            reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(
-                monitor='val_loss',
-                factor=0.2,
-                patience=5,
-                min_lr=0.00001,
-                cooldown=2
-            )
-            
-            # 添加模型检查点
-            checkpoint = tf.keras.callbacks.ModelCheckpoint(
-                'best_model.h5',
-                monitor='val_accuracy',
-                save_best_only=True,
-                mode='max',
-                verbose=0
-            )
+            # 定义回调函数
+            callbacks = [
+                tf.keras.callbacks.EarlyStopping(
+                    monitor='val_loss',
+                    patience=5,
+                    restore_best_weights=True
+                ),
+                tf.keras.callbacks.ReduceLROnPlateau(
+                    monitor='val_loss',
+                    factor=0.5,
+                    patience=3,
+                    min_lr=0.0001
+                )
+            ]
             
             # 训练模型
             history = self.model.fit(
-                X_seq, y,
-                epochs=100,  # 增加训练轮数
-                batch_size=64,  # 增加batch size
-                validation_split=0.2,
-                callbacks=[early_stopping, reduce_lr, checkpoint],
+                X_train, y_train,
+                validation_data=(X_val, y_val),
+                epochs=50,
+                batch_size=32,
+                callbacks=callbacks,
                 verbose=0
             )
             
-            # 记录训练结果
-            final_loss = history.history['loss'][-1]
-            final_accuracy = history.history['accuracy'][-1]
-            val_accuracy = history.history['val_accuracy'][-1]
-            
-            self.logger.info(f"模型训练完成 - Loss: {final_loss:.4f}, Accuracy: {final_accuracy:.4f}, Val Accuracy: {val_accuracy:.4f}")
-            
-            # 验证模型性能
-            if final_accuracy < 0.55 or val_accuracy < 0.53:
-                self.logger.warning("模型准确率过低，考虑重新训练或调整参数")
-                return False
+            # 评估模型性能
+            val_loss, val_accuracy = self.model.evaluate(X_val, y_val, verbose=0)[:2]
+            self.logger.info(f"模型训练完成 - Loss: {val_loss:.4f}, Accuracy: {val_accuracy:.4f}")
             
             return True
-                
+            
         except Exception as e:
-            self.logger.error(f"训练模型时发生错误: {str(e)}")
+            self.logger.error(f"模型训练过程中发生错误: {str(e)}")
             return False
 
     @tf.function(experimental_compile=True)

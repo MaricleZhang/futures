@@ -54,7 +54,7 @@ EXCHANGE_OPTIONS = {
 
 # AI策略配置
 DEFAULT_CHECK_INTERVAL = 60  # AI策略检查间隔(秒)
-AI_TRADE_AMOUNT_PERCENT = 5  # AI交易每次使用账户余额的百分比
+AI_TRADE_AMOUNT_PERCENT = 50  # AI交易每次使用账户余额的百分比
 AI_KLINES_LIMIT = 200  # AI策略使用的K线数量，建议范围：100-500
 MIN_KLINES_FOR_AI = 100  # AI策略所需的最小K线数量
 RETRAIN_INTERVAL = 100  # 每多少根K线重新训练一次模型

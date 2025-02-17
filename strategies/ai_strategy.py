@@ -297,58 +297,6 @@ class AIStrategy(BaseStrategy):
             self.logger.error(f"预测过程中发生错误: {str(e)}")
             return 0.5
 
-    def validate_signal(self, new_signal, df):
-        """增强的多维信号验证"""
-        try:
-            # 成交量验证
-            volume_ma = df['volume'].rolling(window=5).mean()
-            if df['volume'].iloc[-1] < volume_ma.iloc[-1] * 0.8:
-                self.logger.info("成交量不足，避免交易")
-                return 0
-            
-            # 计算波动率和动态调整信号阈值
-            volatility = df['close'].pct_change().std() * np.sqrt(252)
-            self.signal_threshold = max(1.2, min(2.0, volatility * 10))
-            
-            # 趋势确认
-            ema9 = talib.EMA(df['close'], timeperiod=9)
-            ema21 = talib.EMA(df['close'], timeperiod=21)
-            trend_signal = 1 if ema9.iloc[-1] > ema21.iloc[-1] else -1
-            
-            if new_signal * trend_signal < 0:
-                self.logger.info("信号与趋势相反，避免交易")
-                return 0
-            
-            # 计算超短期趋势
-            ultra_short_trend = df['close'].iloc[-3:].pct_change().mean()
-            short_trend = df['close'].iloc[-5:].pct_change().mean()
-            
-            # RSI过滤
-            rsi = talib.RSI(df['close']).iloc[-1]
-            if new_signal > 0 and rsi > 70:
-                self.logger.info("RSI超买，避免做多")
-                return 0
-            if new_signal < 0 and rsi < 30:
-                self.logger.info("RSI超卖，避免做空")
-                return 0
-            
-            # MACD验证
-            macd, signal, _ = talib.MACD(df['close'])
-            macd_cross = macd.iloc[-1] - signal.iloc[-1]
-            
-            if new_signal > 0 and macd_cross < 0:
-                self.logger.info("MACD死叉，避免做多")
-                return 0
-            if new_signal < 0 and macd_cross > 0:
-                self.logger.info("MACD金叉，避免做空")
-                return 0
-            
-            return new_signal
-            
-        except Exception as e:
-            self.logger.error(f"信号验证过程中发生错误: {str(e)}")
-            return 0
-
     def calculate_volatility(self, df):
         """计算市场波动率"""
         try:

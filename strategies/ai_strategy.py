@@ -8,6 +8,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout, BatchNormalization
 from .base_strategy import BaseStrategy
 import talib
+import time
 
 # 设置TensorFlow日志级别
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # 0=all, 1=INFO, 2=WARNING, 3=ERROR
@@ -52,6 +53,14 @@ class AIStrategy(BaseStrategy):
         self.max_loss_target = 0.002  # 最大损失目标
         self.trend_window = 3  # 趋势窗口
         
+        # ROI跟踪参数
+        self.initial_capital = 10000  # 初始资金
+        self.total_pnl = 0  # 总盈亏
+        self.trades_count = 0  # 交易次数
+        self.winning_trades = 0  # 盈利交易次数
+        self.roi_log_interval = 60  # ROI日志记录间隔(秒)
+        self.last_roi_log_time = time.time()
+        
         self.last_signal = 0
         self.signal_count = 0
         self.optimal_params = {
@@ -61,6 +70,7 @@ class AIStrategy(BaseStrategy):
         
         self._verify_tf_config()
         self.build_model()
+        self.last_position = None
     
     def _verify_tf_config(self):
         """验证TensorFlow配置"""
@@ -392,6 +402,88 @@ class AIStrategy(BaseStrategy):
             self.logger.error(f"检查风控条件时发生错误: {str(e)}")
             return False
 
+    def calculate_roi(self):
+        """计算并记录ROI指标"""
+        try:
+            current_time = time.time()
+            position = self.trader.get_position()
+            
+            # 计算已实现盈亏
+            realized_pnl = self.total_pnl
+            
+            # 计算未实现盈亏
+            unrealized_pnl = 0
+            if position and 'info' in position:
+                position_amt = float(position['info'].get('positionAmt', 0))
+                if abs(position_amt) > 0:
+                    entry_price = float(position['info'].get('entryPrice', 0))
+                    current_price = self.trader.get_market_price()
+                    unrealized_pnl = (current_price - entry_price) * abs(position_amt)
+                    if position_amt < 0:  # 如果是空仓，盈亏需要取反
+                        unrealized_pnl = -unrealized_pnl
+            
+            # 计算总ROI
+            total_pnl = realized_pnl + unrealized_pnl
+            roi = (total_pnl / self.initial_capital) * 100
+            
+            # 计算胜率
+            win_rate = (self.winning_trades / self.trades_count * 100) if self.trades_count > 0 else 0
+            
+            # 定期记录ROI
+            if current_time - self.last_roi_log_time >= self.roi_log_interval:
+                self.logger.info(
+                    f"ROI统计 - 总收益率: {roi:.2f}% | "
+                    f"已实现盈亏: {realized_pnl:.2f} | "
+                    f"未实现盈亏: {unrealized_pnl:.2f} | "
+                    f"交易次数: {self.trades_count} | "
+                    f"胜率: {win_rate:.2f}%"
+                )
+                self.last_roi_log_time = current_time
+            
+            return roi, realized_pnl, unrealized_pnl
+            
+        except Exception as e:
+            self.logger.error(f"计算ROI时发生错误: {str(e)}")
+            return 0, 0, 0
+
+    def update_trade_stats(self, pnl):
+        """更新交易统计"""
+        self.trades_count += 1
+        self.total_pnl += pnl
+        if pnl > 0:
+            self.winning_trades += 1
+
+    def on_position_closed(self, position, close_price):
+        """处理持仓平仓事件"""
+        try:
+            if position is None:
+                return
+                
+            # 计算本次交易的盈亏
+            position_amt = float(position['info'].get('positionAmt', 0))
+            entry_price = float(position['info'].get('entryPrice', 0))
+            pnl = (close_price - entry_price) * abs(position_amt)
+            if position_amt < 0:  # 如果是空仓，盈亏需要取反
+                pnl = -pnl
+                
+            # 更新交易统计
+            self.update_trade_stats(pnl)
+            
+            # 记录本次交易的ROI
+            initial_margin = float(position['info'].get('initialMargin', 0))
+            if initial_margin > 0:
+                trade_roi = (pnl / initial_margin) * 100
+                self.logger.info(
+                    f"交易结束 - 盈亏: {pnl:.2f} USDT | "
+                    f"收益率: {trade_roi:.2f}% | "
+                    f"开仓价: {entry_price:.2f} | "
+                    f"平仓价: {close_price:.2f} | "
+                    f"仓位大小: {abs(position_amt):.4f}"
+                )
+                
+        except Exception as e:
+            self.logger.error(f"处理平仓事件时发生错误: {str(e)}")
+
     def generate_signals(self, df):
         """优化的信号生成逻辑"""
         try:
@@ -400,6 +492,17 @@ class AIStrategy(BaseStrategy):
             
             # 获取当前持仓
             position = self.trader.get_position()
+            
+            # 如果有持仓被平掉，处理平仓事件
+            if self.last_position is not None and (position is None or float(position['info'].get('positionAmt', 0)) == 0):
+                close_price = df['close'].iloc[-1]
+                self.on_position_closed(self.last_position, close_price)
+            
+            # 更新上一次持仓状态
+            self.last_position = position
+            
+            # 更新ROI统计
+            self.calculate_roi()
             
             # 检查风控条件
             if not self.check_risk_conditions(df, position):

@@ -47,10 +47,6 @@ class BinanceFuturesTrader:
             # 初始化日志
             self.logger = Logger.get_logger()
             
-            # 打印API密钥
-            print("API Key:", os.getenv('BINANCE_API_KEY'))
-            print("Secret Key:", os.getenv('BINANCE_SECRET_KEY'))
-            
             # 初始化交易所
             self.exchange = ccxt.binanceusdm({
                 'apiKey': os.getenv('BINANCE_API_KEY'),

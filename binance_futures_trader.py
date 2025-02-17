@@ -124,7 +124,7 @@ class BinanceFuturesTrader:
                 if abs(position_amt) > 0:
                     # 使用positionAmt判断方向
                     direction = "多" if position_amt > 0 else "空"
-                    self.logger.info(f"当前持仓方向: {direction}, 持仓金额: {abs(float(position['info'].get('notional', 0)))}, 保证金: {abs(float(position['info'].get('initialMargin', 0)))}")
+                    self.logger.info(f"当前持仓方向: {direction}, 持仓金额: {abs(float(position['info'].get('notional', 0)))}")
                     return position
             return None
         except Exception as e:

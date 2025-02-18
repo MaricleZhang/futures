@@ -285,6 +285,8 @@ class AIStrategy(BaseStrategy):
             # 进行预测
             prediction = self.model.predict(latest_seq, verbose=0)[0][0]
             
+            self.logger.info(f"prediction:{prediction:.4f}")
+
             # 添加预测置信度检查
             prediction_confidence = abs(prediction - 0.5)
             if prediction_confidence < 0.1:  # 如果预测置信度过低
@@ -452,10 +454,6 @@ class AIStrategy(BaseStrategy):
             # 更新ROI统计
             self.calculate_roi()
             
-            # 检查风控条件
-            if not self.check_risk_conditions(df, position):
-                return 0
-                
             # 降低训练频率，每50根K线重新训练一次
             if len(df) % 50 == 0:
                 self.train_model(df)
@@ -463,6 +461,10 @@ class AIStrategy(BaseStrategy):
             # 获取预测
             prediction = self.predict(df)
             self.logger.info(f"AI预测值: {prediction:.4f}")
+
+            # 检查风控条件
+            if not self.check_risk_conditions(df, position):
+                return 0
             
             # 动态调整信号阈值
             current_volatility = self.calculate_volatility(df)

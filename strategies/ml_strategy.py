@@ -15,8 +15,8 @@ class MLStrategy(BaseStrategy):
         self.logger = Logger.get_logger()
         
         # 模型参数
-        self.lookback = config.AI_KLINES_LIMIT  # 使用配置文件中的K线数量
-        self.prediction_threshold = 0.65  # 提高预测概率阈值以减少误判
+        self.lookback = config.AI_KLINES_LIMIT
+        self.prediction_threshold = 0.65
         
         # 技术指标参数
         self.rsi_period = config.RSI_PERIOD
@@ -26,12 +26,12 @@ class MLStrategy(BaseStrategy):
         
         # 初始化模型
         self.model = RandomForestClassifier(
-            n_estimators=200,  # 增加树的数量
-            max_depth=8,       # 增加树的深度
+            n_estimators=200,
+            max_depth=8,
             min_samples_split=5,
             min_samples_leaf=2,
             random_state=42,
-            n_jobs=-1  # 使用所有CPU核心
+            n_jobs=-1
         )
         self.scaler = StandardScaler()
         
@@ -42,8 +42,15 @@ class MLStrategy(BaseStrategy):
         # 记录上一次的信号和交易时间
         self.last_signal = 0
         self.last_trade_time = 0
-        self.trades_today = 0
-        self.last_day = None
+        
+        # 交易统计
+        self.total_trades = 0
+        self.winning_trades = 0
+        self.total_profit = 0
+        self.realized_profit = 0
+        self.last_trade_price = 0
+        self.last_trade_type = None
+        self.current_position_entry_price = 0
         
     def prepare_features(self, klines):
         """准备特征数据"""
@@ -104,10 +111,10 @@ class MLStrategy(BaseStrategy):
         
     def train_model(self, klines):
         """训练模型"""
-        if len(klines) < 100:  # 确保有足够的数据
+        if len(klines) < 100:  
             return False
             
-        features = self.prepare_features(klines[:-1])  # 不使用最新的数据点
+        features = self.prepare_features(klines[:-1])  
         labels = self.prepare_labels(pd.DataFrame({'returns': features['returns']}))
         
         # 去除NaN值
@@ -115,7 +122,7 @@ class MLStrategy(BaseStrategy):
         features = features[valid_idx]
         labels = labels[valid_idx]
         
-        if len(features) < 50:  # 确保有足够的训练数据
+        if len(features) < 50:  
             return False
             
         # 标准化特征
@@ -137,19 +144,76 @@ class MLStrategy(BaseStrategy):
             self.logger.error(f"模型训练失败: {str(e)}")
             return False
             
+    def log_trade_stats(self, current_price=None):
+        """记录交易统计信息"""
+        # 记录总体交易统计
+        if self.total_trades > 0:
+            win_rate = (self.winning_trades / self.total_trades) * 100
+            avg_profit = self.total_profit / self.total_trades
+            self.logger.info(f"交易统计 - 总交易次数: {self.total_trades}, 胜率: {win_rate:.2f}%, "
+                           f"总盈利: {self.total_profit:.2f} USDT (已实现: {self.realized_profit:.2f} USDT), "
+                           f"平均盈利: {avg_profit:.2f} USDT")
+        
+        # 记录当前持仓盈亏
+        if current_price and self.last_trade_price > 0:
+            position = self.trader.get_position()
+            if position:
+                position_size = float(position['info'].get('positionAmt', 0))
+                entry_price = float(position['info'].get('entryPrice', 0))
+                if position_size != 0:
+                    if position_size > 0:  
+                        unrealized_profit = (current_price - entry_price) * abs(position_size)
+                        profit_rate = ((current_price / entry_price) - 1) * 100
+                    else:  
+                        unrealized_profit = (entry_price - current_price) * abs(position_size)
+                        profit_rate = ((entry_price / current_price) - 1) * 100
+                    
+                    self.logger.info(f"当前持仓 - 方向: {'多' if position_size > 0 else '空'}, "
+                                   f"数量: {abs(position_size):.4f}, "
+                                   f"开仓价: {entry_price:.2f}, "
+                                   f"当前价: {current_price:.2f}, "
+                                   f"未实现盈亏: {unrealized_profit:.2f} USDT, "
+                                   f"盈亏率: {profit_rate:.2f}%")
+                    
+                    # 记录当前持仓的入场价格
+                    if self.current_position_entry_price != entry_price:
+                        self.current_position_entry_price = entry_price
+                        self.last_trade_price = entry_price
+                        self.last_trade_type = 'long' if position_size > 0 else 'short'
+                
+    def update_trade_stats(self, current_price):
+        """更新交易统计"""
+        position = self.trader.get_position()
+        position_size = float(position['info'].get('positionAmt', 0)) if position else 0
+        
+        # 如果之前有持仓，现在没有持仓，说明已经平仓
+        if self.last_trade_price > 0 and self.last_trade_type and position_size == 0:
+            profit = 0
+            if self.last_trade_type == 'long':
+                profit = (current_price - self.last_trade_price) * self.trader.position_size
+            elif self.last_trade_type == 'short':
+                profit = (self.last_trade_price - current_price) * self.trader.position_size
+                
+            if profit != 0:
+                self.total_trades += 1
+                if profit > 0:
+                    self.winning_trades += 1
+                self.total_profit += profit
+                self.realized_profit += profit
+                self.logger.info(f"平仓统计 - 方向: {self.last_trade_type}, "
+                               f"开仓价: {self.last_trade_price:.2f}, "
+                               f"平仓价: {current_price:.2f}, "
+                               f"实现盈亏: {profit:.2f} USDT")
+                self.log_trade_stats()
+                
+                # 重置交易记录
+                self.last_trade_price = 0
+                self.last_trade_type = None
+                self.current_position_entry_price = 0
+                
     def generate_signals(self, klines):
         """生成交易信号"""
         current_time = time.time()
-        
-        # 检查每日交易限制
-        current_day = time.strftime("%Y-%m-%d")
-        if current_day != self.last_day:
-            self.trades_today = 0
-            self.last_day = current_day
-        
-        if self.trades_today >= config.MAX_TRADES_PER_DAY:
-            self.logger.info("已达到每日最大交易次数限制")
-            return 0
         
         # 检查最小交易间隔
         if current_time - self.last_trade_time < config.MIN_TRADE_INTERVAL:
@@ -168,6 +232,13 @@ class MLStrategy(BaseStrategy):
         # 准备最新的特征数据
         features = self.prepare_features(klines)
         latest_features = features.iloc[-1:]
+        current_price = float(klines[-1][4])  
+        
+        # 更新交易统计
+        self.update_trade_stats(current_price)
+        
+        # 记录当前持仓盈亏
+        self.log_trade_stats(current_price)
         
         # 标准化特征
         latest_features_scaled = self.scaler.transform(latest_features)
@@ -178,10 +249,14 @@ class MLStrategy(BaseStrategy):
             self.logger.info(f"上涨概率: {prob[1]:.2f}, 下跌概率: {prob[0]:.2f}")
             
             # 根据预测概率生成信号
-            if prob[1] > self.prediction_threshold:  # 看多信号
-                    return 1  # 开多
-            elif prob[0] > self.prediction_threshold:  # 看空信号
-                    return -1  # 开空
+            if prob[1] > self.prediction_threshold:  
+                self.last_trade_price = current_price
+                self.last_trade_type = 'long'
+                return 1  
+            elif prob[0] > self.prediction_threshold:  
+                self.last_trade_price = current_price
+                self.last_trade_type = 'short'
+                return -1  
             else:
                 self.logger.info("预测概率未达到阈值，观望信号")
                 return 0
@@ -199,9 +274,9 @@ class MLStrategy(BaseStrategy):
         position_amount = float(position_info['positionAmt'])
         
         # 计算盈亏百分比
-        if position_amount > 0:  # 多头
+        if position_amount > 0:  
             profit_percent = (current_price - entry_price) / entry_price
-        else:  # 空头
+        else:  
             profit_percent = (entry_price - current_price) / entry_price
             
         # 止损或止盈

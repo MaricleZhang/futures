@@ -16,7 +16,7 @@ class MLStrategy(BaseStrategy):
         
         # 模型参数
         self.lookback = config.AI_KLINES_LIMIT
-        self.base_threshold = 0.65  # 基础阈值
+        self.base_threshold = 0.60  # 基础阈值
         self.dynamic_threshold = self.base_threshold  # 动态阈值
         self.threshold_adjustment_factor = 0.05  # 阈值调整因子
         

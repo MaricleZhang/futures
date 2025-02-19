@@ -9,6 +9,7 @@ from tensorflow.keras.layers import LSTM, Dense, Dropout, BatchNormalization
 from .base_strategy import BaseStrategy
 import talib
 import time
+import config
 
 # 设置TensorFlow日志级别
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # 0=all, 1=INFO, 2=WARNING, 3=ERROR
@@ -60,6 +61,14 @@ class AIStrategy(BaseStrategy):
         self.winning_trades = 0  # 盈利交易次数
         self.roi_log_interval = 60  # ROI日志记录间隔(秒)
         self.last_roi_log_time = time.time()
+        
+        # 止损设置
+        self.stop_loss_percent = config.DEFAULT_STOP_LOSS_PERCENT / 100  # 转换为小数
+        self.take_profit_percent = config.DEFAULT_TAKE_PROFIT_PERCENT / 100  # 转换为小数
+        self.trailing_stop = False  # 是否启用追踪止损
+        self.trailing_stop_distance = 0.01  # 追踪止损距离（1%）
+        self.highest_price = 0  # 记录最高价格
+        self.lowest_price = float('inf')  # 记录最低价格
         
         self.last_signal = 0
         self.signal_count = 0
@@ -352,6 +361,58 @@ class AIStrategy(BaseStrategy):
             self.logger.error(f"检查风控条件时发生错误: {str(e)}")
             return False
 
+    def check_stop_loss(self, current_price, position):
+        """检查是否触发止损"""
+        try:
+            if position is None or float(position['info'].get('positionAmt', 0)) == 0:
+                return False
+                
+            entry_price = float(position['info'].get('entryPrice', 0))
+            position_amt = float(position['info'].get('positionAmt', 0))
+            
+            # 计算未实现盈亏百分比
+            if position_amt > 0:  # 多仓
+                unrealized_pnl_percent = (current_price - entry_price) / entry_price
+                # 更新最高价格用于追踪止损
+                if current_price > self.highest_price:
+                    self.highest_price = current_price
+                    
+                if self.trailing_stop and self.highest_price > entry_price:
+                    # 追踪止损检查
+                    trailing_stop_price = self.highest_price * (1 - self.trailing_stop_distance)
+                    if current_price <= trailing_stop_price:
+                        self.logger.info(f"触发追踪止损: 当前价格({current_price:.2f}) <= 追踪止损价格({trailing_stop_price:.2f})")
+                        return True
+                        
+            else:  # 空仓
+                unrealized_pnl_percent = (entry_price - current_price) / entry_price
+                # 更新最低价格用于追踪止损
+                if current_price < self.lowest_price:
+                    self.lowest_price = current_price
+                    
+                if self.trailing_stop and self.lowest_price < entry_price:
+                    # 追踪止损检查
+                    trailing_stop_price = self.lowest_price * (1 + self.trailing_stop_distance)
+                    if current_price >= trailing_stop_price:
+                        self.logger.info(f"触发追踪止损: 当前价格({current_price:.2f}) >= 追踪止损价格({trailing_stop_price:.2f})")
+                        return True
+            
+            # 止损检查
+            if unrealized_pnl_percent <= -self.stop_loss_percent:
+                self.logger.info(f"触发止损: 未实现盈亏({unrealized_pnl_percent:.2%}) <= 止损线({-self.stop_loss_percent:.2%})")
+                return True
+                
+            # 止盈检查
+            if unrealized_pnl_percent >= self.take_profit_percent:
+                self.logger.info(f"触发止盈: 未实现盈亏({unrealized_pnl_percent:.2%}) >= 止盈线({self.take_profit_percent:.2%})")
+                return True
+                
+            return False
+            
+        except Exception as e:
+            self.logger.error(f"检查止损时发生错误: {str(e)}")
+            return False
+
     def calculate_roi(self):
         """计算并记录ROI指标"""
         try:
@@ -440,13 +501,25 @@ class AIStrategy(BaseStrategy):
             if len(df) < 50:
                 return 0
             
-            # 获取当前持仓
+            # 获取当前持仓和价格
             position = self.trader.get_position()
+            current_price = df['close'].iloc[-1]
+            
+            # 检查止损条件
+            if position and self.check_stop_loss(current_price, position):
+                # 平掉当前持仓
+                if float(position['info'].get('positionAmt', 0)) > 0:
+                    return -2  # 平多仓信号
+                else:
+                    return 2  # 平空仓信号
             
             # 如果有持仓被平掉，处理平仓事件
             if self.last_position is not None and (position is None or float(position['info'].get('positionAmt', 0)) == 0):
-                close_price = df['close'].iloc[-1]
+                close_price = current_price
                 self.on_position_closed(self.last_position, close_price)
+                # 重置追踪止损变量
+                self.highest_price = 0
+                self.lowest_price = float('inf')
             
             # 更新上一次持仓状态
             self.last_position = position

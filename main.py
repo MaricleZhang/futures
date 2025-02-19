@@ -86,43 +86,65 @@ def main():
                     position_amount = 0
                 
                 # 根据AI信号交易
-                if signal == 1 and position_amount <= 0:  # 做多信号且当前无多仓
+                if signal == -2:  # 平多仓信号
+                    if position_amount > 0:  # 有多仓
+                        logger.info("触发平多仓信号...")
+                        try:
+                            order = trader.close_long(position_amount)
+                            logger.info(f"平多仓成功: {order}")
+                        except Exception as e:
+                            logger.error(f"平多仓失败: {str(e)}")
+                        time.sleep(1)  # 等待订单执行
+                elif signal == 2:  # 平空仓信号
+                    if position_amount < 0:  # 有空仓
+                        logger.info("触发平空仓信号...")
+                        try:
+                            order = trader.close_short(abs(position_amount))
+                            logger.info(f"平空仓成功: {order}")
+                        except Exception as e:
+                            logger.error(f"平空仓失败: {str(e)}")
+                        time.sleep(1)  # 等待订单执行
+                elif signal == 1 and position_amount <= 0:  # 做多信号且当前无多仓
                     # 如果有空仓，先平仓
                     if position_amount < 0:
                         logger.info("平空仓...")
-                        trader.close_short(abs(position_amount))
-                        time.sleep(1)  # 等待订单执行
+                        try:
+                            order = trader.close_short(abs(position_amount))
+                            logger.info(f"平空仓成功: {order}")
+                            time.sleep(1)  # 等待订单执行
+                        except Exception as e:
+                            logger.error(f"平空仓失败: {str(e)}")
+                            continue
                         
                     # 开多仓
                     logger.info(f"开多仓，数量: {trade_amount}")
                     trade_amount = available_balance * config.AI_TRADE_AMOUNT_PERCENT / 100 / current_price
                     try:
-                        order = trader.place_order(
-                            side='buy',
-                            amount=trade_amount
-                        )
-                        logger.info(f"开多仓: {order}")
+                        order = trader.open_long(trade_amount)
+                        logger.info(f"开多仓成功: {order}")
                     except Exception as e:
-                        logger.info(f"开多仓失败: {str(e)}")
-                    
+                        logger.error(f"开多仓失败: {str(e)}")
+                        
                 elif signal == -1 and position_amount >= 0:  # 做空信号且当前无空仓
                     # 如果有多仓，先平仓
                     if position_amount > 0:
                         logger.info("平多仓...")
-                        trader.close_long(abs(position_amount))
-                        time.sleep(1)  # 等待订单执行
+                        try:
+                            order = trader.close_long(position_amount)
+                            logger.info(f"平多仓成功: {order}")
+                            time.sleep(1)  # 等待订单执行
+                        except Exception as e:
+                            logger.error(f"平多仓失败: {str(e)}")
+                            continue
                         
                     # 开空仓
                     logger.info(f"开空仓，数量: {trade_amount}")
                     trade_amount = available_balance * config.AI_TRADE_AMOUNT_PERCENT / 100 / current_price
                     try:
-                        order = trader.place_order(
-                            side='sell',
-                            amount=trade_amount
-                        )
-                        logger.info(f"开空仓: {order}")
+                        order = trader.open_short(trade_amount)
+                        logger.info(f"开空仓成功: {order}")
                     except Exception as e:
-                        logger.info(f"开空仓失败: {str(e)}")
+                        logger.error(f"开空仓失败: {str(e)}")
                 
                 # 当前持仓方向与信号相反时平仓
                 elif (signal == -1 and position_amount > 0) or (signal == 1 and position_amount < 0):

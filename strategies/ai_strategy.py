@@ -118,22 +118,26 @@ class AIStrategy(BaseStrategy):
         
         # 改进的模型结构
         self.model = Sequential([
-            LSTM(256, return_sequences=True, input_shape=(self.lookback_period, self.feature_count)),
+            LSTM(128, return_sequences=True, input_shape=(self.lookback_period, self.feature_count),
+                 kernel_regularizer=tf.keras.regularizers.l2(0.01)),
+            BatchNormalization(),
+            Dropout(0.4),
+            LSTM(64, return_sequences=True,
+                 kernel_regularizer=tf.keras.regularizers.l2(0.01)),
+            BatchNormalization(),
+            Dropout(0.4),
+            LSTM(32, return_sequences=False,
+                 kernel_regularizer=tf.keras.regularizers.l2(0.01)),
+            BatchNormalization(),
+            Dropout(0.4),
+            Dense(16, activation='relu',
+                 kernel_regularizer=tf.keras.regularizers.l2(0.01)),
             BatchNormalization(),
             Dropout(0.3),
-            LSTM(128, return_sequences=True),
-            BatchNormalization(),
-            Dropout(0.3),
-            LSTM(64, return_sequences=False),
-            BatchNormalization(),
-            Dropout(0.2),
-            Dense(32, activation='relu'),
-            BatchNormalization(),
-            Dropout(0.1),
             Dense(1, activation='sigmoid')
         ])
         
-        # 使用固定学习率的Adam优化器
+        # 使用固定学习率
         optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
         
         # 编译模型
@@ -220,8 +224,8 @@ class AIStrategy(BaseStrategy):
             # 创建标签
             future_returns = df['close'].pct_change(-1).shift(1)  # 使用未来收益率
             y = np.zeros(len(future_returns))
-            y[future_returns > 0.001] = 0  # 下跌信号（当前价格比未来价格高）
-            y[future_returns < -0.001] = 1  # 上涨信号（当前价格比未来价格低）
+            y[future_returns > 0.001] = 1  # 上涨信号（未来价格比当前价格高）
+            y[future_returns < -0.001] = 0  # 下跌信号（未来价格比当前价格低）
             y = y[:-1]  # 移除最后一个无效数据
             
             # 创建序列数据
@@ -242,12 +246,6 @@ class AIStrategy(BaseStrategy):
                     monitor='val_loss',
                     patience=5,
                     restore_best_weights=True
-                ),
-                tf.keras.callbacks.ReduceLROnPlateau(
-                    monitor='val_loss',
-                    factor=0.5,
-                    patience=3,
-                    min_lr=0.0001
                 )
             ]
             
@@ -541,7 +539,7 @@ class AIStrategy(BaseStrategy):
             
             # 动态调整信号阈值
             current_volatility = self.calculate_volatility(df)
-            base_threshold = 0.60
+            base_threshold = 0.55  # 基础阈值
             
             # 根据波动率调整阈值
             if current_volatility < 0.005:  # 低波动
@@ -553,9 +551,9 @@ class AIStrategy(BaseStrategy):
                 
             # 生成交易信号
             if prediction > dynamic_threshold:
-                return -1  # 预期下跌，做空
-            elif prediction < (1 - dynamic_threshold):
                 return 1   # 预期上涨，做多
+            elif prediction < (1 - dynamic_threshold):
+                return -1  # 预期下跌，做空
             else:
                 return 0
                 

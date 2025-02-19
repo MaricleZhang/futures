@@ -31,7 +31,7 @@ DEFAULT_STOP_LOSS_PERCENT = 50  # 默认止损百分比
 DEFAULT_TAKE_PROFIT_PERCENT = 10000  # 默认止盈百分比
 
 # K线设置
-DEFAULT_TIMEFRAME = '5m'  # 默认K线周期
+DEFAULT_TIMEFRAME = '1m'  # 默认K线周期
 DEFAULT_KLINE_LIMIT = 100  # 默认K线获取数量
 
 # API设置
@@ -53,8 +53,8 @@ EXCHANGE_OPTIONS = {
 }
 
 # AI策略配置
-DEFAULT_CHECK_INTERVAL = 300  # AI策略检查间隔(秒)
-AI_TRADE_AMOUNT_PERCENT = 20  # AI交易每次使用账户余额的百分比
+DEFAULT_CHECK_INTERVAL = 60  # AI策略检查间隔(秒)
+AI_TRADE_AMOUNT_PERCENT = 100  # AI交易每次使用账户余额的百分比
 AI_KLINES_LIMIT = 200  # AI策略使用的K线数量，建议范围：100-500
 MIN_KLINES_FOR_AI = 100  # AI策略所需的最小K线数量
 RETRAIN_INTERVAL = 100  # 每多少根K线重新训练一次模型

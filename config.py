@@ -18,7 +18,7 @@ SYMBOL = 'ETHUSDT'  # 交易对
 LEVERAGE = 5  # 杠杆倍数
 MARGIN_TYPE = 'CROSSED'  # 保证金模式：CROSSED(全仓) ISOLATED(逐仓)
 POSITION_SIDE = 'BOTH'  # 持仓模式：BOTH(单向持仓) LONG/SHORT(双向持仓)
-MIN_NOTIONAL = 5.0  # 最小名义价值（USDT）
+MIN_NOTIONAL = 20  # 最小名义价值（USDT）
 
 # 订单设置
 DEFAULT_ORDER_TYPE = 'market'  # 默认订单类型：market(市价) 或 limit(限价)
@@ -52,12 +52,15 @@ EXCHANGE_OPTIONS = {
     }
 }
 
+# AI策略设置
+AI_KLINES_LIMIT = 1000  # AI分析所需的K线数量
+MIN_KLINES_FOR_AI = 500  # AI分析所需的最小K线数量
+AI_TRADE_AMOUNT_PERCENT = 100  # AI交易金额占可用余额的百分比
+AI_TRAIN_INTERVAL = 60  # AI模型训练间隔（分钟）
+AI_MIN_TRADE_INTERVAL = 5  # AI最小交易间隔（分钟）
+
 # AI策略配置
 DEFAULT_CHECK_INTERVAL = 60  # AI策略检查间隔(秒)
-AI_TRADE_AMOUNT_PERCENT = 100  # AI交易每次使用账户余额的百分比
-AI_KLINES_LIMIT = 200  # AI策略使用的K线数量，建议范围：100-500
-MIN_KLINES_FOR_AI = 100  # AI策略所需的最小K线数量
-RETRAIN_INTERVAL = 100  # 每多少根K线重新训练一次模型
 RSI_PERIOD = 14
 MA_FAST_PERIOD = 10
 MA_SLOW_PERIOD = 20

@@ -321,16 +321,11 @@ class BinanceFuturesTrader:
                 limit=limit
             )
             
-            # 转换为DataFrame
-            df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
-            df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
-            df.set_index('timestamp', inplace=True)
-            
-            # 将价格和交易量转换为浮点数
-            for col in ['open', 'high', 'low', 'close', 'volume']:
-                df[col] = df[col].astype(float)
-            
-            return df
+            if not klines or len(klines) == 0:
+                self.logger.error("获取到的K线数据为空")
+                return []
+                
+            return klines
             
         except Exception as e:
             self.logger.error(f"获取K线数据失败: {str(e)}")

@@ -74,7 +74,18 @@ def main():
                 # 生成交易信号
                 signal = strategy.generate_signals(klines)
                 current_price = trader.get_market_price()
-                logger.info(f"当前价格: {current_price}, AI信号: {signal}")
+                position = trader.get_position()
+                if position and float(position['info'].get('positionAmt', 0)) != 0:
+                    position_size = float(position['info'].get('positionAmt', 0))
+                    entry_price = float(position['info'].get('entryPrice', 0))
+                    unrealized_pnl = float(position['info'].get('unrealizedProfit', 0))
+                    position_value = abs(position_size * entry_price)
+                    profit_rate = (unrealized_pnl / position_value) * 100 if position_value > 0 else 0
+                    
+                    logger.info(f"当前价格: {current_price}, AI信号: {signal}, "
+                              f"未实现盈亏: {unrealized_pnl:.2f} USDT, 盈亏率: {profit_rate:.2f}%")
+                else:
+                    logger.info(f"当前价格: {current_price}, AI信号: {signal}")
                 trade_amount = available_balance * config.AI_TRADE_AMOUNT_PERCENT / 100 / current_price
                 
                 # 获取当前持仓

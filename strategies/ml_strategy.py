@@ -16,13 +16,24 @@ class MLStrategy(BaseStrategy):
         
         # 模型参数
         self.lookback = config.AI_KLINES_LIMIT
-        self.prediction_threshold = 0.65
+        self.base_threshold = 0.65  # 基础阈值
+        self.dynamic_threshold = self.base_threshold  # 动态阈值
+        self.threshold_adjustment_factor = 0.05  # 阈值调整因子
         
         # 技术指标参数
         self.rsi_period = config.RSI_PERIOD
         self.macd_fast = 12
         self.macd_slow = 26
         self.macd_signal = 9
+        self.atr_period = 14
+        self.stoch_k = 14
+        self.stoch_d = 3
+        self.stoch_slow = 3
+        
+        # 市场情绪指标
+        self.sentiment_window = 20  # 市场情绪窗口
+        self.volatility_window = 20  # 波动率窗口
+        self.volume_ma_window = 20  # 成交量均线窗口
         
         # 初始化模型
         self.model = RandomForestClassifier(
@@ -54,53 +65,134 @@ class MLStrategy(BaseStrategy):
         
     def prepare_features(self, klines):
         """准备特征数据"""
-        df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume', 'close_time',
-                                         'quote_volume', 'trades', 'taker_buy_base', 'taker_buy_quote', 'ignored'])
-        
-        # 转换为数值类型
-        for col in ['open', 'high', 'low', 'close', 'volume']:
-            df[col] = pd.to_numeric(df[col])
+        try:
+            if not isinstance(klines, list) or len(klines) == 0:
+                self.logger.error("K线数据为空或格式不正确")
+                return pd.DataFrame()
+                
+            # 创建DataFrame
+            try:
+                df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+                if df.empty:
+                    self.logger.error("创建的DataFrame为空")
+                    return pd.DataFrame()
+            except Exception as e:
+                self.logger.error(f"创建DataFrame失败: {str(e)}")
+                return pd.DataFrame()
             
-        # 基础技术指标
-        df['RSI'] = talib.RSI(df['close'], timeperiod=self.rsi_period)
-        macd, signal, hist = talib.MACD(df['close'], 
-                                      fastperiod=self.macd_fast, 
-                                      slowperiod=self.macd_slow, 
-                                      signalperiod=self.macd_signal)
-        df['MACD'] = macd
-        df['MACD_SIGNAL'] = signal
-        df['MACD_HIST'] = hist
-        
-        # 价格动量指标
-        df['returns'] = df['close'].pct_change()
-        df['log_returns'] = np.log(df['close']/df['close'].shift(1))
-        df['volatility'] = df['returns'].rolling(window=20).std()
-        
-        # 趋势指标
-        df['EMA_10'] = talib.EMA(df['close'], timeperiod=10)
-        df['EMA_20'] = talib.EMA(df['close'], timeperiod=20)
-        df['EMA_50'] = talib.EMA(df['close'], timeperiod=50)
-        df['trend_strength'] = ((df['EMA_10'] - df['EMA_20']) / df['EMA_20'] * 100)
-        
-        # 成交量指标
-        df['volume_ma'] = df['volume'].rolling(window=20).mean()
-        df['volume_ratio'] = df['volume'] / df['volume_ma']
-        
-        # ATR和布林带
-        df['ATR'] = talib.ATR(df['high'], df['low'], df['close'], timeperiod=14)
-        upper, middle, lower = talib.BBANDS(df['close'], timeperiod=20)
-        df['BB_width'] = (upper - lower) / middle
-        
-        # 准备特征
-        feature_columns = [
-            'RSI', 'MACD', 'MACD_SIGNAL', 'MACD_HIST',
-            'returns', 'log_returns', 'volatility',
-            'trend_strength', 'volume_ratio', 'ATR',
-            'BB_width'
-        ]
-        features = df[feature_columns].ffill().fillna(0)
-        
-        return features
+            # 转换为数值类型
+            try:
+                for col in ['open', 'high', 'low', 'close', 'volume']:
+                    df[col] = pd.to_numeric(df[col], errors='coerce')
+                    
+                # 检查是否有足够的有效数据
+                if df[['open', 'high', 'low', 'close', 'volume']].isnull().values.any():
+                    self.logger.error("数值转换后存在空值")
+                    return pd.DataFrame()
+            except Exception as e:
+                self.logger.error(f"数值转换失败: {str(e)}")
+                return pd.DataFrame()
+                
+            # 基础技术指标
+            try:
+                df['RSI'] = talib.RSI(df['close'], timeperiod=self.rsi_period)
+                macd, signal, hist = talib.MACD(df['close'], 
+                                              fastperiod=self.macd_fast, 
+                                              slowperiod=self.macd_slow, 
+                                              signalperiod=self.macd_signal)
+                df['MACD'] = macd
+                df['MACD_SIGNAL'] = signal
+                df['MACD_HIST'] = hist
+                
+                # 添加随机指标
+                slowk, slowd = talib.STOCH(df['high'], df['low'], df['close'],
+                                         fastk_period=self.stoch_k,
+                                         slowk_period=self.stoch_d,
+                                         slowk_matype=0,
+                                         slowd_period=self.stoch_slow,
+                                         slowd_matype=0)
+                df['STOCH_K'] = slowk
+                df['STOCH_D'] = slowd
+            except Exception as e:
+                self.logger.error(f"计算技术指标失败: {str(e)}")
+                return pd.DataFrame()
+            
+            # 价格动量指标
+            try:
+                df['returns'] = df['close'].pct_change()
+                df['log_returns'] = np.log(df['close']/df['close'].shift(1))
+                df['volatility'] = df['returns'].rolling(window=self.volatility_window).std()
+                
+                # 趋势指标
+                df['EMA_10'] = talib.EMA(df['close'], timeperiod=10)
+                df['EMA_20'] = talib.EMA(df['close'], timeperiod=20)
+                df['EMA_50'] = talib.EMA(df['close'], timeperiod=50)
+                df['trend_strength'] = ((df['EMA_10'] - df['EMA_20']) / df['EMA_20'] * 100)
+            except Exception as e:
+                self.logger.error(f"计算动量指标失败: {str(e)}")
+                return pd.DataFrame()
+            
+            # 市场情绪指标
+            try:
+                df['price_momentum'] = df['close'].pct_change(self.sentiment_window)
+                df['volume_momentum'] = df['volume'].pct_change(self.sentiment_window)
+                df['market_sentiment'] = df['price_momentum']  # 由于没有 taker_buy_base 数据，暂时只用价格动量
+            except Exception as e:
+                self.logger.error(f"计算市场情绪指标失败: {str(e)}")
+                return pd.DataFrame()
+            
+            # 成交量指标
+            try:
+                df['volume_ma'] = df['volume'].rolling(window=self.volume_ma_window).mean()
+                df['volume_ratio'] = df['volume'] / df['volume_ma']
+                df['volume_trend'] = df['volume'].pct_change(5)
+            except Exception as e:
+                self.logger.error(f"计算成交量指标失败: {str(e)}")
+                return pd.DataFrame()
+            
+            # ATR和布林带
+            try:
+                df['ATR'] = talib.ATR(df['high'], df['low'], df['close'], timeperiod=self.atr_period)
+                upper, middle, lower = talib.BBANDS(df['close'], timeperiod=20)
+                df['BB_width'] = (upper - lower) / middle
+                df['BB_position'] = (df['close'] - lower) / (upper - lower)
+            except Exception as e:
+                self.logger.error(f"计算ATR和布林带失败: {str(e)}")
+                return pd.DataFrame()
+            
+            # 准备特征
+            feature_columns = [
+                'RSI', 'MACD', 'MACD_SIGNAL', 'MACD_HIST',
+                'STOCH_K', 'STOCH_D',
+                'returns', 'log_returns', 'volatility',
+                'trend_strength', 'volume_ratio', 'ATR',
+                'BB_width', 'BB_position',
+                'market_sentiment', 'volume_momentum',
+                'volume_trend', 'price_momentum'
+            ]
+            
+            try:
+                features = df[feature_columns].copy()
+                features = features.ffill().fillna(0)
+                
+                if features.empty:
+                    self.logger.error("生成的特征数据为空")
+                    return pd.DataFrame()
+                    
+                # 检查特征数据是否包含无效值
+                if features.isnull().values.any():
+                    self.logger.error("特征数据包含无效值")
+                    return pd.DataFrame()
+                    
+                return features
+                
+            except Exception as e:
+                self.logger.error(f"准备特征数据失败: {str(e)}")
+                return pd.DataFrame()
+                
+        except Exception as e:
+            self.logger.error(f"特征准备过程出错: {str(e)}")
+            return pd.DataFrame()
         
     def prepare_labels(self, df):
         """准备训练标签"""
@@ -111,37 +203,73 @@ class MLStrategy(BaseStrategy):
         
     def train_model(self, klines):
         """训练模型"""
-        if len(klines) < 100:  
-            return False
-            
-        features = self.prepare_features(klines[:-1])  
-        labels = self.prepare_labels(pd.DataFrame({'returns': features['returns']}))
-        
-        # 去除NaN值
-        valid_idx = ~labels.isna()
-        features = features[valid_idx]
-        labels = labels[valid_idx]
-        
-        if len(features) < 50:  
-            return False
-            
-        # 标准化特征
-        features_scaled = self.scaler.fit_transform(features)
-        
-        # 训练模型
         try:
-            self.model.fit(features_scaled, labels)
+            if len(klines) < 100:  
+                self.logger.warning("训练数据不足，需要至少100根K线")
+                return False
+                
+            # 准备特征数据
+            features = self.prepare_features(klines[:-1])
+            if features.empty:
+                self.logger.error("特征准备失败，无法训练模型")
+                return False
+                
+            # 准备标签数据
+            try:
+                labels = self.prepare_labels(pd.DataFrame({'returns': features['returns']}))
+                if labels.empty:
+                    self.logger.error("标签准备失败，无法训练模型")
+                    return False
+            except Exception as e:
+                self.logger.error(f"准备标签数据失败: {str(e)}")
+                return False
             
-            # 计算训练集准确率和损失
-            train_pred = self.model.predict(features_scaled)
-            train_accuracy = np.mean(train_pred == labels)
-            train_loss = -np.mean(labels * np.log(self.model.predict_proba(features_scaled)[:, 1] + 1e-10) + 
-                                (1 - labels) * np.log(1 - self.model.predict_proba(features_scaled)[:, 1] + 1e-10))
+            # 去除NaN值
+            try:
+                valid_idx = ~labels.isna()
+                features = features[valid_idx]
+                labels = labels[valid_idx]
+                
+                if len(features) < 50:
+                    self.logger.warning("有效训练数据不足，需要至少50个有效样本")
+                    return False
+            except Exception as e:
+                self.logger.error(f"数据清洗失败: {str(e)}")
+                return False
             
-            self.logger.info(f"模型训练指标 - Loss: {train_loss:.4f}, Accuracy: {train_accuracy:.4f}")
-            return True
+            # 标准化特征
+            try:
+                features_scaled = self.scaler.fit_transform(features)
+            except Exception as e:
+                self.logger.error(f"特征标准化失败: {str(e)}")
+                return False
+            
+            # 训练模型
+            try:
+                self.model.fit(features_scaled, labels)
+                
+                # 计算训练集准确率和损失
+                train_pred = self.model.predict(features_scaled)
+                train_accuracy = np.mean(train_pred == labels)
+                
+                # 计算交叉熵损失
+                try:
+                    train_proba = self.model.predict_proba(features_scaled)
+                    train_loss = -np.mean(labels * np.log(train_proba[:, 1] + 1e-10) + 
+                                        (1 - labels) * np.log(1 - train_proba[:, 1] + 1e-10))
+                except Exception as e:
+                    self.logger.error(f"计算训练损失失败: {str(e)}")
+                    train_loss = 0
+                
+                self.logger.info(f"模型训练指标 - Loss: {train_loss:.4f}, Accuracy: {train_accuracy:.4f}")
+                return True
+                
+            except Exception as e:
+                self.logger.error(f"模型训练失败: {str(e)}")
+                return False
+                
         except Exception as e:
-            self.logger.error(f"模型训练失败: {str(e)}")
+            self.logger.error(f"训练过程出错: {str(e)}")
             return False
             
     def log_trade_stats(self, current_price=None):
@@ -211,60 +339,131 @@ class MLStrategy(BaseStrategy):
                 self.last_trade_type = None
                 self.current_position_entry_price = 0
                 
+    def adjust_threshold(self, market_volatility, prediction_confidence):
+        """动态调整预测阈值"""
+        # 基于市场波动性调整阈值
+        volatility_adjustment = market_volatility * self.threshold_adjustment_factor
+        
+        # 基于预测置信度调整阈值
+        confidence_adjustment = (1 - prediction_confidence) * self.threshold_adjustment_factor
+        
+        # 计算新的动态阈值
+        self.dynamic_threshold = min(0.85, max(0.55,
+            self.base_threshold + volatility_adjustment + confidence_adjustment
+        ))
+        
+        self.logger.info(f"动态阈值调整 - 新阈值: {self.dynamic_threshold:.4f} "
+                        f"(波动性调整: {volatility_adjustment:.4f}, "
+                        f"置信度调整: {confidence_adjustment:.4f})")
+        
     def generate_signals(self, klines):
         """生成交易信号"""
-        current_time = time.time()
-        
-        # 检查最小交易间隔
-        if current_time - self.last_trade_time < config.MIN_TRADE_INTERVAL:
-            self.logger.info("未达到最小交易间隔")
-            return 0
+        try:
+            current_time = time.time()
             
-        if len(klines) < self.lookback:
-            self.logger.warning("K线数据不足，无法生成信号")
-            return 0
-            
-        # 每100根K线重新训练一次模型
-        if len(klines) % config.RETRAIN_INTERVAL == 0:
-            if not self.train_model(klines):
+            # 检查最小交易间隔
+            if current_time - self.last_trade_time < config.AI_MIN_TRADE_INTERVAL * 60:
+                self.logger.info("未达到最小交易间隔")
                 return 0
                 
-        # 准备最新的特征数据
-        features = self.prepare_features(klines)
-        latest_features = features.iloc[-1:]
-        current_price = float(klines[-1][4])  
-        
-        # 更新交易统计
-        self.update_trade_stats(current_price)
-        
-        # 记录当前持仓盈亏
-        self.log_trade_stats(current_price)
-        
-        # 标准化特征
-        latest_features_scaled = self.scaler.transform(latest_features)
-        
-        # 预测
-        try:
-            prob = self.model.predict_proba(latest_features_scaled)[0]
-            self.logger.info(f"上涨概率: {prob[1]:.2f}, 下跌概率: {prob[0]:.2f}")
+            if len(klines) < self.lookback:
+                self.logger.warning("K线数据不足，无法生成信号")
+                return 0
+                
+            # 基于时间间隔重新训练模型
+            if not hasattr(self, 'last_train_time'):
+                self.last_train_time = 0
+                
+            if current_time - self.last_train_time > config.AI_TRAIN_INTERVAL * 60:
+                self.logger.info("开始定期重新训练模型")
+                if self.train_model(klines):
+                    self.last_train_time = current_time
+                    self.logger.info("模型重新训练完成")
+                else:
+                    self.logger.warning("模型重新训练失败")
+                    
+            # 准备最新的特征数据
+            try:
+                features = self.prepare_features(klines)
+                if features.empty:
+                    self.logger.warning("特征数据为空，无法生成信号")
+                    return 0
+                    
+                latest_features = features.iloc[-1:]
+                current_price = float(klines[-1][4])  
+            except Exception as e:
+                self.logger.error(f"特征准备失败: {str(e)}")
+                return 0
             
-            # 根据预测概率生成信号
-            if prob[1] > self.prediction_threshold:  
-                self.last_trade_price = current_price
-                self.last_trade_type = 'long'
-                return 1  
-            elif prob[0] > self.prediction_threshold:  
-                self.last_trade_price = current_price
-                self.last_trade_type = 'short'
-                return -1  
-            else:
-                self.logger.info("预测概率未达到阈值，观望信号")
+            # 更新交易统计
+            try:
+                self.update_trade_stats(current_price)
+                self.log_trade_stats(current_price)
+            except Exception as e:
+                self.logger.error(f"更新交易统计失败: {str(e)}")
+                # 继续执行，因为这不是关键错误
+            
+            # 标准化特征
+            try:
+                latest_features_scaled = self.scaler.transform(latest_features)
+            except Exception as e:
+                self.logger.error(f"特征标准化失败: {str(e)}")
+                return 0
+            
+            # 预测
+            try:
+                prob = self.model.predict_proba(latest_features_scaled)[0]
+                self.logger.info(f"上涨概率: {prob[1]:.2f}, 下跌概率: {prob[0]:.2f}")
+                
+                # 生成交易信号
+                try:
+                    signal = self.generate_signal(features, prob[1])
+                    
+                    # 更新最后交易时间
+                    if signal != 0:
+                        self.last_trade_time = current_time
+                        
+                    return signal
+                    
+                except Exception as e:
+                    self.logger.error(f"信号生成失败: {str(e)}")
+                    return 0
+                    
+            except Exception as e:
+                self.logger.error(f"模型预测失败: {str(e)}")
                 return 0
                 
         except Exception as e:
             self.logger.error(f"生成信号时发生错误: {str(e)}")
             return 0
             
+    def generate_signal(self, features, pred_proba):
+        """生成交易信号"""
+        try:
+            # 获取最新的市场波动性
+            market_volatility = features['volatility'].iloc[-1]
+            
+            # 获取预测置信度
+            prediction_confidence = abs(pred_proba - 0.5) * 2
+            
+            # 调整预测阈值
+            try:
+                self.adjust_threshold(market_volatility, prediction_confidence)
+            except Exception as e:
+                self.logger.error(f"阈值调整失败: {str(e)}")
+                # 使用默认阈值继续
+            
+            # 使用动态阈值生成信号
+            if pred_proba > self.dynamic_threshold:
+                return 1  # 买入信号
+            elif pred_proba < (1 - self.dynamic_threshold):
+                return -1  # 卖出信号
+            return 0  # 持仓不变
+            
+        except Exception as e:
+            self.logger.error(f"信号生成过程出错: {str(e)}")
+            return 0
+
     def should_close_position(self, position_info, current_price):
         """判断是否应该平仓"""
         if not position_info:

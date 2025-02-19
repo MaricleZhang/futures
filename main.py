@@ -1,5 +1,5 @@
 from binance_futures_trader import BinanceFuturesTrader
-from strategies import AIStrategy
+from strategies.ml_strategy import MLStrategy
 from utils.logger import Logger
 import pandas as pd
 import time
@@ -54,7 +54,7 @@ def main():
     
     try:
         # 初始化AI策略
-        strategy = AIStrategy(trader)
+        strategy = MLStrategy(trader)
         
         # 获取账户余额
         balance = trader.get_balance()

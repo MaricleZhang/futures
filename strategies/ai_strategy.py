@@ -211,8 +211,8 @@ class AIStrategy(BaseStrategy):
             # 创建标签
             future_returns = df['close'].pct_change(-1).shift(1)  # 使用未来收益率
             y = np.zeros(len(future_returns))
-            y[future_returns > 0.001] = 1  # 上涨信号
-            y[future_returns < -0.001] = 0  # 下跌信号
+            y[future_returns > 0.001] = 0  # 下跌信号（当前价格比未来价格高）
+            y[future_returns < -0.001] = 1  # 上涨信号（当前价格比未来价格低）
             y = y[:-1]  # 移除最后一个无效数据
             
             # 创建序列数据
@@ -328,21 +328,21 @@ class AIStrategy(BaseStrategy):
                 
             # 2. 价格剧烈波动条件
             price_change = df['close'].pct_change()
-            if abs(price_change.iloc[-1]) > 0.03:  # 3%的价格变动阈值
+            if abs(price_change.iloc[-1]) > 0.05:  # 3%的价格变动阈值
                 self.logger.info(f"价格变动({price_change.iloc[-1]:.4f})过大，暂停交易")
                 return False
                 
-            # 3. 趋势强度检查
-            ema_short = talib.EMA(df['close'], timeperiod=5)
-            ema_long = talib.EMA(df['close'], timeperiod=20)
-            trend_strength = abs(ema_short.iloc[-1] - ema_long.iloc[-1]) / ema_long.iloc[-1]
-            if trend_strength < 0.001:  # 0.1%的趋势强度阈值
-                self.logger.info("趋势强度不足，避免交易")
-                return False
+            # # 3. 趋势强度检查
+            # ema_short = talib.EMA(df['close'], timeperiod=5)
+            # ema_long = talib.EMA(df['close'], timeperiod=20)
+            # trend_strength = abs(ema_short.iloc[-1] - ema_long.iloc[-1]) / ema_long.iloc[-1]
+            # if trend_strength < 0.001:  # 0.1%的趋势强度阈值
+            #     self.logger.info("趋势强度不足，避免交易")
+            #     return False
                 
             # 4. 成交量条件
             volume_ma = df['volume'].rolling(window=20).mean()
-            if df['volume'].iloc[-1] < volume_ma.iloc[-1] * 0.5:  # 成交量低于均值的50%
+            if df['volume'].iloc[-1] < volume_ma.iloc[-1] * 0.2:  # 成交量低于均值的50%
                 self.logger.info("成交量不足，避免交易")
                 return False
                 
@@ -480,9 +480,9 @@ class AIStrategy(BaseStrategy):
                 
             # 生成交易信号
             if prediction > dynamic_threshold:
-                return 1
+                return -1  # 预期下跌，做空
             elif prediction < (1 - dynamic_threshold):
-                return -1
+                return 1   # 预期上涨，做多
             else:
                 return 0
                 

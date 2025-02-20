@@ -78,7 +78,11 @@ def main():
                 if position and float(position['info'].get('positionAmt', 0)) != 0:
                     position_size = float(position['info'].get('positionAmt', 0))
                     entry_price = float(position['info'].get('entryPrice', 0))
-                    unrealized_pnl = float(position['info'].get('unrealizedProfit', 0))
+                    # Calculate unrealized PnL manually
+                    if position_size > 0:  # Long position
+                        unrealized_pnl = position_size * (current_price - entry_price)
+                    else:  # Short position
+                        unrealized_pnl = position_size * (entry_price - current_price)
                     position_value = abs(position_size * entry_price)
                     profit_rate = (unrealized_pnl / position_value) * 100 if position_value > 0 else 0
                     

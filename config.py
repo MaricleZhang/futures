@@ -14,7 +14,7 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 
 # 交易设置
-SYMBOL = 'LAYERUSDT'  # 交易对
+SYMBOL = 'SOLUSDT'  # 交易对
 LEVERAGE = 5  # 杠杆倍数
 MARGIN_TYPE = 'CROSSED'  # 保证金模式：CROSSED(全仓) ISOLATED(逐仓)
 POSITION_SIDE = 'BOTH'  # 持仓模式：BOTH(单向持仓) LONG/SHORT(双向持仓)
@@ -31,7 +31,7 @@ DEFAULT_STOP_LOSS_PERCENT = 50  # 默认止损百分比
 DEFAULT_TAKE_PROFIT_PERCENT = 10000  # 默认止盈百分比
 
 # K线设置
-DEFAULT_TIMEFRAME = '1m'  # 默认K线周期
+DEFAULT_TIMEFRAME = '5m'  # 默认K线周期
 DEFAULT_KLINE_LIMIT = 100  # 默认K线获取数量
 
 # API设置
@@ -60,7 +60,7 @@ AI_TRAIN_INTERVAL = 60  # AI模型训练间隔（分钟）
 AI_MIN_TRADE_INTERVAL = 5  # AI最小交易间隔（分钟）
 
 # AI策略配置
-DEFAULT_CHECK_INTERVAL = 60  # AI策略检查间隔(秒)
+DEFAULT_CHECK_INTERVAL = 300  # AI策略检查间隔(秒)
 RSI_PERIOD = 14
 MA_FAST_PERIOD = 10
 MA_SLOW_PERIOD = 20

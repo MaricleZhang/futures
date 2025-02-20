@@ -7,37 +7,40 @@ import pandas as pd
 from strategies.ml_strategy import MLStrategy
 import talib
 from sklearn.preprocessing import StandardScaler
+import time
 
 class DeepLearningModel(nn.Module):
     def __init__(self, input_size):
         super().__init__()
         # 增加网络深度和宽度
-        self.layer1 = nn.Linear(input_size, 128)
-        self.layer2 = nn.Linear(128, 256)
-        self.layer3 = nn.Linear(256, 128)
-        self.layer4 = nn.Linear(128, 64)
-        self.layer5 = nn.Linear(64, 32)
-        self.output = nn.Linear(32, 3)
+        self.layer1 = nn.Linear(input_size, 256)
+        self.layer2 = nn.Linear(256, 512)
+        self.layer3 = nn.Linear(512, 256)
+        self.layer4 = nn.Linear(256, 128)
+        self.layer5 = nn.Linear(128, 64)
+        self.output = nn.Linear(64, 3)
         
         # 添加Dropout和BatchNorm来防止过拟合
-        self.dropout = nn.Dropout(0.2)
-        self.batch_norm1 = nn.BatchNorm1d(128)
-        self.batch_norm2 = nn.BatchNorm1d(256)
-        self.batch_norm3 = nn.BatchNorm1d(128)
-        self.batch_norm4 = nn.BatchNorm1d(64)
+        self.dropout = nn.Dropout(0.3)  # 增加dropout率
+        self.batch_norm1 = nn.BatchNorm1d(256)
+        self.batch_norm2 = nn.BatchNorm1d(512)
+        self.batch_norm3 = nn.BatchNorm1d(256)
+        self.batch_norm4 = nn.BatchNorm1d(128)
+        self.batch_norm5 = nn.BatchNorm1d(64)
         
     def forward(self, x):
-        x = F.relu(self.batch_norm1(self.layer1(x)))
+        # 使用ReLU和LayerNorm增加非线性
+        x = F.leaky_relu(self.batch_norm1(self.layer1(x)))
         x = self.dropout(x)
-        x = F.relu(self.batch_norm2(self.layer2(x)))
+        x = F.leaky_relu(self.batch_norm2(self.layer2(x)))
         x = self.dropout(x)
-        x = F.relu(self.batch_norm3(self.layer3(x)))
+        x = F.leaky_relu(self.batch_norm3(self.layer3(x)))
         x = self.dropout(x)
-        x = F.relu(self.batch_norm4(self.layer4(x)))
+        x = F.leaky_relu(self.batch_norm4(self.layer4(x)))
         x = self.dropout(x)
-        x = F.relu(self.layer5(x))
-        x = F.softmax(self.output(x), dim=1)
-        return x
+        x = F.leaky_relu(self.batch_norm5(self.layer5(x)))
+        x = self.dropout(x)
+        return self.output(x)
 
 class DeepLearningStrategy(MLStrategy):
     """DeepTradeMaster - 深度学习交易策略
@@ -62,10 +65,16 @@ class DeepLearningStrategy(MLStrategy):
         
         # 深度学习特定参数
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.batch_size = 32
-        self.learning_rate = 0.001
-        self.n_epochs = 20
+        self.batch_size = 64  # 增加batch size
+        self.learning_rate = 0.0005  # 降低学习率
+        self.n_epochs = 50  # 增加训练轮数
         self.confidence_threshold = 0.4
+        
+        # K线设置
+        self.kline_interval = '1m'
+        self.training_lookback = 20000  # 增加到约14天的数据
+        self.retraining_interval = 1000  # 每1000个周期重新训练一次
+        self.last_training_time = 0
         
         # 初始化StandardScaler
         self.scaler = StandardScaler()
@@ -73,14 +82,21 @@ class DeepLearningStrategy(MLStrategy):
         # 初始化模型
         self.initialize_model()
         
+        # 模型评估指标
+        self.val_accuracies = []  # 记录验证集准确率
+        self.val_losses = []      # 记录验证集损失
+        
         # 获取历史数据进行训练
         try:
-            # 主要使用1小时周期的数据
+            # 使用1分钟K线数据进行训练
             self.logger.info("获取历史K线数据...")
-            historical_data = self.trader.get_klines(interval='1h', limit=1000)
+            historical_data = self.trader.get_klines(
+                interval=self.kline_interval,
+                limit=self.training_lookback
+            )
             
             if historical_data and len(historical_data) > 0:
-                self.logger.info(f"成功获取{len(historical_data)}根K线数据")
+                self.logger.info(f"成功获取{len(historical_data)}根{self.kline_interval}K线数据")
                 # 训练模型
                 if self.train_model(historical_data):
                     self.logger.info("模型训练成功")
@@ -109,20 +125,36 @@ class DeepLearningStrategy(MLStrategy):
                 'price_volatility',
                 'support', 'resistance', 'price_to_support', 'price_to_resistance'
             ]
+            self.feature_columns = feature_columns
             input_size = len(feature_columns)
             self.logger.info(f"模型输入维度: {input_size}")
             
-            # 创建模型实例
+            # 初始化模型
             self.model = DeepLearningModel(input_size).to(self.device)
             
-            # 定义损失函数和优化器
-            self.criterion = nn.CrossEntropyLoss()
-            self.optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate)
+            # 使用Adam优化器，添加权重衰减（L2正则化）
+            self.optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate, weight_decay=1e-5)
+            
+            # 初始化评估指标
+            self.metrics = {
+                'total_trades': 0,
+                'winning_trades': 0,
+                'losing_trades': 0,
+                'total_profit': 0,
+                'total_loss': 0,
+                'win_rate': 0,
+                'profit_factor': 0,
+                'avg_profit': 0,
+                'avg_loss': 0,
+                'predictions': []
+            }
             
             self.logger.info("深度学习模型初始化成功")
+            return True
             
         except Exception as e:
             self.logger.error(f"初始化深度学习模型失败: {str(e)}")
+            return False
 
     def prepare_features(self, klines):
         """准备特征数据，增加深度学习特定的特征"""
@@ -224,9 +256,92 @@ class DeepLearningStrategy(MLStrategy):
             self.logger.error(f"准备深度学习特征时出错: {str(e)}")
             return pd.DataFrame()
 
+    def evaluate_model(self, klines):
+        """评估模型在最新数据上的表现"""
+        try:
+            df = self.prepare_features(klines)
+            if df.empty:
+                return
+            
+            # 生成标签
+            returns = df['close'].pct_change()
+            volatility = returns.rolling(window=20).std().fillna(0)
+            
+            # 使用动态阈值
+            buy_threshold = 1.0 * volatility
+            sell_threshold = -1.0 * volatility
+            
+            # 计算实际标签
+            future_returns = pd.Series(index=df.index)
+            for i in range(1, 6):
+                shifted_returns = df['close'].shift(-i) / df['close'] - 1
+                future_returns = future_returns.fillna(shifted_returns)
+            
+            actual_labels = np.full(len(df), 2)
+            actual_labels[future_returns > buy_threshold] = 1
+            actual_labels[future_returns < sell_threshold] = 0
+            
+            # 获取模型预测
+            features = df[self.feature_columns].values
+            features = self.scaler.transform(features)
+            features_tensor = torch.FloatTensor(features).to(self.device)
+            
+            self.model.eval()
+            with torch.no_grad():
+                outputs = self.model(features_tensor)
+                probabilities = F.softmax(outputs, dim=1)
+                predictions = torch.argmax(probabilities, dim=1).cpu().numpy()
+            
+            # 计算准确率
+            correct = (predictions == actual_labels).sum()
+            total = len(actual_labels)
+            accuracy = 100.0 * correct / total
+            
+            # 计算每个类别的准确率
+            for i in range(3):
+                mask = actual_labels == i
+                if mask.sum() > 0:
+                    class_correct = (predictions[mask] == i).sum()
+                    class_accuracy = 100.0 * class_correct / mask.sum()
+                    self.logger.info(f"类别 {i} 的准确率: {class_accuracy:.2f}%")
+            
+            self.logger.info(f"整体准确率: {accuracy:.2f}%")
+            
+            # 计算混淆矩阵
+            confusion = np.zeros((3, 3), dtype=int)
+            for i in range(len(predictions)):
+                confusion[actual_labels[i]][predictions[i]] += 1
+            
+            self.logger.info("混淆矩阵:")
+            self.logger.info("预测值 ->  卖出  买入  持仓")
+            self.logger.info(f"实际卖出:  {confusion[0][0]:4d} {confusion[0][1]:4d} {confusion[0][2]:4d}")
+            self.logger.info(f"实际买入:  {confusion[1][0]:4d} {confusion[1][1]:4d} {confusion[1][2]:4d}")
+            self.logger.info(f"实际持仓:  {confusion[2][0]:4d} {confusion[2][1]:4d} {confusion[2][2]:4d}")
+            
+        except Exception as e:
+            self.logger.error(f"评估模型时出错: {str(e)}")
+
     def generate_signals(self, klines):
         """生成交易信号"""
         try:
+            current_time = time.time()
+            
+            # 定期重新训练模型
+            if current_time - self.last_training_time > self.retraining_interval * 60:
+                self.logger.info("开始定期重新训练模型...")
+                historical_data = self.trader.get_klines(
+                    interval=self.kline_interval,
+                    limit=self.training_lookback
+                )
+                if self.train_model(historical_data):
+                    self.logger.info("模型重新训练成功")
+                    self.last_training_time = current_time
+                    # 在重新训练后评估模型
+                    self.logger.info("评估模型在最新数据上的表现...")
+                    self.evaluate_model(klines[-1000:])  # 使用最近1000根K线评估
+                else:
+                    self.logger.error("模型重新训练失败")
+            
             # 准备特征数据
             df = self.prepare_features(klines)
             if df.empty:
@@ -350,21 +465,45 @@ class DeepLearningStrategy(MLStrategy):
     def train_model(self, historical_data):
         """训练深度学习模型"""
         try:
+            self.logger.info(f"开始训练模型，使用 {len(historical_data)} 根K线数据")
+            
             # 准备训练数据
             df = self.prepare_features(historical_data)
             if df.empty:
                 self.logger.error("准备训练数据失败")
                 return False
-                
-            # 生成标签（0=卖出，1=买入，2=持仓）
-            future_returns = df['close'].shift(-1) / df['close'] - 1
-            labels = np.full(len(df), 2)  # 默认持仓
-            labels[future_returns > 0.001] = 1  # 买入
-            labels[future_returns < -0.001] = 0  # 卖出
             
-            # 删除最后一行（因为没有未来数据）
-            df = df.iloc[:-1]
-            labels = labels[:-1]
+            # 记录训练开始时间
+            start_time = time.time()
+            
+            # 生成标签
+            returns = df['close'].pct_change()
+            volatility = returns.rolling(window=20).std().fillna(0)
+            
+            # 使用动态阈值
+            buy_threshold = 1.0 * volatility
+            sell_threshold = -1.0 * volatility
+            
+            # 计算未来N个周期的收益
+            future_returns = pd.Series(index=df.index)
+            for i in range(1, 6):  # 看未来5个周期
+                shifted_returns = df['close'].shift(-i) / df['close'] - 1
+                future_returns = future_returns.fillna(shifted_returns)
+            
+            # 生成标签
+            labels = np.full(len(df), 2)  # 默认持仓
+            labels[future_returns > buy_threshold] = 1  # 买入
+            labels[future_returns < sell_threshold] = 0  # 卖出
+            
+            # 计算并打印标签分布
+            unique, counts = np.unique(labels, return_counts=True)
+            total_samples = len(labels)
+            for label, count in zip(unique, counts):
+                self.logger.info(f"标签 {label} 的样本数量: {count}, 占比: {count/total_samples*100:.2f}%")
+            
+            # 删除最后5行（因为没有足够的未来数据）
+            df = df.iloc[:-5]
+            labels = labels[:-5]
             
             # 准备特征数据
             feature_columns = [
@@ -380,12 +519,9 @@ class DeepLearningStrategy(MLStrategy):
                 'price_volatility',
                 'support', 'resistance', 'price_to_support', 'price_to_resistance'
             ]
+            
+            # 对特征进行标准化
             features = df[feature_columns].values
-            
-            # 保存特征列名，用于后续预测
-            self.feature_columns = feature_columns
-            
-            # 标准化特征
             self.scaler = StandardScaler()
             features = self.scaler.fit_transform(features)
             
@@ -402,6 +538,15 @@ class DeepLearningStrategy(MLStrategy):
             train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
             val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=self.batch_size)
             
+            # 使用类别权重来处理不平衡数据
+            class_counts = np.bincount(labels)
+            class_weights = torch.FloatTensor(1.0 / class_counts)
+            class_weights = class_weights / class_weights.sum()
+            class_weights = class_weights.to(self.device)
+            
+            # 使用带权重的交叉熵损失
+            self.criterion = nn.CrossEntropyLoss(weight=class_weights)
+            
             # 初始化早停
             best_val_loss = float('inf')
             patience = 5
@@ -409,13 +554,18 @@ class DeepLearningStrategy(MLStrategy):
             best_model_state = None
             
             # 学习率调度器
-            scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, mode='min', factor=0.5, patience=2)
+            scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, mode='min', factor=0.5, patience=2, verbose=True)
             
             # 训练模型
             for epoch in range(self.n_epochs):
+                epoch_start_time = time.time()
+                
                 # 训练阶段
                 self.model.train()
                 train_loss = 0
+                train_correct = 0
+                train_total = 0
+                
                 for batch_features, batch_labels in train_loader:
                     batch_features = batch_features.to(self.device)
                     batch_labels = batch_labels.to(self.device)
@@ -424,15 +574,25 @@ class DeepLearningStrategy(MLStrategy):
                     outputs = self.model(batch_features)
                     loss = self.criterion(outputs, batch_labels)
                     loss.backward()
+                    
+                    # 梯度裁剪
+                    torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+                    
                     self.optimizer.step()
                     
                     train_loss += loss.item()
+                    _, predicted = outputs.max(1)
+                    train_total += batch_labels.size(0)
+                    train_correct += predicted.eq(batch_labels).sum().item()
                 
                 # 验证阶段
                 self.model.eval()
                 val_loss = 0
-                correct = 0
-                total = 0
+                val_correct = 0
+                val_total = 0
+                class_correct = [0] * 3
+                class_total = [0] * 3
+                
                 with torch.no_grad():
                     for batch_features, batch_labels in val_loader:
                         batch_features = batch_features.to(self.device)
@@ -443,39 +603,40 @@ class DeepLearningStrategy(MLStrategy):
                         val_loss += loss.item()
                         
                         _, predicted = outputs.max(1)
-                        total += batch_labels.size(0)
-                        correct += predicted.eq(batch_labels).sum().item()
+                        val_total += batch_labels.size(0)
+                        val_correct += predicted.eq(batch_labels).sum().item()
+                        
+                        # 计算每个类别的准确率
+                        for i in range(len(batch_labels)):
+                            label = batch_labels[i]
+                            class_correct[label] += (predicted[i] == label).item()
+                            class_total[label] += 1
                 
-                # 计算平均损失
-                avg_train_loss = train_loss / len(train_loader)
-                avg_val_loss = val_loss / len(val_loader)
-                accuracy = 100. * correct / total
+                # 计算各项指标
+                train_accuracy = 100. * train_correct / train_total
+                val_accuracy = 100. * val_correct / val_total
                 
+                # 记录验证集性能
+                self.val_accuracies.append(val_accuracy)
+                self.val_losses.append(val_loss / len(val_loader))
+                
+                # 打印每个类别的准确率
+                for i in range(3):
+                    if class_total[i] > 0:
+                        class_acc = 100. * class_correct[i] / class_total[i]
+                        self.logger.info(f'类别 {i} 准确率: {class_acc:.2f}%')
+                
+                epoch_time = time.time() - epoch_start_time
                 self.logger.info(f'Epoch {epoch+1}/{self.n_epochs}:')
-                self.logger.info(f'Train Loss: {avg_train_loss:.4f}, Val Loss: {avg_val_loss:.4f}, Accuracy: {accuracy:.2f}%')
-                
-                # 更新学习率
-                scheduler.step(avg_val_loss)
-                
-                # 早停检查
-                if avg_val_loss < best_val_loss:
-                    best_val_loss = avg_val_loss
-                    patience_counter = 0
-                    # 保存最佳模型状态
-                    best_model_state = self.model.state_dict().copy()
-                else:
-                    patience_counter += 1
-                    if patience_counter >= patience:
-                        self.logger.info(f'Early stopping at epoch {epoch+1}')
-                        break
+                self.logger.info(f'训练损失: {train_loss/len(train_loader):.4f}, 训练准确率: {train_accuracy:.2f}%')
+                self.logger.info(f'验证损失: {val_loss/len(val_loader):.4f}, 验证准确率: {val_accuracy:.2f}%')
+                self.logger.info(f'耗时: {epoch_time:.2f}秒')
             
-            # 加载最佳模型状态
-            if best_model_state is not None:
-                self.model.load_state_dict(best_model_state)
+            total_time = time.time() - start_time
+            self.logger.info(f'总训练时间: {total_time:.2f}秒')
             
-            self.logger.info("模型训练完成")
             return True
             
         except Exception as e:
-            self.logger.error(f"训练深度学习模型失败: {str(e)}")
+            self.logger.error(f"训练模型时出错: {str(e)}")
             return False

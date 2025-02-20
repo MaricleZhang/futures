@@ -36,7 +36,7 @@ def retry_on_error(max_retries=None, retry_delay=None):
         return wrapper
     return decorator
 
-class BinanceFuturesTrader:
+class Trader:
     def __init__(self, symbol=None):
         """初始化交易器"""
         try:

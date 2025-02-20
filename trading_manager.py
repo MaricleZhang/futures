@@ -1,13 +1,13 @@
 import logging
 import threading
 import time
-from binance_futures_trader import BinanceFuturesTrader
+from trader import Trader
 from strategies.ml_strategy_deep_learning import DeepLearningStrategy
 import config
 
-class MultiSymbolTradingManager:
+class TradingManager:
     def __init__(self):
-        """初始化多交易对管理器"""
+        """初始化交易管理器"""
         # 初始化日志记录器
         self.logger = logging.getLogger()
         self.symbol_loggers = {}
@@ -23,7 +23,7 @@ class MultiSymbolTradingManager:
                 symbol_logger = logging.getLogger(f'{symbol}')
                 self.symbol_loggers[symbol] = symbol_logger
                 
-                trader = BinanceFuturesTrader(symbol)
+                trader = Trader(symbol)
                 strategy = DeepLearningStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
@@ -102,13 +102,15 @@ class MultiSymbolTradingManager:
                     if position and float(position['info'].get('positionAmt', 0)) != 0:
                         logger.info("平仓信号，准备平仓...")
                         trader.close_position(symbol)
-                        
+                
             except Exception as e:
                 logger.error(f"{symbol} 交易过程出错: {str(e)}")
+                time.sleep(10)  # 错误后等待较短时间
+                continue
                 
             # 等待下一个交易周期
-            time.sleep(60)
-            
+            time.sleep(symbol_config.get('check_interval', 60))  # 使用交易对配置的间隔时间
+                
     def start_trading(self):
         """启动所有交易对的交易"""
         for symbol in self.traders.keys():
@@ -123,7 +125,7 @@ class MultiSymbolTradingManager:
         monitor_thread.daemon = True
         monitor_thread.start()
         self.logger.info("启动线程监控")
-        
+            
     def monitor_threads(self):
         """监控所有交易线程，确保它们在运行"""
         while True:

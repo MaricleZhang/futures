@@ -1,4 +1,4 @@
-from multi_symbol_trading_manager import MultiSymbolTradingManager
+from trading_manager import TradingManager
 from utils.logger import Logger
 import time
 import signal
@@ -13,7 +13,7 @@ def main():
     # 初始化交易管理器
     trading_manager = None
     try:
-        trading_manager = MultiSymbolTradingManager()
+        trading_manager = TradingManager()
         
         def signal_handler(signum, frame):
             """处理退出信号"""
@@ -32,33 +32,6 @@ def main():
         
         # 保持主线程运行，定期检查账户状态
         while True:
-            try:
-                # 获取每个交易对的状态
-                for symbol in config.SYMBOLS:
-                    trader = trading_manager.traders.get(symbol)
-                    if trader:
-                        try:
-                            # 获取账户余额
-                            balance = trader.get_balance()
-                            available_balance = float(balance['free'])
-                            total_balance = float(balance['total'])
-                            
-                            # 获取持仓信息
-                            position = trader.get_position(symbol)
-                            position_size = float(position['info'].get('positionAmt', 0)) if position else 0
-                            
-                            logger.info(f"{symbol} 状态 - 可用余额: {available_balance:.2f} USDT, "
-                                      f"总余额: {total_balance:.2f} USDT, 持仓量: {position_size}")
-                                      
-                        except ccxt.NetworkError as e:
-                            logger.warning(f"{symbol} 网络错误: {str(e)}")
-                        except Exception as e:
-                            logger.error(f"{symbol} 获取状态失败: {str(e)}")
-                            
-            except Exception as e:
-                logger.error(f"状态检查错误: {str(e)}")
-                
-            # 每1分钟检查一次状态
             time.sleep(60)
             
     except KeyboardInterrupt:

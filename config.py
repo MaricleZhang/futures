@@ -27,6 +27,7 @@ SYMBOL_CONFIGS = {
         'leverage': 4,
         'min_notional': 50,
         'max_position_size': 5,
+        'check_interval': 60,  # 交易检查间隔(秒)
     }
 }
 DEFAULT_LEVERAGE = 5  # 默认杠杆倍数

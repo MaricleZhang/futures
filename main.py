@@ -1,5 +1,5 @@
 from binance_futures_trader import BinanceFuturesTrader
-from strategies.ml_strategy import MLStrategy
+from strategies.ml_strategy_deep_learning import DeepLearningStrategy
 from utils.logger import Logger
 import pandas as pd
 import time
@@ -53,8 +53,8 @@ def main():
         return None
     
     try:
-        # 初始化AI策略
-        strategy = MLStrategy(trader)
+        # 使用深度学习策略
+        strategy = DeepLearningStrategy(trader)
         
         # 获取账户余额
         balance = trader.get_balance()

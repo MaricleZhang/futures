@@ -14,7 +14,7 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 
 # 交易设置
-SYMBOL = 'ETHUSDT'  # 交易对
+SYMBOL = 'LAYERUSDT'  # 交易对
 LEVERAGE = 5  # 杠杆倍数
 MARGIN_TYPE = 'CROSSED'  # 保证金模式：CROSSED(全仓) ISOLATED(逐仓)
 POSITION_SIDE = 'BOTH'  # 持仓模式：BOTH(单向持仓) LONG/SHORT(双向持仓)

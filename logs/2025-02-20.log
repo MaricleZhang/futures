@@ -1,0 +1,1072 @@
+2025-02-20 10:01:42,101 - INFO - ==================================================
+2025-02-20 10:01:42,101 - INFO - 日志系统初始化完成 - 2025-02-20 10:01:42
+2025-02-20 10:01:42,101 - INFO - ==================================================
+2025-02-20 10:01:43,624 - INFO - 没有未成交的订单
+2025-02-20 10:01:43,724 - INFO - 当前已经是单向持仓模式
+2025-02-20 10:01:43,821 - INFO - 设置杠杆倍数 5倍 成功
+2025-02-20 10:01:43,925 - INFO - 当前已经是CROSSED保证金模式
+2025-02-20 10:01:43,925 - INFO - 交易器初始化成功
+2025-02-20 10:01:43,925 - INFO - 模型输入维度: 38
+2025-02-20 10:01:44,186 - INFO - 深度学习模型初始化成功
+2025-02-20 10:01:44,186 - INFO - 获取历史K线数据...
+2025-02-20 10:01:44,296 - INFO - 成功获取204根1hK线数据
+2025-02-20 10:01:44,296 - INFO - 成功获取204根K线数据
+2025-02-20 10:01:44,303 - INFO - 计算技术指标成功
+2025-02-20 10:01:44,305 - INFO - 填充NaN值成功
+2025-02-20 10:01:44,351 - INFO - Epoch 1/20:
+2025-02-20 10:01:44,351 - INFO - Train Loss: 1.0736, Val Loss: 1.0776, Accuracy: 53.66%
+2025-02-20 10:01:44,373 - INFO - Epoch 2/20:
+2025-02-20 10:01:44,373 - INFO - Train Loss: 1.0473, Val Loss: 1.0739, Accuracy: 41.46%
+2025-02-20 10:01:44,399 - INFO - Epoch 3/20:
+2025-02-20 10:01:44,399 - INFO - Train Loss: 1.0349, Val Loss: 1.0694, Accuracy: 36.59%
+2025-02-20 10:01:44,424 - INFO - Epoch 4/20:
+2025-02-20 10:01:44,424 - INFO - Train Loss: 1.0217, Val Loss: 1.0693, Accuracy: 39.02%
+2025-02-20 10:01:44,449 - INFO - Epoch 5/20:
+2025-02-20 10:01:44,449 - INFO - Train Loss: 0.9796, Val Loss: 1.0663, Accuracy: 41.46%
+2025-02-20 10:01:44,474 - INFO - Epoch 6/20:
+2025-02-20 10:01:44,475 - INFO - Train Loss: 0.9694, Val Loss: 1.0565, Accuracy: 43.90%
+2025-02-20 10:01:44,499 - INFO - Epoch 7/20:
+2025-02-20 10:01:44,500 - INFO - Train Loss: 0.9862, Val Loss: 1.0473, Accuracy: 43.90%
+2025-02-20 10:01:44,524 - INFO - Epoch 8/20:
+2025-02-20 10:01:44,524 - INFO - Train Loss: 0.9837, Val Loss: 1.0425, Accuracy: 48.78%
+2025-02-20 10:01:44,549 - INFO - Epoch 9/20:
+2025-02-20 10:01:44,549 - INFO - Train Loss: 0.9647, Val Loss: 1.0447, Accuracy: 48.78%
+2025-02-20 10:01:44,575 - INFO - Epoch 10/20:
+2025-02-20 10:01:44,575 - INFO - Train Loss: 0.9919, Val Loss: 1.0392, Accuracy: 48.78%
+2025-02-20 10:01:44,600 - INFO - Epoch 11/20:
+2025-02-20 10:01:44,600 - INFO - Train Loss: 0.9502, Val Loss: 1.0362, Accuracy: 51.22%
+2025-02-20 10:01:44,625 - INFO - Epoch 12/20:
+2025-02-20 10:01:44,626 - INFO - Train Loss: 0.9170, Val Loss: 1.0331, Accuracy: 43.90%
+2025-02-20 10:01:44,678 - INFO - Epoch 13/20:
+2025-02-20 10:01:44,678 - INFO - Train Loss: 0.9029, Val Loss: 1.0295, Accuracy: 46.34%
+2025-02-20 10:01:44,704 - INFO - Epoch 14/20:
+2025-02-20 10:01:44,704 - INFO - Train Loss: 0.9180, Val Loss: 1.0313, Accuracy: 48.78%
+2025-02-20 10:01:44,728 - INFO - Epoch 15/20:
+2025-02-20 10:01:44,728 - INFO - Train Loss: 0.9198, Val Loss: 1.0423, Accuracy: 46.34%
+2025-02-20 10:01:44,752 - INFO - Epoch 16/20:
+2025-02-20 10:01:44,752 - INFO - Train Loss: 0.9425, Val Loss: 1.0536, Accuracy: 41.46%
+2025-02-20 10:01:44,778 - INFO - Epoch 17/20:
+2025-02-20 10:01:44,779 - INFO - Train Loss: 0.8972, Val Loss: 1.0448, Accuracy: 43.90%
+2025-02-20 10:01:44,807 - INFO - Epoch 18/20:
+2025-02-20 10:01:44,807 - INFO - Train Loss: 0.8730, Val Loss: 1.0391, Accuracy: 46.34%
+2025-02-20 10:01:44,807 - INFO - Early stopping at epoch 18
+2025-02-20 10:01:44,807 - INFO - 模型训练完成
+2025-02-20 10:01:44,807 - INFO - 模型训练成功
+2025-02-20 10:01:44,905 - INFO - USDT余额: 可用=103.10803213, 总额=103.12888732
+2025-02-20 10:01:44,906 - INFO - 当前账户余额: 可用=103.10803213 USDT, 总额=103.12888732 USDT
+2025-02-20 10:01:45,201 - INFO - 成功获取1000根1mK线数据
+2025-02-20 10:01:45,208 - INFO - 计算技术指标成功
+2025-02-20 10:01:45,210 - INFO - 填充NaN值成功
+2025-02-20 10:01:45,211 - INFO - 预测概率: 卖出=0.4635, 买入=0.2917, 持仓=0.2449
+2025-02-20 10:01:45,211 - INFO - 市场状态: RSI=55.75, MACD=-0.00, ADX=26.74, 波动率=0.0014, 趋势强度=0.0041, 市场情绪=0.6827
+2025-02-20 10:01:45,627 - INFO - 当前价格: 0.6293, AI信号: -1
+2025-02-20 10:01:45,747 - INFO - 开空仓，数量: 163.8455937231845
+2025-02-20 10:01:46,055 - INFO - 订单创建成功: {'info': {'orderId': '222273760', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu2cf24c753c80f6f98b9718', 'price': '0.000000', 'avgPrice': '0.6293548', 'origQty': '163.8', 'executedQty': '163.8', 'cumQty': '163.8', 'cumQuote': '103.0883200', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740016906163'}, 'id': '222273760', 'clientOrderId': 'x-xcKtGhcu2cf24c753c80f6f98b9718', 'timestamp': 1740016906163, 'datetime': '2025-02-20T02:01:46.163Z', 'lastTradeTimestamp': 1740016906163, 'lastUpdateTimestamp': 1740016906163, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6293548, 'triggerPrice': None, 'amount': 163.8, 'cost': 103.08832, 'average': 0.6293548, 'filled': 163.8, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 10:01:46,056 - INFO - 开空仓成功: {'info': {'orderId': '222273760', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu2cf24c753c80f6f98b9718', 'price': '0.000000', 'avgPrice': '0.6293548', 'origQty': '163.8', 'executedQty': '163.8', 'cumQty': '163.8', 'cumQuote': '103.0883200', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740016906163'}, 'id': '222273760', 'clientOrderId': 'x-xcKtGhcu2cf24c753c80f6f98b9718', 'timestamp': 1740016906163, 'datetime': '2025-02-20T02:01:46.163Z', 'lastTradeTimestamp': 1740016906163, 'lastUpdateTimestamp': 1740016906163, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6293548, 'triggerPrice': None, 'amount': 163.8, 'cost': 103.08832, 'average': 0.6293548, 'filled': 163.8, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 10:01:46,173 - INFO - 当前持仓方向: 空, 持仓金额: 103.1121
+2025-02-20 10:06:46,562 - INFO - 成功获取1000根1mK线数据
+2025-02-20 10:06:46,575 - INFO - 计算技术指标成功
+2025-02-20 10:06:46,578 - INFO - 填充NaN值成功
+2025-02-20 10:06:46,580 - INFO - 预测概率: 卖出=0.3556, 买入=0.3900, 持仓=0.2544
+2025-02-20 10:06:46,581 - INFO - 市场状态: RSI=46.13, MACD=-0.00, ADX=22.46, 波动率=0.0011, 趋势强度=0.0033, 市场情绪=0.5212
+2025-02-20 10:06:46,581 - INFO - 预测置信度0.3900低于阈值0.4，保持观望
+2025-02-20 10:06:46,828 - INFO - 当前持仓方向: 空, 持仓金额: 102.81314043
+2025-02-20 10:06:46,828 - INFO - 当前价格: 0.6276, AI信号: 0, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 10:06:46,971 - INFO - 当前持仓方向: 空, 持仓金额: 102.81263428
+2025-02-20 10:06:46,971 - INFO - 观望信号，保持当前仓位
+2025-02-20 10:06:47,101 - INFO - 当前持仓方向: 空, 持仓金额: 102.81263428
+2025-02-20 10:11:47,523 - INFO - 成功获取1000根1mK线数据
+2025-02-20 10:11:47,536 - INFO - 计算技术指标成功
+2025-02-20 10:11:47,539 - INFO - 填充NaN值成功
+2025-02-20 10:11:47,541 - INFO - 预测概率: 卖出=0.5218, 买入=0.2507, 持仓=0.2275
+2025-02-20 10:11:47,541 - INFO - 市场状态: RSI=60.03, MACD=0.00, ADX=20.24, 波动率=0.0014, 趋势强度=0.0024, 市场情绪=0.6909
+2025-02-20 10:11:47,780 - INFO - 当前持仓方向: 空, 持仓金额: 103.28723496
+2025-02-20 10:11:47,780 - INFO - 当前价格: 0.6303, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 10:11:47,909 - INFO - 当前持仓方向: 空, 持仓金额: 103.28723496
+2025-02-20 10:11:48,041 - INFO - 当前持仓方向: 空, 持仓金额: 103.28710555
+2025-02-20 10:16:48,451 - INFO - 成功获取1000根1mK线数据
+2025-02-20 10:16:48,465 - INFO - 计算技术指标成功
+2025-02-20 10:16:48,468 - INFO - 填充NaN值成功
+2025-02-20 10:16:48,470 - INFO - 预测概率: 卖出=0.3604, 买入=0.3844, 持仓=0.2552
+2025-02-20 10:16:48,471 - INFO - 市场状态: RSI=49.36, MACD=0.00, ADX=21.95, 波动率=0.0015, 趋势强度=0.0014, 市场情绪=0.5005
+2025-02-20 10:16:48,471 - INFO - 预测置信度0.3844低于阈值0.4，保持观望
+2025-02-20 10:16:48,717 - INFO - 当前持仓方向: 空, 持仓金额: 103.05300259
+2025-02-20 10:16:48,717 - INFO - 当前价格: 0.6288, AI信号: 0, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 10:16:48,849 - INFO - 当前持仓方向: 空, 持仓金额: 103.05300259
+2025-02-20 10:16:48,849 - INFO - 观望信号，保持当前仓位
+2025-02-20 10:16:48,976 - INFO - 当前持仓方向: 空, 持仓金额: 103.05075198
+2025-02-20 10:21:49,366 - INFO - 成功获取1000根1mK线数据
+2025-02-20 10:21:49,377 - INFO - 计算技术指标成功
+2025-02-20 10:21:49,380 - INFO - 填充NaN值成功
+2025-02-20 10:21:49,382 - INFO - 预测概率: 卖出=0.3511, 买入=0.3959, 持仓=0.2530
+2025-02-20 10:21:49,382 - INFO - 市场状态: RSI=52.84, MACD=-0.00, ADX=17.39, 波动率=0.0017, 趋势强度=0.0015, 市场情绪=0.1387
+2025-02-20 10:21:49,382 - INFO - 预测置信度0.3959低于阈值0.4，保持观望
+2025-02-20 10:21:49,622 - INFO - 当前持仓方向: 空, 持仓金额: 103.04658
+2025-02-20 10:21:49,622 - INFO - 当前价格: 0.6292, AI信号: 0, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 10:21:49,751 - INFO - 当前持仓方向: 空, 持仓金额: 103.04658
+2025-02-20 10:21:49,751 - INFO - 观望信号，保持当前仓位
+2025-02-20 10:21:49,972 - INFO - 当前持仓方向: 空, 持仓金额: 103.04658
+2025-02-20 10:26:50,444 - INFO - 成功获取1000根1mK线数据
+2025-02-20 10:26:50,457 - INFO - 计算技术指标成功
+2025-02-20 10:26:50,460 - INFO - 填充NaN值成功
+2025-02-20 10:26:50,462 - INFO - 预测概率: 卖出=0.4561, 买入=0.2986, 持仓=0.2453
+2025-02-20 10:26:50,462 - INFO - 市场状态: RSI=60.52, MACD=0.00, ADX=21.74, 波动率=0.0017, 趋势强度=0.0007, 市场情绪=0.6362
+2025-02-20 10:26:50,705 - INFO - 当前持仓方向: 空, 持仓金额: 103.39056
+2025-02-20 10:26:50,705 - INFO - 当前价格: 0.6307, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 10:26:50,943 - INFO - 当前持仓方向: 空, 持仓金额: 103.39056
+2025-02-20 10:26:51,086 - INFO - 当前持仓方向: 空, 持仓金额: 103.39056
+2025-02-20 10:31:51,492 - INFO - 成功获取1000根1mK线数据
+2025-02-20 10:31:51,504 - INFO - 计算技术指标成功
+2025-02-20 10:31:51,507 - INFO - 填充NaN值成功
+2025-02-20 10:31:51,508 - INFO - 预测概率: 卖出=0.3619, 买入=0.3864, 持仓=0.2516
+2025-02-20 10:31:51,508 - INFO - 市场状态: RSI=47.63, MACD=0.00, ADX=23.70, 波动率=0.0016, 趋势强度=0.0001, 市场情绪=0.0598
+2025-02-20 10:31:51,508 - INFO - 预测置信度0.3864低于阈值0.4，保持观望
+2025-02-20 10:31:51,748 - INFO - 当前持仓方向: 空, 持仓金额: 103.01382
+2025-02-20 10:31:51,748 - INFO - 当前价格: 0.629, AI信号: 0, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 10:31:51,880 - INFO - 当前持仓方向: 空, 持仓金额: 103.01382
+2025-02-20 10:31:51,880 - INFO - 观望信号，保持当前仓位
+2025-02-20 10:31:52,030 - INFO - 当前持仓方向: 空, 持仓金额: 103.00985112
+2025-02-20 10:36:52,469 - INFO - 成功获取1000根1mK线数据
+2025-02-20 10:36:52,482 - INFO - 计算技术指标成功
+2025-02-20 10:36:52,484 - INFO - 填充NaN值成功
+2025-02-20 10:36:52,486 - INFO - 预测概率: 卖出=0.4731, 买入=0.2862, 持仓=0.2407
+2025-02-20 10:36:52,486 - INFO - 市场状态: RSI=47.02, MACD=-0.00, ADX=18.61, 波动率=0.0017, 趋势强度=0.0005, 市场情绪=0.0507
+2025-02-20 10:36:52,733 - INFO - 当前持仓方向: 空, 持仓金额: 102.9483
+2025-02-20 10:36:52,733 - INFO - 当前价格: 0.6285, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 10:36:52,878 - INFO - 当前持仓方向: 空, 持仓金额: 102.9483
+2025-02-20 10:36:53,015 - INFO - 当前持仓方向: 空, 持仓金额: 102.93192
+2025-02-20 10:41:53,853 - INFO - 成功获取1000根1mK线数据
+2025-02-20 10:41:53,866 - INFO - 计算技术指标成功
+2025-02-20 10:41:53,869 - INFO - 填充NaN值成功
+2025-02-20 10:41:53,871 - INFO - 预测概率: 卖出=0.4205, 买入=0.3263, 持仓=0.2532
+2025-02-20 10:41:53,872 - INFO - 市场状态: RSI=53.75, MACD=-0.00, ADX=15.51, 波动率=0.0016, 趋势强度=0.0005, 市场情绪=0.1365
+2025-02-20 10:41:54,106 - INFO - 当前持仓方向: 空, 持仓金额: 103.20965928
+2025-02-20 10:41:54,106 - INFO - 当前价格: 0.6299, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 10:41:54,235 - INFO - 当前持仓方向: 空, 持仓金额: 103.20965928
+2025-02-20 10:41:54,364 - INFO - 当前持仓方向: 空, 持仓金额: 103.20965928
+2025-02-20 10:46:54,887 - INFO - 成功获取1000根1mK线数据
+2025-02-20 10:46:54,901 - INFO - 计算技术指标成功
+2025-02-20 10:46:54,903 - INFO - 填充NaN值成功
+2025-02-20 10:46:54,906 - INFO - 预测概率: 卖出=0.4676, 买入=0.2900, 持仓=0.2425
+2025-02-20 10:46:54,906 - INFO - 市场状态: RSI=57.33, MACD=0.00, ADX=17.34, 波动率=0.0016, 趋势强度=0.0004, 市场情绪=0.6008
+2025-02-20 10:46:55,152 - INFO - 当前持仓方向: 空, 持仓金额: 103.418044
+2025-02-20 10:46:55,152 - INFO - 当前价格: 0.6313, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 10:46:55,285 - INFO - 当前持仓方向: 空, 持仓金额: 103.418044
+2025-02-20 10:46:55,434 - INFO - 当前持仓方向: 空, 持仓金额: 103.418044
+2025-02-20 10:51:55,892 - INFO - 成功获取1000根1mK线数据
+2025-02-20 10:51:55,904 - INFO - 计算技术指标成功
+2025-02-20 10:51:55,907 - INFO - 填充NaN值成功
+2025-02-20 10:51:55,909 - INFO - 预测概率: 卖出=0.5505, 买入=0.2301, 持仓=0.2194
+2025-02-20 10:51:55,909 - INFO - 市场状态: RSI=75.24, MACD=0.00, ADX=23.79, 波动率=0.0017, 趋势强度=0.0019, 市场情绪=0.7777
+2025-02-20 10:51:56,155 - INFO - 当前持仓方向: 空, 持仓金额: 104.45331241
+2025-02-20 10:51:56,155 - INFO - 当前价格: 0.6381, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 10:51:56,289 - INFO - 当前持仓方向: 空, 持仓金额: 104.45331241
+2025-02-20 10:51:56,431 - INFO - 当前持仓方向: 空, 持仓金额: 104.45331241
+2025-02-20 10:56:56,898 - INFO - 成功获取1000根1mK线数据
+2025-02-20 10:56:56,911 - INFO - 计算技术指标成功
+2025-02-20 10:56:56,914 - INFO - 填充NaN值成功
+2025-02-20 10:56:56,916 - INFO - 预测概率: 卖出=0.5584, 买入=0.2246, 持仓=0.2171
+2025-02-20 10:56:56,916 - INFO - 市场状态: RSI=78.07, MACD=0.00, ADX=38.02, 波动率=0.0017, 趋势强度=0.0052, 市场情绪=0.7145
+2025-02-20 10:56:57,183 - INFO - 当前持仓方向: 空, 持仓金额: 105.3644106
+2025-02-20 10:56:57,183 - INFO - 当前价格: 0.6433, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 10:56:57,318 - INFO - 当前持仓方向: 空, 持仓金额: 105.3644106
+2025-02-20 10:56:57,468 - INFO - 当前持仓方向: 空, 持仓金额: 105.3644106
+2025-02-20 11:01:57,926 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:01:57,940 - INFO - 计算技术指标成功
+2025-02-20 11:01:57,943 - INFO - 填充NaN值成功
+2025-02-20 11:01:57,945 - INFO - 预测概率: 卖出=0.3426, 买入=0.4099, 持仓=0.2475
+2025-02-20 11:01:57,946 - INFO - 市场状态: RSI=67.63, MACD=0.00, ADX=48.64, 波动率=0.0030, 趋势强度=0.0078, 市场情绪=0.6347
+2025-02-20 11:01:58,200 - INFO - 当前持仓方向: 空, 持仓金额: 105.69087874
+2025-02-20 11:01:58,200 - INFO - 当前价格: 0.6455, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:01:58,334 - INFO - 当前持仓方向: 空, 持仓金额: 105.69087874
+2025-02-20 11:01:58,334 - INFO - 平空仓...
+2025-02-20 11:01:58,685 - INFO - 订单创建成功: {'info': {'orderId': '222745178', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu740656f4612d0dbec859ba', 'price': '0.000000', 'avgPrice': '0.6445526', 'origQty': '163.8', 'executedQty': '163.8', 'cumQty': '163.8', 'cumQuote': '105.5777200', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740020518830'}, 'id': '222745178', 'clientOrderId': 'x-xcKtGhcu740656f4612d0dbec859ba', 'timestamp': 1740020518830, 'datetime': '2025-02-20T03:01:58.830Z', 'lastTradeTimestamp': 1740020518830, 'lastUpdateTimestamp': 1740020518830, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.6445526, 'triggerPrice': None, 'amount': 163.8, 'cost': 105.57772, 'average': 0.6445526, 'filled': 163.8, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:01:58,686 - INFO - 平空仓成功: {'info': {'orderId': '222745178', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu740656f4612d0dbec859ba', 'price': '0.000000', 'avgPrice': '0.6445526', 'origQty': '163.8', 'executedQty': '163.8', 'cumQty': '163.8', 'cumQuote': '105.5777200', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740020518830'}, 'id': '222745178', 'clientOrderId': 'x-xcKtGhcu740656f4612d0dbec859ba', 'timestamp': 1740020518830, 'datetime': '2025-02-20T03:01:58.830Z', 'lastTradeTimestamp': 1740020518830, 'lastUpdateTimestamp': 1740020518830, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.6445526, 'triggerPrice': None, 'amount': 163.8, 'cost': 105.57772, 'average': 0.6445526, 'filled': 163.8, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:01:59,691 - INFO - 开多仓，数量: 159.73358966692487
+2025-02-20 11:02:00,013 - INFO - 订单创建成功: {'info': {'orderId': '222745342', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu58cc101e77757ddabcefa5', 'price': '0.000000', 'avgPrice': '0.6445000', 'origQty': '159.7', 'executedQty': '159.7', 'cumQty': '159.7', 'cumQuote': '102.9266500', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740020520174'}, 'id': '222745342', 'clientOrderId': 'x-xcKtGhcu58cc101e77757ddabcefa5', 'timestamp': 1740020520174, 'datetime': '2025-02-20T03:02:00.174Z', 'lastTradeTimestamp': 1740020520174, 'lastUpdateTimestamp': 1740020520174, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.6445, 'triggerPrice': None, 'amount': 159.7, 'cost': 102.92665, 'average': 0.6445, 'filled': 159.7, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:02:00,014 - INFO - 开多仓成功: {'info': {'orderId': '222745342', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu58cc101e77757ddabcefa5', 'price': '0.000000', 'avgPrice': '0.6445000', 'origQty': '159.7', 'executedQty': '159.7', 'cumQty': '159.7', 'cumQuote': '102.9266500', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740020520174'}, 'id': '222745342', 'clientOrderId': 'x-xcKtGhcu58cc101e77757ddabcefa5', 'timestamp': 1740020520174, 'datetime': '2025-02-20T03:02:00.174Z', 'lastTradeTimestamp': 1740020520174, 'lastUpdateTimestamp': 1740020520174, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.6445, 'triggerPrice': None, 'amount': 159.7, 'cost': 102.92665, 'average': 0.6445, 'filled': 159.7, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:02:00,237 - INFO - 当前持仓方向: 多, 持仓金额: 102.9703008
+2025-02-20 11:07:00,622 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:07:00,637 - INFO - 计算技术指标成功
+2025-02-20 11:07:00,640 - INFO - 填充NaN值成功
+2025-02-20 11:07:00,641 - INFO - 预测概率: 卖出=0.3559, 买入=0.3936, 持仓=0.2505
+2025-02-20 11:07:00,642 - INFO - 市场状态: RSI=62.69, MACD=0.00, ADX=47.30, 波动率=0.0032, 趋势强度=0.0080, 市场情绪=0.1827
+2025-02-20 11:07:00,642 - INFO - 预测置信度0.3936低于阈值0.4，保持观望
+2025-02-20 11:07:00,883 - INFO - 当前持仓方向: 多, 持仓金额: 103.02247
+2025-02-20 11:07:00,883 - INFO - 当前价格: 0.6452, AI信号: 0, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:07:01,013 - INFO - 当前持仓方向: 多, 持仓金额: 103.01172538
+2025-02-20 11:07:01,013 - INFO - 观望信号，保持当前仓位
+2025-02-20 11:07:01,163 - INFO - 当前持仓方向: 多, 持仓金额: 103.01172538
+2025-02-20 11:12:01,597 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:12:01,611 - INFO - 计算技术指标成功
+2025-02-20 11:12:01,614 - INFO - 填充NaN值成功
+2025-02-20 11:12:01,616 - INFO - 预测概率: 卖出=0.4195, 买入=0.3270, 持仓=0.2535
+2025-02-20 11:12:01,617 - INFO - 市场状态: RSI=56.36, MACD=0.00, ADX=38.96, 波动率=0.0032, 趋势强度=0.0071, 市场情绪=0.0795
+2025-02-20 11:12:01,859 - INFO - 当前持仓方向: 多, 持仓金额: 102.76544562
+2025-02-20 11:12:01,859 - INFO - 当前价格: 0.6434, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:12:01,995 - INFO - 当前持仓方向: 多, 持仓金额: 102.68693391
+2025-02-20 11:12:01,995 - INFO - 平多仓...
+2025-02-20 11:12:02,317 - INFO - 订单创建成功: {'info': {'orderId': '222832166', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcuc34966c2c16b766100509f', 'price': '0.000000', 'avgPrice': '0.6424000', 'origQty': '159.7', 'executedQty': '159.7', 'cumQty': '159.7', 'cumQuote': '102.5912800', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740021122478'}, 'id': '222832166', 'clientOrderId': 'x-xcKtGhcuc34966c2c16b766100509f', 'timestamp': 1740021122478, 'datetime': '2025-02-20T03:12:02.478Z', 'lastTradeTimestamp': 1740021122478, 'lastUpdateTimestamp': 1740021122478, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6424, 'triggerPrice': None, 'amount': 159.7, 'cost': 102.59128, 'average': 0.6424, 'filled': 159.7, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:12:02,317 - INFO - 平多仓成功: {'info': {'orderId': '222832166', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcuc34966c2c16b766100509f', 'price': '0.000000', 'avgPrice': '0.6424000', 'origQty': '159.7', 'executedQty': '159.7', 'cumQty': '159.7', 'cumQuote': '102.5912800', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740021122478'}, 'id': '222832166', 'clientOrderId': 'x-xcKtGhcuc34966c2c16b766100509f', 'timestamp': 1740021122478, 'datetime': '2025-02-20T03:12:02.478Z', 'lastTradeTimestamp': 1740021122478, 'lastUpdateTimestamp': 1740021122478, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6424, 'triggerPrice': None, 'amount': 159.7, 'cost': 102.59128, 'average': 0.6424, 'filled': 159.7, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:12:03,321 - INFO - 开空仓，数量: 160.25494580354368
+2025-02-20 11:12:03,638 - INFO - 订单创建成功: {'info': {'orderId': '222832328', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcuc0cae6989edeb470d17b67', 'price': '0.000000', 'avgPrice': '0.6424000', 'origQty': '160.2', 'executedQty': '160.2', 'cumQty': '160.2', 'cumQuote': '102.9124800', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740021123798'}, 'id': '222832328', 'clientOrderId': 'x-xcKtGhcuc0cae6989edeb470d17b67', 'timestamp': 1740021123798, 'datetime': '2025-02-20T03:12:03.798Z', 'lastTradeTimestamp': 1740021123798, 'lastUpdateTimestamp': 1740021123798, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6424, 'triggerPrice': None, 'amount': 160.2, 'cost': 102.91248, 'average': 0.6424, 'filled': 160.2, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:12:03,639 - INFO - 开空仓成功: {'info': {'orderId': '222832328', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcuc0cae6989edeb470d17b67', 'price': '0.000000', 'avgPrice': '0.6424000', 'origQty': '160.2', 'executedQty': '160.2', 'cumQty': '160.2', 'cumQuote': '102.9124800', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740021123798'}, 'id': '222832328', 'clientOrderId': 'x-xcKtGhcuc0cae6989edeb470d17b67', 'timestamp': 1740021123798, 'datetime': '2025-02-20T03:12:03.798Z', 'lastTradeTimestamp': 1740021123798, 'lastUpdateTimestamp': 1740021123798, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6424, 'triggerPrice': None, 'amount': 160.2, 'cost': 102.91248, 'average': 0.6424, 'filled': 160.2, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:12:03,793 - INFO - 当前持仓方向: 空, 持仓金额: 103.00843339
+2025-02-20 11:17:04,192 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:17:04,205 - INFO - 计算技术指标成功
+2025-02-20 11:17:04,208 - INFO - 填充NaN值成功
+2025-02-20 11:17:04,210 - INFO - 预测概率: 卖出=0.4515, 买入=0.3006, 持仓=0.2478
+2025-02-20 11:17:04,210 - INFO - 市场状态: RSI=53.85, MACD=0.00, ADX=29.90, 波动率=0.0017, 趋势强度=0.0054, 市场情绪=0.0373
+2025-02-20 11:17:04,455 - INFO - 当前持仓方向: 空, 持仓金额: 102.97656
+2025-02-20 11:17:04,455 - INFO - 当前价格: 0.6425, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:17:04,592 - INFO - 当前持仓方向: 空, 持仓金额: 102.97656
+2025-02-20 11:17:04,727 - INFO - 当前持仓方向: 空, 持仓金额: 102.97656
+2025-02-20 11:22:05,229 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:22:05,243 - INFO - 计算技术指标成功
+2025-02-20 11:22:05,246 - INFO - 填充NaN值成功
+2025-02-20 11:22:05,248 - INFO - 预测概率: 卖出=0.3927, 买入=0.3543, 持仓=0.2530
+2025-02-20 11:22:05,248 - INFO - 市场状态: RSI=51.25, MACD=0.00, ADX=25.37, 波动率=0.0013, 趋势强度=0.0042, 市场情绪=0.0440
+2025-02-20 11:22:05,248 - INFO - 预测置信度0.3927低于阈值0.4，保持观望
+2025-02-20 11:22:05,565 - INFO - 当前持仓方向: 空, 持仓金额: 102.89110451
+2025-02-20 11:22:05,565 - INFO - 当前价格: 0.642, AI信号: 0, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:22:05,689 - INFO - 当前持仓方向: 空, 持仓金额: 102.89110451
+2025-02-20 11:22:05,689 - INFO - 观望信号，保持当前仓位
+2025-02-20 11:22:05,813 - INFO - 当前持仓方向: 空, 持仓金额: 102.89110451
+2025-02-20 11:27:06,346 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:27:06,359 - INFO - 计算技术指标成功
+2025-02-20 11:27:06,361 - INFO - 填充NaN值成功
+2025-02-20 11:27:06,363 - INFO - 预测概率: 卖出=0.4622, 买入=0.2938, 持仓=0.2440
+2025-02-20 11:27:06,363 - INFO - 市场状态: RSI=57.06, MACD=0.00, ADX=19.67, 波动率=0.0011, 趋势强度=0.0036, 市场情绪=0.1976
+2025-02-20 11:27:06,607 - INFO - 当前持仓方向: 空, 持仓金额: 103.04942376
+2025-02-20 11:27:06,607 - INFO - 当前价格: 0.6435, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:27:06,747 - INFO - 当前持仓方向: 空, 持仓金额: 103.04942376
+2025-02-20 11:27:06,886 - INFO - 当前持仓方向: 空, 持仓金额: 103.04942376
+2025-02-20 11:32:07,314 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:32:07,325 - INFO - 计算技术指标成功
+2025-02-20 11:32:07,328 - INFO - 填充NaN值成功
+2025-02-20 11:32:07,329 - INFO - 预测概率: 卖出=0.4071, 买入=0.3384, 持仓=0.2545
+2025-02-20 11:32:07,330 - INFO - 市场状态: RSI=50.33, MACD=0.00, ADX=17.05, 波动率=0.0014, 趋势强度=0.0027, 市场情绪=0.0895
+2025-02-20 11:32:07,642 - INFO - 当前持仓方向: 空, 持仓金额: 102.87939709
+2025-02-20 11:32:07,642 - INFO - 当前价格: 0.6425, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:32:07,793 - INFO - 当前持仓方向: 空, 持仓金额: 102.87939709
+2025-02-20 11:32:07,926 - INFO - 当前持仓方向: 空, 持仓金额: 102.87939709
+2025-02-20 11:36:13,456 - INFO - 
+程序被用户中断
+2025-02-20 11:36:13,769 - INFO - 没有未成交的订单
+2025-02-20 11:36:13,901 - INFO - 程序已安全退出
+2025-02-20 11:36:48,815 - INFO - ==================================================
+2025-02-20 11:36:48,815 - INFO - 日志系统初始化完成 - 2025-02-20 11:36:48
+2025-02-20 11:36:48,815 - INFO - ==================================================
+2025-02-20 11:36:50,076 - INFO - 没有未成交的订单
+2025-02-20 11:36:50,199 - INFO - 当前已经是单向持仓模式
+2025-02-20 11:36:50,320 - INFO - 设置杠杆倍数 5倍 成功
+2025-02-20 11:36:50,448 - INFO - 当前已经是CROSSED保证金模式
+2025-02-20 11:36:50,448 - INFO - 交易器初始化成功
+2025-02-20 11:36:50,449 - INFO - 模型输入维度: 38
+2025-02-20 11:36:50,708 - INFO - 深度学习模型初始化成功
+2025-02-20 11:36:50,708 - INFO - 获取历史K线数据...
+2025-02-20 11:36:50,829 - INFO - 成功获取205根1hK线数据
+2025-02-20 11:36:50,829 - INFO - 成功获取205根K线数据
+2025-02-20 11:36:50,838 - INFO - 计算技术指标成功
+2025-02-20 11:36:50,840 - INFO - 填充NaN值成功
+2025-02-20 11:36:50,884 - INFO - Epoch 1/20:
+2025-02-20 11:36:50,884 - INFO - Train Loss: 1.0857, Val Loss: 1.0955, Accuracy: 39.02%
+2025-02-20 11:36:50,907 - INFO - Epoch 2/20:
+2025-02-20 11:36:50,908 - INFO - Train Loss: 1.0609, Val Loss: 1.0848, Accuracy: 39.02%
+2025-02-20 11:36:50,931 - INFO - Epoch 3/20:
+2025-02-20 11:36:50,931 - INFO - Train Loss: 1.0363, Val Loss: 1.0768, Accuracy: 43.90%
+2025-02-20 11:36:50,954 - INFO - Epoch 4/20:
+2025-02-20 11:36:50,954 - INFO - Train Loss: 1.0050, Val Loss: 1.0733, Accuracy: 43.90%
+2025-02-20 11:36:50,978 - INFO - Epoch 5/20:
+2025-02-20 11:36:50,978 - INFO - Train Loss: 0.9881, Val Loss: 1.0622, Accuracy: 43.90%
+2025-02-20 11:36:51,001 - INFO - Epoch 6/20:
+2025-02-20 11:36:51,001 - INFO - Train Loss: 0.9825, Val Loss: 1.0541, Accuracy: 39.02%
+2025-02-20 11:36:51,024 - INFO - Epoch 7/20:
+2025-02-20 11:36:51,024 - INFO - Train Loss: 0.9787, Val Loss: 1.0443, Accuracy: 43.90%
+2025-02-20 11:36:51,048 - INFO - Epoch 8/20:
+2025-02-20 11:36:51,048 - INFO - Train Loss: 0.9432, Val Loss: 1.0333, Accuracy: 43.90%
+2025-02-20 11:36:51,071 - INFO - Epoch 9/20:
+2025-02-20 11:36:51,071 - INFO - Train Loss: 0.9709, Val Loss: 1.0322, Accuracy: 43.90%
+2025-02-20 11:36:51,094 - INFO - Epoch 10/20:
+2025-02-20 11:36:51,095 - INFO - Train Loss: 0.9363, Val Loss: 1.0349, Accuracy: 41.46%
+2025-02-20 11:36:51,117 - INFO - Epoch 11/20:
+2025-02-20 11:36:51,118 - INFO - Train Loss: 0.9605, Val Loss: 1.0382, Accuracy: 43.90%
+2025-02-20 11:36:51,141 - INFO - Epoch 12/20:
+2025-02-20 11:36:51,141 - INFO - Train Loss: 0.9713, Val Loss: 1.0413, Accuracy: 43.90%
+2025-02-20 11:36:51,164 - INFO - Epoch 13/20:
+2025-02-20 11:36:51,164 - INFO - Train Loss: 0.9411, Val Loss: 1.0399, Accuracy: 41.46%
+2025-02-20 11:36:51,187 - INFO - Epoch 14/20:
+2025-02-20 11:36:51,187 - INFO - Train Loss: 0.8939, Val Loss: 1.0369, Accuracy: 43.90%
+2025-02-20 11:36:51,187 - INFO - Early stopping at epoch 14
+2025-02-20 11:36:51,187 - INFO - 模型训练完成
+2025-02-20 11:36:51,187 - INFO - 模型训练成功
+2025-02-20 11:36:51,310 - INFO - USDT余额: 可用=99.27116364, 总额=99.29125163
+2025-02-20 11:36:51,310 - INFO - 当前账户余额: 可用=99.27116364 USDT, 总额=99.29125163 USDT
+2025-02-20 11:36:51,622 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:36:51,635 - INFO - 计算技术指标成功
+2025-02-20 11:36:51,638 - INFO - 填充NaN值成功
+2025-02-20 11:36:51,640 - INFO - 预测概率: 卖出=0.2670, 买入=0.5065, 持仓=0.2265
+2025-02-20 11:36:51,640 - INFO - 市场状态: RSI=62.89, MACD=0.00, ADX=17.98, 波动率=0.0017, 趋势强度=0.0033, 市场情绪=0.6916
+2025-02-20 11:36:52,108 - INFO - 当前价格: 0.646, AI信号: 1
+2025-02-20 11:36:52,261 - INFO - 开多仓，数量: 153.67053195046438
+2025-02-20 11:36:52,589 - INFO - 订单创建成功: {'info': {'orderId': '223052720', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu8671257c1ce96a385ff23f', 'price': '0.000000', 'avgPrice': '0.6460000', 'origQty': '153.6', 'executedQty': '153.6', 'cumQty': '153.6', 'cumQuote': '99.2256000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740022612715'}, 'id': '223052720', 'clientOrderId': 'x-xcKtGhcu8671257c1ce96a385ff23f', 'timestamp': 1740022612715, 'datetime': '2025-02-20T03:36:52.715Z', 'lastTradeTimestamp': 1740022612715, 'lastUpdateTimestamp': 1740022612715, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.646, 'triggerPrice': None, 'amount': 153.6, 'cost': 99.2256, 'average': 0.646, 'filled': 153.6, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:36:52,590 - INFO - 开多仓成功: {'info': {'orderId': '223052720', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu8671257c1ce96a385ff23f', 'price': '0.000000', 'avgPrice': '0.6460000', 'origQty': '153.6', 'executedQty': '153.6', 'cumQty': '153.6', 'cumQuote': '99.2256000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740022612715'}, 'id': '223052720', 'clientOrderId': 'x-xcKtGhcu8671257c1ce96a385ff23f', 'timestamp': 1740022612715, 'datetime': '2025-02-20T03:36:52.715Z', 'lastTradeTimestamp': 1740022612715, 'lastUpdateTimestamp': 1740022612715, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.646, 'triggerPrice': None, 'amount': 153.6, 'cost': 99.2256, 'average': 0.646, 'filled': 153.6, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:36:52,737 - INFO - 当前持仓方向: 多, 持仓金额: 99.20770252
+2025-02-20 11:37:52,949 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:37:52,962 - INFO - 计算技术指标成功
+2025-02-20 11:37:52,964 - INFO - 填充NaN值成功
+2025-02-20 11:37:52,966 - INFO - 预测概率: 卖出=0.2719, 买入=0.5005, 持仓=0.2276
+2025-02-20 11:37:52,966 - INFO - 市场状态: RSI=63.42, MACD=0.00, ADX=18.78, 波动率=0.0018, 趋势强度=0.0034, 市场情绪=0.6994
+2025-02-20 11:37:53,219 - INFO - 当前持仓方向: 多, 持仓金额: 99.32310374
+2025-02-20 11:37:53,219 - INFO - 当前价格: 0.6466, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:37:53,350 - INFO - 当前持仓方向: 多, 持仓金额: 99.32310374
+2025-02-20 11:37:53,495 - INFO - 当前持仓方向: 多, 持仓金额: 99.32310374
+2025-02-20 11:38:53,669 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:38:53,682 - INFO - 计算技术指标成功
+2025-02-20 11:38:53,685 - INFO - 填充NaN值成功
+2025-02-20 11:38:53,687 - INFO - 预测概率: 卖出=0.2731, 买入=0.4984, 持仓=0.2284
+2025-02-20 11:38:53,687 - INFO - 市场状态: RSI=63.24, MACD=0.00, ADX=19.52, 波动率=0.0017, 趋势强度=0.0035, 市场情绪=0.6784
+2025-02-20 11:38:53,948 - INFO - 当前持仓方向: 多, 持仓金额: 99.3024
+2025-02-20 11:38:53,948 - INFO - 当前价格: 0.6465, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:38:54,096 - INFO - 当前持仓方向: 多, 持仓金额: 99.3024
+2025-02-20 11:38:54,244 - INFO - 当前持仓方向: 多, 持仓金额: 99.3024
+2025-02-20 11:39:54,438 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:39:54,451 - INFO - 计算技术指标成功
+2025-02-20 11:39:54,454 - INFO - 填充NaN值成功
+2025-02-20 11:39:54,456 - INFO - 预测概率: 卖出=0.2751, 买入=0.4946, 持仓=0.2303
+2025-02-20 11:39:54,456 - INFO - 市场状态: RSI=58.66, MACD=0.00, ADX=20.27, 波动率=0.0017, 趋势强度=0.0034, 市场情绪=0.6157
+2025-02-20 11:39:54,718 - INFO - 当前持仓方向: 多, 持仓金额: 99.17654937
+2025-02-20 11:39:54,718 - INFO - 当前价格: 0.6458, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:39:54,864 - INFO - 当前持仓方向: 多, 持仓金额: 99.17654937
+2025-02-20 11:39:55,005 - INFO - 当前持仓方向: 多, 持仓金额: 99.17271859
+2025-02-20 11:40:55,187 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:40:55,199 - INFO - 计算技术指标成功
+2025-02-20 11:40:55,202 - INFO - 填充NaN值成功
+2025-02-20 11:40:55,204 - INFO - 预测概率: 卖出=0.2666, 买入=0.5059, 持仓=0.2275
+2025-02-20 11:40:55,205 - INFO - 市场状态: RSI=60.03, MACD=0.00, ADX=20.86, 波动率=0.0017, 趋势强度=0.0035, 市场情绪=0.6253
+2025-02-20 11:40:55,467 - INFO - 当前持仓方向: 多, 持仓金额: 99.21883238
+2025-02-20 11:40:55,467 - INFO - 当前价格: 0.6459, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:40:55,606 - INFO - 当前持仓方向: 多, 持仓金额: 99.21883238
+2025-02-20 11:40:55,749 - INFO - 当前持仓方向: 多, 持仓金额: 99.21883238
+2025-02-20 11:41:55,918 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:41:55,930 - INFO - 计算技术指标成功
+2025-02-20 11:41:55,933 - INFO - 填充NaN值成功
+2025-02-20 11:41:55,934 - INFO - 预测概率: 卖出=0.2639, 买入=0.5101, 持仓=0.2260
+2025-02-20 11:41:55,935 - INFO - 市场状态: RSI=52.51, MACD=0.00, ADX=20.36, 波动率=0.0018, 趋势强度=0.0034, 市场情绪=0.5336
+2025-02-20 11:41:56,195 - INFO - 当前持仓方向: 多, 持仓金额: 99.03292416
+2025-02-20 11:41:56,195 - INFO - 当前价格: 0.6443, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:41:56,324 - INFO - 当前持仓方向: 多, 持仓金额: 99.03292416
+2025-02-20 11:41:56,470 - INFO - 当前持仓方向: 多, 持仓金额: 99.03292416
+2025-02-20 11:42:56,655 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:42:56,668 - INFO - 计算技术指标成功
+2025-02-20 11:42:56,671 - INFO - 填充NaN值成功
+2025-02-20 11:42:56,673 - INFO - 预测概率: 卖出=0.2691, 买入=0.5036, 持仓=0.2273
+2025-02-20 11:42:56,674 - INFO - 市场状态: RSI=56.47, MACD=0.00, ADX=19.72, 波动率=0.0018, 趋势强度=0.0033, 市场情绪=0.5843
+2025-02-20 11:42:56,943 - INFO - 当前持仓方向: 多, 持仓金额: 99.13344
+2025-02-20 11:42:56,943 - INFO - 当前价格: 0.6449, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:42:57,084 - INFO - 当前持仓方向: 多, 持仓金额: 99.13344
+2025-02-20 11:42:57,234 - INFO - 当前持仓方向: 多, 持仓金额: 99.13344
+2025-02-20 11:43:57,385 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:43:57,398 - INFO - 计算技术指标成功
+2025-02-20 11:43:57,401 - INFO - 填充NaN值成功
+2025-02-20 11:43:57,403 - INFO - 预测概率: 卖出=0.2674, 买入=0.5058, 持仓=0.2269
+2025-02-20 11:43:57,403 - INFO - 市场状态: RSI=55.12, MACD=0.00, ADX=19.37, 波动率=0.0018, 趋势强度=0.0033, 市场情绪=0.5619
+2025-02-20 11:43:57,663 - INFO - 当前持仓方向: 多, 持仓金额: 99.06590515
+2025-02-20 11:43:57,663 - INFO - 当前价格: 0.6451, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:43:57,804 - INFO - 当前持仓方向: 多, 持仓金额: 99.06590515
+2025-02-20 11:43:57,948 - INFO - 当前持仓方向: 多, 持仓金额: 99.05664
+2025-02-20 11:44:58,140 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:44:58,152 - INFO - 计算技术指标成功
+2025-02-20 11:44:58,155 - INFO - 填充NaN值成功
+2025-02-20 11:44:58,157 - INFO - 预测概率: 卖出=0.3604, 买入=0.4030, 持仓=0.2366
+2025-02-20 11:44:58,157 - INFO - 市场状态: RSI=45.41, MACD=0.00, ADX=18.89, 波动率=0.0020, 趋势强度=0.0030, 市场情绪=0.0251
+2025-02-20 11:44:58,413 - INFO - 当前持仓方向: 多, 持仓金额: 98.688
+2025-02-20 11:44:58,413 - INFO - 当前价格: 0.6426, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:44:58,557 - INFO - 当前持仓方向: 多, 持仓金额: 98.688
+2025-02-20 11:44:58,697 - INFO - 当前持仓方向: 多, 持仓金额: 98.688
+2025-02-20 11:45:58,869 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:45:58,883 - INFO - 计算技术指标成功
+2025-02-20 11:45:58,887 - INFO - 填充NaN值成功
+2025-02-20 11:45:58,889 - INFO - 预测概率: 卖出=0.2940, 买入=0.4747, 持仓=0.2312
+2025-02-20 11:45:58,889 - INFO - 市场状态: RSI=49.70, MACD=0.00, ADX=18.44, 波动率=0.0020, 趋势强度=0.0028, 市场情绪=0.0841
+2025-02-20 11:45:59,166 - INFO - 当前持仓方向: 多, 持仓金额: 98.88798259
+2025-02-20 11:45:59,166 - INFO - 当前价格: 0.6436, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:45:59,297 - INFO - 当前持仓方向: 多, 持仓金额: 98.88798259
+2025-02-20 11:45:59,457 - INFO - 当前持仓方向: 多, 持仓金额: 98.88798259
+2025-02-20 11:46:59,629 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:46:59,641 - INFO - 计算技术指标成功
+2025-02-20 11:46:59,644 - INFO - 填充NaN值成功
+2025-02-20 11:46:59,646 - INFO - 预测概率: 卖出=0.2635, 买入=0.5110, 持仓=0.2254
+2025-02-20 11:46:59,646 - INFO - 市场状态: RSI=49.96, MACD=0.00, ADX=17.32, 波动率=0.0021, 趋势强度=0.0027, 市场情绪=0.0872
+2025-02-20 11:46:59,907 - INFO - 当前持仓方向: 多, 持仓金额: 98.94912
+2025-02-20 11:46:59,907 - INFO - 当前价格: 0.6435, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:47:00,042 - INFO - 当前持仓方向: 多, 持仓金额: 98.94912
+2025-02-20 11:47:00,195 - INFO - 当前持仓方向: 多, 持仓金额: 98.94912
+2025-02-20 11:48:00,387 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:48:00,400 - INFO - 计算技术指标成功
+2025-02-20 11:48:00,403 - INFO - 填充NaN值成功
+2025-02-20 11:48:00,405 - INFO - 预测概率: 卖出=0.3128, 买入=0.4515, 持仓=0.2357
+2025-02-20 11:48:00,405 - INFO - 市场状态: RSI=57.00, MACD=0.00, ADX=17.29, 波动率=0.0021, 趋势强度=0.0028, 市场情绪=0.1916
+2025-02-20 11:48:00,686 - INFO - 当前持仓方向: 多, 持仓金额: 99.18910617
+2025-02-20 11:48:00,686 - INFO - 当前价格: 0.6463, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:48:00,840 - INFO - 当前持仓方向: 多, 持仓金额: 99.18910617
+2025-02-20 11:48:00,994 - INFO - 当前持仓方向: 多, 持仓金额: 99.18814464
+2025-02-20 11:49:01,178 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:49:01,192 - INFO - 计算技术指标成功
+2025-02-20 11:49:01,195 - INFO - 填充NaN值成功
+2025-02-20 11:49:01,197 - INFO - 预测概率: 卖出=0.2888, 买入=0.4785, 持仓=0.2327
+2025-02-20 11:49:01,197 - INFO - 市场状态: RSI=57.71, MACD=0.00, ADX=17.26, 波动率=0.0019, 趋势强度=0.0028, 市场情绪=0.1976
+2025-02-20 11:49:01,462 - INFO - 当前持仓方向: 多, 持仓金额: 99.23502796
+2025-02-20 11:49:01,462 - INFO - 当前价格: 0.6457, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:49:01,605 - INFO - 当前持仓方向: 多, 持仓金额: 99.23502796
+2025-02-20 11:49:01,747 - INFO - 当前持仓方向: 多, 持仓金额: 99.23502796
+2025-02-20 11:50:01,949 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:50:01,962 - INFO - 计算技术指标成功
+2025-02-20 11:50:01,965 - INFO - 填充NaN值成功
+2025-02-20 11:50:01,967 - INFO - 预测概率: 卖出=0.2848, 买入=0.4819, 持仓=0.2333
+2025-02-20 11:50:01,967 - INFO - 市场状态: RSI=61.89, MACD=0.00, ADX=18.23, 波动率=0.0019, 趋势强度=0.0029, 市场情绪=0.6691
+2025-02-20 11:50:02,232 - INFO - 当前持仓方向: 多, 持仓金额: 99.4698455
+2025-02-20 11:50:02,232 - INFO - 当前价格: 0.6478, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:50:02,375 - INFO - 当前持仓方向: 多, 持仓金额: 99.4698455
+2025-02-20 11:50:02,522 - INFO - 当前持仓方向: 多, 持仓金额: 99.4698455
+2025-02-20 11:51:02,698 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:51:02,709 - INFO - 计算技术指标成功
+2025-02-20 11:51:02,712 - INFO - 填充NaN值成功
+2025-02-20 11:51:02,713 - INFO - 预测概率: 卖出=0.5607, 买入=0.2239, 持仓=0.2154
+2025-02-20 11:51:02,714 - INFO - 市场状态: RSI=59.60, MACD=0.00, ADX=19.73, 波动率=0.0019, 趋势强度=0.0030, 市场情绪=0.6311
+2025-02-20 11:51:02,972 - INFO - 当前持仓方向: 多, 持仓金额: 99.39734323
+2025-02-20 11:51:02,973 - INFO - 当前价格: 0.6486, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:51:03,114 - INFO - 当前持仓方向: 多, 持仓金额: 99.39734323
+2025-02-20 11:51:03,114 - INFO - 平多仓...
+2025-02-20 11:51:03,446 - INFO - 订单创建成功: {'info': {'orderId': '223166272', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu6eb56012fc5578cd91f12b', 'price': '0.000000', 'avgPrice': '0.6469428', 'origQty': '153.6', 'executedQty': '153.6', 'cumQty': '153.6', 'cumQuote': '99.3704200', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740023463601'}, 'id': '223166272', 'clientOrderId': 'x-xcKtGhcu6eb56012fc5578cd91f12b', 'timestamp': 1740023463601, 'datetime': '2025-02-20T03:51:03.601Z', 'lastTradeTimestamp': 1740023463601, 'lastUpdateTimestamp': 1740023463601, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6469428, 'triggerPrice': None, 'amount': 153.6, 'cost': 99.37042, 'average': 0.6469428, 'filled': 153.6, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:51:03,447 - INFO - 平多仓成功: {'info': {'orderId': '223166272', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu6eb56012fc5578cd91f12b', 'price': '0.000000', 'avgPrice': '0.6469428', 'origQty': '153.6', 'executedQty': '153.6', 'cumQty': '153.6', 'cumQuote': '99.3704200', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740023463601'}, 'id': '223166272', 'clientOrderId': 'x-xcKtGhcu6eb56012fc5578cd91f12b', 'timestamp': 1740023463601, 'datetime': '2025-02-20T03:51:03.601Z', 'lastTradeTimestamp': 1740023463601, 'lastUpdateTimestamp': 1740023463601, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6469428, 'triggerPrice': None, 'amount': 153.6, 'cost': 99.37042, 'average': 0.6469428, 'filled': 153.6, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:51:04,450 - INFO - 开空仓，数量: 153.05452303422757
+2025-02-20 11:51:04,789 - INFO - 订单创建成功: {'info': {'orderId': '223166448', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu71e433b2eec8906cd44b87', 'price': '0.000000', 'avgPrice': '0.6467000', 'origQty': '153.0', 'executedQty': '153.0', 'cumQty': '153.0', 'cumQuote': '98.9451000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740023464946'}, 'id': '223166448', 'clientOrderId': 'x-xcKtGhcu71e433b2eec8906cd44b87', 'timestamp': 1740023464946, 'datetime': '2025-02-20T03:51:04.946Z', 'lastTradeTimestamp': 1740023464946, 'lastUpdateTimestamp': 1740023464946, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6467, 'triggerPrice': None, 'amount': 153.0, 'cost': 98.9451, 'average': 0.6467, 'filled': 153.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:51:04,790 - INFO - 开空仓成功: {'info': {'orderId': '223166448', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu71e433b2eec8906cd44b87', 'price': '0.000000', 'avgPrice': '0.6467000', 'origQty': '153.0', 'executedQty': '153.0', 'cumQty': '153.0', 'cumQuote': '98.9451000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740023464946'}, 'id': '223166448', 'clientOrderId': 'x-xcKtGhcu71e433b2eec8906cd44b87', 'timestamp': 1740023464946, 'datetime': '2025-02-20T03:51:04.946Z', 'lastTradeTimestamp': 1740023464946, 'lastUpdateTimestamp': 1740023464946, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6467, 'triggerPrice': None, 'amount': 153.0, 'cost': 98.9451, 'average': 0.6467, 'filled': 153.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:51:04,933 - INFO - 当前持仓方向: 空, 持仓金额: 99.00831807
+2025-02-20 11:52:05,108 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:52:05,121 - INFO - 计算技术指标成功
+2025-02-20 11:52:05,124 - INFO - 填充NaN值成功
+2025-02-20 11:52:05,127 - INFO - 预测概率: 卖出=0.2584, 买入=0.5162, 持仓=0.2253
+2025-02-20 11:52:05,127 - INFO - 市场状态: RSI=56.20, MACD=0.00, ADX=21.54, 波动率=0.0019, 趋势强度=0.0030, 市场情绪=0.5707
+2025-02-20 11:52:05,390 - INFO - 当前持仓方向: 空, 持仓金额: 98.94845835
+2025-02-20 11:52:05,390 - INFO - 当前价格: 0.6463, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:52:05,535 - INFO - 当前持仓方向: 空, 持仓金额: 98.94845835
+2025-02-20 11:52:05,535 - INFO - 平空仓...
+2025-02-20 11:52:05,867 - INFO - 订单创建成功: {'info': {'orderId': '223173935', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu5faf8d7eb637d88dedc4c2', 'price': '0.000000', 'avgPrice': '0.6463000', 'origQty': '153.0', 'executedQty': '153.0', 'cumQty': '153.0', 'cumQuote': '98.8839000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740023526030'}, 'id': '223173935', 'clientOrderId': 'x-xcKtGhcu5faf8d7eb637d88dedc4c2', 'timestamp': 1740023526030, 'datetime': '2025-02-20T03:52:06.030Z', 'lastTradeTimestamp': 1740023526030, 'lastUpdateTimestamp': 1740023526030, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.6463, 'triggerPrice': None, 'amount': 153.0, 'cost': 98.8839, 'average': 0.6463, 'filled': 153.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:52:05,868 - INFO - 平空仓成功: {'info': {'orderId': '223173935', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu5faf8d7eb637d88dedc4c2', 'price': '0.000000', 'avgPrice': '0.6463000', 'origQty': '153.0', 'executedQty': '153.0', 'cumQty': '153.0', 'cumQuote': '98.8839000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740023526030'}, 'id': '223173935', 'clientOrderId': 'x-xcKtGhcu5faf8d7eb637d88dedc4c2', 'timestamp': 1740023526030, 'datetime': '2025-02-20T03:52:06.030Z', 'lastTradeTimestamp': 1740023526030, 'lastUpdateTimestamp': 1740023526030, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.6463, 'triggerPrice': None, 'amount': 153.0, 'cost': 98.8839, 'average': 0.6463, 'filled': 153.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:52:06,872 - INFO - 开多仓，数量: 153.59920105214297
+2025-02-20 11:52:07,194 - INFO - 订单创建成功: {'info': {'orderId': '223174390', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu94f0003b82850ad516455c', 'price': '0.000000', 'avgPrice': '0.6460000', 'origQty': '153.5', 'executedQty': '153.5', 'cumQty': '153.5', 'cumQuote': '99.1610000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740023527365'}, 'id': '223174390', 'clientOrderId': 'x-xcKtGhcu94f0003b82850ad516455c', 'timestamp': 1740023527365, 'datetime': '2025-02-20T03:52:07.365Z', 'lastTradeTimestamp': 1740023527365, 'lastUpdateTimestamp': 1740023527365, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.646, 'triggerPrice': None, 'amount': 153.5, 'cost': 99.161, 'average': 0.646, 'filled': 153.5, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:52:07,195 - INFO - 开多仓成功: {'info': {'orderId': '223174390', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu94f0003b82850ad516455c', 'price': '0.000000', 'avgPrice': '0.6460000', 'origQty': '153.5', 'executedQty': '153.5', 'cumQty': '153.5', 'cumQuote': '99.1610000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740023527365'}, 'id': '223174390', 'clientOrderId': 'x-xcKtGhcu94f0003b82850ad516455c', 'timestamp': 1740023527365, 'datetime': '2025-02-20T03:52:07.365Z', 'lastTradeTimestamp': 1740023527365, 'lastUpdateTimestamp': 1740023527365, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.646, 'triggerPrice': None, 'amount': 153.5, 'cost': 99.161, 'average': 0.646, 'filled': 153.5, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 11:52:07,341 - INFO - 当前持仓方向: 多, 持仓金额: 99.2713358
+2025-02-20 11:53:07,516 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:53:07,527 - INFO - 计算技术指标成功
+2025-02-20 11:53:07,530 - INFO - 填充NaN值成功
+2025-02-20 11:53:07,532 - INFO - 预测概率: 卖出=0.2572, 买入=0.5181, 持仓=0.2247
+2025-02-20 11:53:07,532 - INFO - 市场状态: RSI=56.20, MACD=0.00, ADX=21.12, 波动率=0.0019, 趋势强度=0.0030, 市场情绪=0.5651
+2025-02-20 11:53:07,793 - INFO - 当前持仓方向: 多, 持仓金额: 99.2224
+2025-02-20 11:53:07,793 - INFO - 当前价格: 0.6463, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:53:07,946 - INFO - 当前持仓方向: 多, 持仓金额: 99.20705
+2025-02-20 11:53:08,087 - INFO - 当前持仓方向: 多, 持仓金额: 99.20705
+2025-02-20 11:54:08,256 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:54:08,268 - INFO - 计算技术指标成功
+2025-02-20 11:54:08,271 - INFO - 填充NaN值成功
+2025-02-20 11:54:08,272 - INFO - 预测概率: 卖出=0.2584, 买入=0.5165, 持仓=0.2251
+2025-02-20 11:54:08,272 - INFO - 市场状态: RSI=58.99, MACD=0.00, ADX=21.77, 波动率=0.0018, 趋势强度=0.0031, 市场情绪=0.6140
+2025-02-20 11:54:08,542 - INFO - 当前持仓方向: 多, 持仓金额: 99.32985
+2025-02-20 11:54:08,542 - INFO - 当前价格: 0.6471, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:54:08,687 - INFO - 当前持仓方向: 多, 持仓金额: 99.32985
+2025-02-20 11:54:08,827 - INFO - 当前持仓方向: 多, 持仓金额: 99.32985
+2025-02-20 11:55:08,996 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:55:09,010 - INFO - 计算技术指标成功
+2025-02-20 11:55:09,013 - INFO - 填充NaN值成功
+2025-02-20 11:55:09,015 - INFO - 预测概率: 卖出=0.2572, 买入=0.5178, 持仓=0.2251
+2025-02-20 11:55:09,015 - INFO - 市场状态: RSI=61.01, MACD=0.00, ADX=22.29, 波动率=0.0018, 趋势强度=0.0032, 市场情绪=0.6454
+2025-02-20 11:55:09,268 - INFO - 当前持仓方向: 多, 持仓金额: 99.42195
+2025-02-20 11:55:09,268 - INFO - 当前价格: 0.6477, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:55:09,419 - INFO - 当前持仓方向: 多, 持仓金额: 99.42195
+2025-02-20 11:55:09,574 - INFO - 当前持仓方向: 多, 持仓金额: 99.42195
+2025-02-20 11:56:09,744 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:56:09,757 - INFO - 计算技术指标成功
+2025-02-20 11:56:09,760 - INFO - 填充NaN值成功
+2025-02-20 11:56:09,762 - INFO - 预测概率: 卖出=0.2562, 买入=0.5188, 持仓=0.2250
+2025-02-20 11:56:09,762 - INFO - 市场状态: RSI=61.76, MACD=0.00, ADX=23.44, 波动率=0.0017, 趋势强度=0.0032, 市场情绪=0.6469
+2025-02-20 11:56:10,037 - INFO - 当前持仓方向: 多, 持仓金额: 99.45203446
+2025-02-20 11:56:10,037 - INFO - 当前价格: 0.6475, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:56:10,179 - INFO - 当前持仓方向: 多, 持仓金额: 99.45203446
+2025-02-20 11:56:10,319 - INFO - 当前持仓方向: 多, 持仓金额: 99.45203446
+2025-02-20 11:57:10,484 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:57:10,497 - INFO - 计算技术指标成功
+2025-02-20 11:57:10,500 - INFO - 填充NaN值成功
+2025-02-20 11:57:10,502 - INFO - 预测概率: 卖出=0.2547, 买入=0.5210, 持仓=0.2243
+2025-02-20 11:57:10,502 - INFO - 市场状态: RSI=59.23, MACD=0.00, ADX=21.70, 波动率=0.0017, 趋势强度=0.0032, 市场情绪=0.6045
+2025-02-20 11:57:10,766 - INFO - 当前持仓方向: 多, 持仓金额: 99.36055
+2025-02-20 11:57:10,766 - INFO - 当前价格: 0.6473, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:57:10,909 - INFO - 当前持仓方向: 多, 持仓金额: 99.36055
+2025-02-20 11:57:11,051 - INFO - 当前持仓方向: 多, 持仓金额: 99.36055
+2025-02-20 11:58:11,223 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:58:11,235 - INFO - 计算技术指标成功
+2025-02-20 11:58:11,238 - INFO - 填充NaN值成功
+2025-02-20 11:58:11,240 - INFO - 预测概率: 卖出=0.2551, 买入=0.5208, 持仓=0.2241
+2025-02-20 11:58:11,240 - INFO - 市场状态: RSI=56.44, MACD=0.00, ADX=21.28, 波动率=0.0017, 趋势强度=0.0031, 市场情绪=0.1688
+2025-02-20 11:58:11,507 - INFO - 当前持仓方向: 多, 持仓金额: 99.31378008
+2025-02-20 11:58:11,507 - INFO - 当前价格: 0.6468, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:58:11,653 - INFO - 当前持仓方向: 多, 持仓金额: 99.31378008
+2025-02-20 11:58:11,830 - INFO - 当前持仓方向: 多, 持仓金额: 99.31378008
+2025-02-20 11:59:12,074 - INFO - 成功获取1000根1mK线数据
+2025-02-20 11:59:12,085 - INFO - 计算技术指标成功
+2025-02-20 11:59:12,088 - INFO - 填充NaN值成功
+2025-02-20 11:59:12,090 - INFO - 预测概率: 卖出=0.2578, 买入=0.5171, 持仓=0.2251
+2025-02-20 11:59:12,090 - INFO - 市场状态: RSI=58.73, MACD=0.00, ADX=20.73, 波动率=0.0017, 趋势强度=0.0031, 市场情绪=0.5979
+2025-02-20 11:59:12,356 - INFO - 当前持仓方向: 多, 持仓金额: 99.3354727
+2025-02-20 11:59:12,356 - INFO - 当前价格: 0.6475, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 11:59:12,502 - INFO - 当前持仓方向: 多, 持仓金额: 99.3354727
+2025-02-20 11:59:12,650 - INFO - 当前持仓方向: 多, 持仓金额: 99.3354727
+2025-02-20 12:00:12,824 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:00:12,837 - INFO - 计算技术指标成功
+2025-02-20 12:00:12,840 - INFO - 填充NaN值成功
+2025-02-20 12:00:12,842 - INFO - 预测概率: 卖出=0.2588, 买入=0.5167, 持仓=0.2245
+2025-02-20 12:00:12,842 - INFO - 市场状态: RSI=51.92, MACD=0.00, ADX=18.65, 波动率=0.0018, 趋势强度=0.0029, 市场情绪=0.1130
+2025-02-20 12:00:13,149 - INFO - 当前持仓方向: 多, 持仓金额: 99.13967578
+2025-02-20 12:00:13,149 - INFO - 当前价格: 0.6457, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:00:13,296 - INFO - 当前持仓方向: 多, 持仓金额: 99.13967578
+2025-02-20 12:00:13,439 - INFO - 当前持仓方向: 多, 持仓金额: 99.13967578
+2025-02-20 12:01:13,606 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:01:13,617 - INFO - 计算技术指标成功
+2025-02-20 12:01:13,620 - INFO - 填充NaN值成功
+2025-02-20 12:01:13,622 - INFO - 预测概率: 卖出=0.2631, 买入=0.5096, 持仓=0.2272
+2025-02-20 12:01:13,622 - INFO - 市场状态: RSI=66.03, MACD=0.00, ADX=20.43, 波动率=0.0022, 趋势强度=0.0034, 市场情绪=0.7187
+2025-02-20 12:01:13,888 - INFO - 当前持仓方向: 多, 持仓金额: 100.11867268
+2025-02-20 12:01:13,889 - INFO - 当前价格: 0.6508, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:01:14,221 - INFO - 当前持仓方向: 多, 持仓金额: 100.11867268
+2025-02-20 12:01:14,384 - INFO - 当前持仓方向: 多, 持仓金额: 100.11867268
+2025-02-20 12:02:14,557 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:02:14,569 - INFO - 计算技术指标成功
+2025-02-20 12:02:14,572 - INFO - 填充NaN值成功
+2025-02-20 12:02:14,574 - INFO - 预测概率: 卖出=0.2608, 买入=0.5135, 持仓=0.2257
+2025-02-20 12:02:14,575 - INFO - 市场状态: RSI=65.74, MACD=0.00, ADX=23.76, 波动率=0.0027, 趋势强度=0.0041, 市场情绪=0.7032
+2025-02-20 12:02:14,848 - INFO - 当前持仓方向: 多, 持仓金额: 100.24642613
+2025-02-20 12:02:14,848 - INFO - 当前价格: 0.6528, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:02:14,994 - INFO - 当前持仓方向: 多, 持仓金额: 100.24642459
+2025-02-20 12:02:15,133 - INFO - 当前持仓方向: 多, 持仓金额: 100.24642459
+2025-02-20 12:03:15,306 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:03:15,317 - INFO - 计算技术指标成功
+2025-02-20 12:03:15,320 - INFO - 填充NaN值成功
+2025-02-20 12:03:15,322 - INFO - 预测概率: 卖出=0.2511, 买入=0.5252, 持仓=0.2236
+2025-02-20 12:03:15,322 - INFO - 市场状态: RSI=60.77, MACD=0.00, ADX=25.47, 波动率=0.0028, 趋势强度=0.0041, 市场情绪=0.6383
+2025-02-20 12:03:15,586 - INFO - 当前持仓方向: 多, 持仓金额: 99.94949266
+2025-02-20 12:03:15,586 - INFO - 当前价格: 0.6516, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:03:15,732 - INFO - 当前持仓方向: 多, 持仓金额: 99.94949266
+2025-02-20 12:03:15,875 - INFO - 当前持仓方向: 多, 持仓金额: 99.94949266
+2025-02-20 12:04:16,047 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:04:16,059 - INFO - 计算技术指标成功
+2025-02-20 12:04:16,062 - INFO - 填充NaN值成功
+2025-02-20 12:04:16,064 - INFO - 预测概率: 卖出=0.2514, 买入=0.5250, 持仓=0.2236
+2025-02-20 12:04:16,064 - INFO - 市场状态: RSI=58.23, MACD=0.00, ADX=25.94, 波动率=0.0027, 趋势强度=0.0041, 市场情绪=0.6049
+2025-02-20 12:04:16,325 - INFO - 当前持仓方向: 多, 持仓金额: 99.79861597
+2025-02-20 12:04:16,325 - INFO - 当前价格: 0.6502, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:04:16,471 - INFO - 当前持仓方向: 多, 持仓金额: 99.79861597
+2025-02-20 12:04:16,613 - INFO - 当前持仓方向: 多, 持仓金额: 99.79861597
+2025-02-20 12:05:16,787 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:05:16,799 - INFO - 计算技术指标成功
+2025-02-20 12:05:16,802 - INFO - 填充NaN值成功
+2025-02-20 12:05:16,804 - INFO - 预测概率: 卖出=0.2536, 买入=0.5227, 持仓=0.2237
+2025-02-20 12:05:16,804 - INFO - 市场状态: RSI=54.43, MACD=0.00, ADX=25.65, 波动率=0.0027, 趋势强度=0.0039, 市场情绪=0.5501
+2025-02-20 12:05:17,081 - INFO - 当前持仓方向: 多, 持仓金额: 99.61791884
+2025-02-20 12:05:17,082 - INFO - 当前价格: 0.6489, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:05:17,254 - INFO - 当前持仓方向: 多, 持仓金额: 99.61791884
+2025-02-20 12:05:17,417 - INFO - 当前持仓方向: 多, 持仓金额: 99.61791884
+2025-02-20 12:06:17,588 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:06:17,599 - INFO - 计算技术指标成功
+2025-02-20 12:06:17,602 - INFO - 填充NaN值成功
+2025-02-20 12:06:17,604 - INFO - 预测概率: 卖出=0.2523, 买入=0.5254, 持仓=0.2224
+2025-02-20 12:06:17,604 - INFO - 市场状态: RSI=48.48, MACD=0.00, ADX=23.86, 波动率=0.0028, 趋势强度=0.0035, 市场情绪=0.0552
+2025-02-20 12:06:17,869 - INFO - 当前持仓方向: 多, 持仓金额: 99.28117515
+2025-02-20 12:06:17,869 - INFO - 当前价格: 0.6467, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:06:18,014 - INFO - 当前持仓方向: 多, 持仓金额: 99.27503515
+2025-02-20 12:06:18,157 - INFO - 当前持仓方向: 多, 持仓金额: 99.27503515
+2025-02-20 12:07:18,328 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:07:18,339 - INFO - 计算技术指标成功
+2025-02-20 12:07:18,342 - INFO - 填充NaN值成功
+2025-02-20 12:07:18,343 - INFO - 预测概率: 卖出=0.2541, 买入=0.5233, 持仓=0.2225
+2025-02-20 12:07:18,343 - INFO - 市场状态: RSI=45.75, MACD=0.00, ADX=21.92, 波动率=0.0028, 趋势强度=0.0031, 市场情绪=0.0097
+2025-02-20 12:07:18,611 - INFO - 当前持仓方向: 多, 持仓金额: 99.05355
+2025-02-20 12:07:18,611 - INFO - 当前价格: 0.645, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:07:18,775 - INFO - 当前持仓方向: 多, 持仓金额: 99.05355
+2025-02-20 12:07:18,919 - INFO - 当前持仓方向: 多, 持仓金额: 99.05355
+2025-02-20 12:08:19,098 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:08:19,110 - INFO - 计算技术指标成功
+2025-02-20 12:08:19,112 - INFO - 填充NaN值成功
+2025-02-20 12:08:19,114 - INFO - 预测概率: 卖出=0.2488, 买入=0.5298, 持仓=0.2214
+2025-02-20 12:08:19,114 - INFO - 市场状态: RSI=46.50, MACD=0.00, ADX=20.28, 波动率=0.0028, 趋势强度=0.0029, 市场情绪=0.0214
+2025-02-20 12:08:19,379 - INFO - 当前持仓方向: 多, 持仓金额: 99.0996
+2025-02-20 12:08:19,380 - INFO - 当前价格: 0.6461, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:08:19,574 - INFO - 当前持仓方向: 多, 持仓金额: 99.0996
+2025-02-20 12:08:19,718 - INFO - 当前持仓方向: 多, 持仓金额: 99.0996
+2025-02-20 12:09:19,990 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:09:20,002 - INFO - 计算技术指标成功
+2025-02-20 12:09:20,004 - INFO - 填充NaN值成功
+2025-02-20 12:09:20,006 - INFO - 预测概率: 卖出=0.2476, 买入=0.5313, 持仓=0.2210
+2025-02-20 12:09:20,006 - INFO - 市场状态: RSI=43.18, MACD=0.00, ADX=19.35, 波动率=0.0027, 趋势强度=0.0024, 市场情绪=-0.0185
+2025-02-20 12:09:20,354 - INFO - 当前持仓方向: 多, 持仓金额: 98.98488024
+2025-02-20 12:09:20,354 - INFO - 当前价格: 0.6446, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:09:20,594 - INFO - 当前持仓方向: 多, 持仓金额: 98.98488024
+2025-02-20 12:09:20,822 - INFO - 当前持仓方向: 多, 持仓金额: 98.98488024
+2025-02-20 12:10:21,488 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:10:21,500 - INFO - 计算技术指标成功
+2025-02-20 12:10:21,503 - INFO - 填充NaN值成功
+2025-02-20 12:10:21,504 - INFO - 预测概率: 卖出=0.2769, 买入=0.4956, 持仓=0.2275
+2025-02-20 12:10:21,505 - INFO - 市场状态: RSI=48.58, MACD=0.00, ADX=18.66, 波动率=0.0028, 趋势强度=0.0022, 市场情绪=0.0518
+2025-02-20 12:10:21,802 - INFO - 当前持仓方向: 多, 持仓金额: 99.11516797
+2025-02-20 12:10:21,802 - INFO - 当前价格: 0.6458, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:10:21,982 - INFO - 当前持仓方向: 多, 持仓金额: 99.11516797
+2025-02-20 12:10:22,175 - INFO - 当前持仓方向: 多, 持仓金额: 99.12790847
+2025-02-20 12:11:22,609 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:11:22,619 - INFO - 计算技术指标成功
+2025-02-20 12:11:22,622 - INFO - 填充NaN值成功
+2025-02-20 12:11:22,624 - INFO - 预测概率: 卖出=0.2525, 买入=0.5246, 持仓=0.2229
+2025-02-20 12:11:22,624 - INFO - 市场状态: RSI=52.35, MACD=0.00, ADX=18.75, 波动率=0.0032, 趋势强度=0.0024, 市场情绪=0.1075
+2025-02-20 12:11:22,904 - INFO - 当前持仓方向: 多, 持仓金额: 99.47556294
+2025-02-20 12:11:22,904 - INFO - 当前价格: 0.6479, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:11:23,063 - INFO - 当前持仓方向: 多, 持仓金额: 99.47562127
+2025-02-20 12:11:23,225 - INFO - 当前持仓方向: 多, 持仓金额: 99.47562127
+2025-02-20 12:12:23,569 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:12:23,579 - INFO - 计算技术指标成功
+2025-02-20 12:12:23,582 - INFO - 填充NaN值成功
+2025-02-20 12:12:23,584 - INFO - 预测概率: 卖出=0.2495, 买入=0.5281, 持仓=0.2224
+2025-02-20 12:12:23,584 - INFO - 市场状态: RSI=53.35, MACD=0.00, ADX=18.23, 波动率=0.0032, 趋势强度=0.0024, 市场情绪=0.1202
+2025-02-20 12:12:23,866 - INFO - 当前持仓方向: 多, 持仓金额: 99.52928641
+2025-02-20 12:12:23,867 - INFO - 当前价格: 0.6482, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:12:24,022 - INFO - 当前持仓方向: 多, 持仓金额: 99.52928641
+2025-02-20 12:12:24,185 - INFO - 当前持仓方向: 多, 持仓金额: 99.52928641
+2025-02-20 12:13:24,480 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:13:24,492 - INFO - 计算技术指标成功
+2025-02-20 12:13:24,494 - INFO - 填充NaN值成功
+2025-02-20 12:13:24,496 - INFO - 预测概率: 卖出=0.3003, 买入=0.4675, 持仓=0.2322
+2025-02-20 12:13:24,496 - INFO - 市场状态: RSI=51.18, MACD=0.00, ADX=17.99, 波动率=0.0032, 趋势强度=0.0024, 市场情绪=0.0895
+2025-02-20 12:13:24,774 - INFO - 当前持仓方向: 多, 持仓金额: 99.37995854
+2025-02-20 12:13:24,774 - INFO - 当前价格: 0.6473, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:13:24,930 - INFO - 当前持仓方向: 多, 持仓金额: 99.37995854
+2025-02-20 12:13:25,078 - INFO - 当前持仓方向: 多, 持仓金额: 99.40595069
+2025-02-20 12:14:25,360 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:14:25,370 - INFO - 计算技术指标成功
+2025-02-20 12:14:25,374 - INFO - 填充NaN值成功
+2025-02-20 12:14:25,375 - INFO - 预测概率: 卖出=0.2515, 买入=0.5259, 持仓=0.2226
+2025-02-20 12:14:25,376 - INFO - 市场状态: RSI=55.88, MACD=0.00, ADX=17.84, 波动率=0.0031, 趋势强度=0.0025, 市场情绪=0.1515
+2025-02-20 12:14:25,656 - INFO - 当前持仓方向: 多, 持仓金额: 99.71284785
+2025-02-20 12:14:25,656 - INFO - 当前价格: 0.6496, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:14:25,815 - INFO - 当前持仓方向: 多, 持仓金额: 99.71284785
+2025-02-20 12:14:25,983 - INFO - 当前持仓方向: 多, 持仓金额: 99.71284785
+2025-02-20 12:15:26,243 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:15:26,254 - INFO - 计算技术指标成功
+2025-02-20 12:15:26,257 - INFO - 填充NaN值成功
+2025-02-20 12:15:26,259 - INFO - 预测概率: 卖出=0.2519, 买入=0.5254, 持仓=0.2228
+2025-02-20 12:15:26,259 - INFO - 市场状态: RSI=55.25, MACD=0.00, ADX=18.28, 波动率=0.0032, 趋势强度=0.0027, 市场情绪=0.5483
+2025-02-20 12:15:26,530 - INFO - 当前持仓方向: 多, 持仓金额: 99.70039286
+2025-02-20 12:15:26,531 - INFO - 当前价格: 0.6494, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:15:26,688 - INFO - 当前持仓方向: 多, 持仓金额: 99.70039286
+2025-02-20 12:15:26,849 - INFO - 当前持仓方向: 多, 持仓金额: 99.70039286
+2025-02-20 12:16:27,106 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:16:27,117 - INFO - 计算技术指标成功
+2025-02-20 12:16:27,120 - INFO - 填充NaN值成功
+2025-02-20 12:16:27,122 - INFO - 预测概率: 卖出=0.2488, 买入=0.5296, 持仓=0.2217
+2025-02-20 12:16:27,122 - INFO - 市场状态: RSI=61.93, MACD=0.00, ADX=18.96, 波动率=0.0032, 趋势强度=0.0030, 市场情绪=0.6277
+2025-02-20 12:16:27,387 - INFO - 当前持仓方向: 多, 持仓金额: 100.00525
+2025-02-20 12:16:27,387 - INFO - 当前价格: 0.6516, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:16:27,549 - INFO - 当前持仓方向: 多, 持仓金额: 100.00525
+2025-02-20 12:16:27,704 - INFO - 当前持仓方向: 多, 持仓金额: 100.00525
+2025-02-20 12:17:27,945 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:17:27,957 - INFO - 计算技术指标成功
+2025-02-20 12:17:27,960 - INFO - 填充NaN值成功
+2025-02-20 12:17:27,962 - INFO - 预测概率: 卖出=0.2457, 买入=0.5334, 持仓=0.2209
+2025-02-20 12:17:27,963 - INFO - 市场状态: RSI=65.26, MACD=0.00, ADX=20.26, 波动率=0.0032, 趋势强度=0.0033, 市场情绪=0.6631
+2025-02-20 12:17:28,228 - INFO - 当前持仓方向: 多, 持仓金额: 100.25697925
+2025-02-20 12:17:28,228 - INFO - 当前价格: 0.6531, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:17:28,373 - INFO - 当前持仓方向: 多, 持仓金额: 100.25697925
+2025-02-20 12:17:28,722 - INFO - 当前持仓方向: 多, 持仓金额: 100.25697925
+2025-02-20 12:18:28,967 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:18:28,979 - INFO - 计算技术指标成功
+2025-02-20 12:18:28,982 - INFO - 填充NaN值成功
+2025-02-20 12:18:28,984 - INFO - 预测概率: 卖出=0.2494, 买入=0.5281, 持仓=0.2225
+2025-02-20 12:18:28,984 - INFO - 市场状态: RSI=61.26, MACD=0.00, ADX=21.58, 波动率=0.0032, 趋势强度=0.0034, 市场情绪=0.6120
+2025-02-20 12:18:29,260 - INFO - 当前持仓方向: 多, 持仓金额: 100.1230152
+2025-02-20 12:18:29,260 - INFO - 当前价格: 0.6524, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:18:29,416 - INFO - 当前持仓方向: 多, 持仓金额: 100.1230152
+2025-02-20 12:18:29,580 - INFO - 当前持仓方向: 多, 持仓金额: 100.1230152
+2025-02-20 12:19:29,924 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:19:29,936 - INFO - 计算技术指标成功
+2025-02-20 12:19:29,939 - INFO - 填充NaN值成功
+2025-02-20 12:19:29,941 - INFO - 预测概率: 卖出=0.2518, 买入=0.5247, 持仓=0.2235
+2025-02-20 12:19:29,941 - INFO - 市场状态: RSI=60.66, MACD=0.00, ADX=22.22, 波动率=0.0031, 趋势强度=0.0035, 市场情绪=0.5991
+2025-02-20 12:19:30,204 - INFO - 当前持仓方向: 多, 持仓金额: 100.05702555
+2025-02-20 12:19:30,205 - INFO - 当前价格: 0.6517, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:19:30,351 - INFO - 当前持仓方向: 多, 持仓金额: 100.05702555
+2025-02-20 12:19:30,495 - INFO - 当前持仓方向: 多, 持仓金额: 100.05702555
+2025-02-20 12:20:30,735 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:20:30,747 - INFO - 计算技术指标成功
+2025-02-20 12:20:30,750 - INFO - 填充NaN值成功
+2025-02-20 12:20:30,752 - INFO - 预测概率: 卖出=0.2529, 买入=0.5230, 持仓=0.2241
+2025-02-20 12:20:30,753 - INFO - 市场状态: RSI=65.56, MACD=0.00, ADX=22.82, 波动率=0.0027, 趋势强度=0.0038, 市场情绪=0.6404
+2025-02-20 12:20:31,022 - INFO - 当前持仓方向: 多, 持仓金额: 100.25085
+2025-02-20 12:20:31,022 - INFO - 当前价格: 0.6529, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:20:31,177 - INFO - 当前持仓方向: 多, 持仓金额: 100.25085
+2025-02-20 12:20:31,322 - INFO - 当前持仓方向: 多, 持仓金额: 100.25085
+2025-02-20 12:21:31,556 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:21:31,567 - INFO - 计算技术指标成功
+2025-02-20 12:21:31,570 - INFO - 填充NaN值成功
+2025-02-20 12:21:31,572 - INFO - 预测概率: 卖出=0.2546, 买入=0.5209, 持仓=0.2245
+2025-02-20 12:21:31,572 - INFO - 市场状态: RSI=60.33, MACD=0.00, ADX=23.51, 波动率=0.0023, 趋势强度=0.0037, 市场情绪=0.6007
+2025-02-20 12:21:31,852 - INFO - 当前持仓方向: 多, 持仓金额: 100.13786325
+2025-02-20 12:21:31,852 - INFO - 当前价格: 0.6521, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:21:32,006 - INFO - 当前持仓方向: 多, 持仓金额: 100.1434
+2025-02-20 12:21:32,139 - INFO - 当前持仓方向: 多, 持仓金额: 100.1434
+2025-02-20 12:22:32,365 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:22:32,377 - INFO - 计算技术指标成功
+2025-02-20 12:22:32,380 - INFO - 填充NaN值成功
+2025-02-20 12:22:32,382 - INFO - 预测概率: 卖出=0.2770, 买入=0.4937, 持仓=0.2293
+2025-02-20 12:22:32,383 - INFO - 市场状态: RSI=56.98, MACD=0.00, ADX=23.23, 波动率=0.0021, 趋势强度=0.0037, 市场情绪=0.5713
+2025-02-20 12:22:32,652 - INFO - 当前持仓方向: 多, 持仓金额: 100.0233676
+2025-02-20 12:22:32,652 - INFO - 当前价格: 0.6512, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:22:32,806 - INFO - 当前持仓方向: 多, 持仓金额: 100.0233676
+2025-02-20 12:22:32,954 - INFO - 当前持仓方向: 多, 持仓金额: 100.0233676
+2025-02-20 12:23:33,186 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:23:33,198 - INFO - 计算技术指标成功
+2025-02-20 12:23:33,200 - INFO - 填充NaN值成功
+2025-02-20 12:23:33,202 - INFO - 预测概率: 卖出=0.2619, 买入=0.5123, 持仓=0.2257
+2025-02-20 12:23:33,202 - INFO - 市场状态: RSI=59.22, MACD=0.00, ADX=22.05, 波动率=0.0023, 趋势强度=0.0036, 市场情绪=0.6040
+2025-02-20 12:23:33,479 - INFO - 当前持仓方向: 多, 持仓金额: 100.09735
+2025-02-20 12:23:33,480 - INFO - 当前价格: 0.6514, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:23:33,627 - INFO - 当前持仓方向: 多, 持仓金额: 100.09735
+2025-02-20 12:23:33,775 - INFO - 当前持仓方向: 多, 持仓金额: 100.09735
+2025-02-20 12:24:34,006 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:24:34,017 - INFO - 计算技术指标成功
+2025-02-20 12:24:34,020 - INFO - 填充NaN值成功
+2025-02-20 12:24:34,021 - INFO - 预测概率: 卖出=0.2600, 买入=0.5138, 持仓=0.2261
+2025-02-20 12:24:34,022 - INFO - 市场状态: RSI=63.19, MACD=0.00, ADX=22.28, 波动率=0.0023, 趋势强度=0.0038, 市场情绪=0.6448
+2025-02-20 12:24:34,286 - INFO - 当前持仓方向: 多, 持仓金额: 100.3276
+2025-02-20 12:24:34,286 - INFO - 当前价格: 0.6537, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:24:34,439 - INFO - 当前持仓方向: 多, 持仓金额: 100.3276
+2025-02-20 12:24:34,586 - INFO - 当前持仓方向: 多, 持仓金额: 100.3276
+2025-02-20 12:25:34,816 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:25:34,828 - INFO - 计算技术指标成功
+2025-02-20 12:25:34,831 - INFO - 填充NaN值成功
+2025-02-20 12:25:34,833 - INFO - 预测概率: 卖出=0.2588, 买入=0.5150, 持仓=0.2262
+2025-02-20 12:25:34,833 - INFO - 市场状态: RSI=62.23, MACD=0.00, ADX=22.29, 波动率=0.0021, 趋势强度=0.0039, 市场情绪=0.6237
+2025-02-20 12:25:35,103 - INFO - 当前持仓方向: 多, 持仓金额: 100.2969
+2025-02-20 12:25:35,104 - INFO - 当前价格: 0.653, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:25:35,253 - INFO - 当前持仓方向: 多, 持仓金额: 100.2969
+2025-02-20 12:25:35,410 - INFO - 当前持仓方向: 多, 持仓金额: 100.2969
+2025-02-20 12:26:35,636 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:26:35,648 - INFO - 计算技术指标成功
+2025-02-20 12:26:35,651 - INFO - 填充NaN值成功
+2025-02-20 12:26:35,653 - INFO - 预测概率: 卖出=0.2572, 买入=0.5175, 持仓=0.2253
+2025-02-20 12:26:35,654 - INFO - 市场状态: RSI=61.00, MACD=0.00, ADX=22.55, 波动率=0.0021, 趋势强度=0.0039, 市场情绪=0.6047
+2025-02-20 12:26:35,918 - INFO - 当前持仓方向: 多, 持仓金额: 100.24595028
+2025-02-20 12:26:35,918 - INFO - 当前价格: 0.6529, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:26:36,067 - INFO - 当前持仓方向: 多, 持仓金额: 100.24465934
+2025-02-20 12:26:36,211 - INFO - 当前持仓方向: 多, 持仓金额: 100.24465934
+2025-02-20 12:27:36,436 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:27:36,449 - INFO - 计算技术指标成功
+2025-02-20 12:27:36,452 - INFO - 填充NaN值成功
+2025-02-20 12:27:36,454 - INFO - 预测概率: 卖出=0.2563, 买入=0.5195, 持仓=0.2242
+2025-02-20 12:27:36,455 - INFO - 市场状态: RSI=54.75, MACD=0.00, ADX=20.98, 波动率=0.0021, 趋势强度=0.0037, 市场情绪=0.1426
+2025-02-20 12:27:36,729 - INFO - 当前持仓方向: 多, 持仓金额: 100.0121621
+2025-02-20 12:27:36,729 - INFO - 当前价格: 0.6514, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:27:36,875 - INFO - 当前持仓方向: 多, 持仓金额: 100.0121621
+2025-02-20 12:27:37,021 - INFO - 当前持仓方向: 多, 持仓金额: 100.01044597
+2025-02-20 12:28:37,244 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:28:37,252 - INFO - 计算技术指标成功
+2025-02-20 12:28:37,254 - INFO - 填充NaN值成功
+2025-02-20 12:28:37,256 - INFO - 预测概率: 卖出=0.2591, 买入=0.5155, 持仓=0.2255
+2025-02-20 12:28:37,256 - INFO - 市场状态: RSI=60.72, MACD=0.00, ADX=20.33, 波动率=0.0020, 趋势强度=0.0039, 市场情绪=0.6003
+2025-02-20 12:28:37,518 - INFO - 当前持仓方向: 多, 持仓金额: 100.22276564
+2025-02-20 12:28:37,518 - INFO - 当前价格: 0.6531, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:28:37,675 - INFO - 当前持仓方向: 多, 持仓金额: 100.22276564
+2025-02-20 12:28:37,820 - INFO - 当前持仓方向: 多, 持仓金额: 100.22276564
+2025-02-20 12:29:38,056 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:29:38,068 - INFO - 计算技术指标成功
+2025-02-20 12:29:38,071 - INFO - 填充NaN值成功
+2025-02-20 12:29:38,072 - INFO - 预测概率: 卖出=0.2577, 买入=0.5176, 持仓=0.2247
+2025-02-20 12:29:38,073 - INFO - 市场状态: RSI=56.94, MACD=0.00, ADX=19.40, 波动率=0.0020, 趋势强度=0.0038, 市场情绪=0.1614
+2025-02-20 12:29:38,350 - INFO - 当前持仓方向: 多, 持仓金额: 100.1434
+2025-02-20 12:29:38,350 - INFO - 当前价格: 0.6523, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:29:38,495 - INFO - 当前持仓方向: 多, 持仓金额: 100.1434
+2025-02-20 12:29:38,647 - INFO - 当前持仓方向: 多, 持仓金额: 100.1434
+2025-02-20 12:30:38,875 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:30:38,887 - INFO - 计算技术指标成功
+2025-02-20 12:30:38,890 - INFO - 填充NaN值成功
+2025-02-20 12:30:38,892 - INFO - 预测概率: 卖出=0.2597, 买入=0.5152, 持仓=0.2251
+2025-02-20 12:30:38,892 - INFO - 市场状态: RSI=53.80, MACD=0.00, ADX=18.41, 波动率=0.0015, 趋势强度=0.0038, 市场情绪=0.1199
+2025-02-20 12:30:39,161 - INFO - 当前持仓方向: 多, 持仓金额: 100.08302998
+2025-02-20 12:30:39,161 - INFO - 当前价格: 0.6518, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:30:39,318 - INFO - 当前持仓方向: 多, 持仓金额: 100.08302998
+2025-02-20 12:30:39,470 - INFO - 当前持仓方向: 多, 持仓金额: 100.08302998
+2025-02-20 12:31:39,670 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:31:39,677 - INFO - 计算技术指标成功
+2025-02-20 12:31:39,681 - INFO - 填充NaN值成功
+2025-02-20 12:31:39,683 - INFO - 预测概率: 卖出=0.2582, 买入=0.5176, 持仓=0.2242
+2025-02-20 12:31:39,683 - INFO - 市场状态: RSI=51.82, MACD=0.00, ADX=16.97, 波动率=0.0016, 趋势强度=0.0036, 市场情绪=0.0809
+2025-02-20 12:31:39,940 - INFO - 当前持仓方向: 多, 持仓金额: 99.97359369
+2025-02-20 12:31:39,940 - INFO - 当前价格: 0.6513, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:31:40,075 - INFO - 当前持仓方向: 多, 持仓金额: 99.97470657
+2025-02-20 12:31:40,211 - INFO - 当前持仓方向: 多, 持仓金额: 99.97470657
+2025-02-20 12:32:40,422 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:32:40,432 - INFO - 计算技术指标成功
+2025-02-20 12:32:40,434 - INFO - 填充NaN值成功
+2025-02-20 12:32:40,435 - INFO - 预测概率: 卖出=0.2660, 买入=0.5076, 持仓=0.2264
+2025-02-20 12:32:40,435 - INFO - 市场状态: RSI=57.16, MACD=0.00, ADX=16.54, 波动率=0.0017, 趋势强度=0.0035, 市场情绪=0.1830
+2025-02-20 12:32:40,688 - INFO - 当前持仓方向: 多, 持仓金额: 100.40672157
+2025-02-20 12:32:40,688 - INFO - 当前价格: 0.6529, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:32:40,829 - INFO - 当前持仓方向: 多, 持仓金额: 100.40672157
+2025-02-20 12:32:40,962 - INFO - 当前持仓方向: 多, 持仓金额: 100.40672157
+2025-02-20 12:33:41,193 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:33:41,204 - INFO - 计算技术指标成功
+2025-02-20 12:33:41,207 - INFO - 填充NaN值成功
+2025-02-20 12:33:41,209 - INFO - 预测概率: 卖出=0.2548, 买入=0.5212, 持仓=0.2240
+2025-02-20 12:33:41,209 - INFO - 市场状态: RSI=59.26, MACD=0.00, ADX=17.31, 波动率=0.0019, 趋势强度=0.0036, 市场情绪=0.2327
+2025-02-20 12:33:41,477 - INFO - 当前持仓方向: 多, 持仓金额: 100.36419133
+2025-02-20 12:33:41,477 - INFO - 当前价格: 0.6539, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:33:41,635 - INFO - 当前持仓方向: 多, 持仓金额: 100.36419133
+2025-02-20 12:33:41,791 - INFO - 当前持仓方向: 多, 持仓金额: 100.36419133
+2025-02-20 12:34:42,004 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:34:42,016 - INFO - 计算技术指标成功
+2025-02-20 12:34:42,019 - INFO - 填充NaN值成功
+2025-02-20 12:34:42,021 - INFO - 预测概率: 卖出=0.2541, 买入=0.5219, 持仓=0.2240
+2025-02-20 12:34:42,021 - INFO - 市场状态: RSI=57.37, MACD=0.00, ADX=16.98, 波动率=0.0018, 趋势强度=0.0036, 市场情绪=0.1912
+2025-02-20 12:34:42,290 - INFO - 当前持仓方向: 多, 持仓金额: 100.281923
+2025-02-20 12:34:42,290 - INFO - 当前价格: 0.6533, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:34:42,444 - INFO - 当前持仓方向: 多, 持仓金额: 100.281923
+2025-02-20 12:34:42,580 - INFO - 当前持仓方向: 多, 持仓金额: 100.281923
+2025-02-20 12:35:42,804 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:35:42,815 - INFO - 计算技术指标成功
+2025-02-20 12:35:42,818 - INFO - 填充NaN值成功
+2025-02-20 12:35:42,820 - INFO - 预测概率: 卖出=0.2573, 买入=0.5182, 持仓=0.2245
+2025-02-20 12:35:42,820 - INFO - 市场状态: RSI=60.60, MACD=0.00, ADX=16.68, 波动率=0.0019, 趋势强度=0.0037, 市场情绪=0.2692
+2025-02-20 12:35:43,088 - INFO - 当前持仓方向: 多, 持仓金额: 100.4504
+2025-02-20 12:35:43,088 - INFO - 当前价格: 0.6537, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:35:43,244 - INFO - 当前持仓方向: 多, 持仓金额: 100.4504
+2025-02-20 12:35:43,413 - INFO - 当前持仓方向: 多, 持仓金额: 100.4504
+2025-02-20 12:36:43,624 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:36:43,637 - INFO - 计算技术指标成功
+2025-02-20 12:36:43,640 - INFO - 填充NaN值成功
+2025-02-20 12:36:43,642 - INFO - 预测概率: 卖出=0.2576, 买入=0.5179, 持仓=0.2244
+2025-02-20 12:36:43,642 - INFO - 市场状态: RSI=57.68, MACD=0.00, ADX=16.40, 波动率=0.0018, 趋势强度=0.0037, 市场情绪=0.2020
+2025-02-20 12:36:43,904 - INFO - 当前持仓方向: 多, 持仓金额: 100.3525591
+2025-02-20 12:36:43,904 - INFO - 当前价格: 0.6537, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:36:44,042 - INFO - 当前持仓方向: 多, 持仓金额: 100.35251151
+2025-02-20 12:36:44,184 - INFO - 当前持仓方向: 多, 持仓金额: 100.35251151
+2025-02-20 12:37:44,400 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:37:44,411 - INFO - 计算技术指标成功
+2025-02-20 12:37:44,413 - INFO - 填充NaN值成功
+2025-02-20 12:37:44,414 - INFO - 预测概率: 卖出=0.2592, 买入=0.5159, 持仓=0.2249
+2025-02-20 12:37:44,415 - INFO - 市场状态: RSI=53.95, MACD=0.00, ADX=15.57, 波动率=0.0018, 趋势强度=0.0036, 市场情绪=0.1244
+2025-02-20 12:37:44,700 - INFO - 当前持仓方向: 多, 持仓金额: 100.19351314
+2025-02-20 12:37:44,700 - INFO - 当前价格: 0.6529, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:37:44,856 - INFO - 当前持仓方向: 多, 持仓金额: 100.19351314
+2025-02-20 12:37:44,988 - INFO - 当前持仓方向: 多, 持仓金额: 100.19303115
+2025-02-20 12:38:45,204 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:38:45,215 - INFO - 计算技术指标成功
+2025-02-20 12:38:45,218 - INFO - 填充NaN值成功
+2025-02-20 12:38:45,220 - INFO - 预测概率: 卖出=0.2668, 买入=0.5061, 持仓=0.2271
+2025-02-20 12:38:45,220 - INFO - 市场状态: RSI=57.18, MACD=0.00, ADX=14.86, 波动率=0.0019, 趋势强度=0.0035, 市场情绪=0.2021
+2025-02-20 12:38:45,488 - INFO - 当前持仓方向: 多, 持仓金额: 100.3583
+2025-02-20 12:38:45,488 - INFO - 当前价格: 0.6538, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:38:45,620 - INFO - 当前持仓方向: 多, 持仓金额: 100.3583
+2025-02-20 12:38:45,790 - INFO - 当前持仓方向: 多, 持仓金额: 100.3583
+2025-02-20 12:39:46,005 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:39:46,017 - INFO - 计算技术指标成功
+2025-02-20 12:39:46,019 - INFO - 填充NaN值成功
+2025-02-20 12:39:46,021 - INFO - 预测概率: 卖出=0.4029, 买入=0.3563, 持仓=0.2408
+2025-02-20 12:39:46,021 - INFO - 市场状态: RSI=67.72, MACD=0.00, ADX=16.63, 波动率=0.0023, 趋势强度=0.0039, 市场情绪=0.7944
+2025-02-20 12:39:46,286 - INFO - 当前持仓方向: 多, 持仓金额: 100.98218693
+2025-02-20 12:39:46,286 - INFO - 当前价格: 0.6582, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:39:46,446 - INFO - 当前持仓方向: 多, 持仓金额: 100.98218693
+2025-02-20 12:39:46,446 - INFO - 平多仓...
+2025-02-20 12:39:46,777 - INFO - 订单创建成功: {'info': {'orderId': '223638586', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu3ca06fcc9aa583b3fb9260', 'price': '0.000000', 'avgPrice': '0.6580100', 'origQty': '153.5', 'executedQty': '153.5', 'cumQty': '153.5', 'cumQuote': '101.0045300', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740026386890'}, 'id': '223638586', 'clientOrderId': 'x-xcKtGhcu3ca06fcc9aa583b3fb9260', 'timestamp': 1740026386890, 'datetime': '2025-02-20T04:39:46.890Z', 'lastTradeTimestamp': 1740026386890, 'lastUpdateTimestamp': 1740026386890, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.65801, 'triggerPrice': None, 'amount': 153.5, 'cost': 101.00453, 'average': 0.65801, 'filled': 153.5, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:39:46,778 - INFO - 平多仓成功: {'info': {'orderId': '223638586', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu3ca06fcc9aa583b3fb9260', 'price': '0.000000', 'avgPrice': '0.6580100', 'origQty': '153.5', 'executedQty': '153.5', 'cumQty': '153.5', 'cumQuote': '101.0045300', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740026386890'}, 'id': '223638586', 'clientOrderId': 'x-xcKtGhcu3ca06fcc9aa583b3fb9260', 'timestamp': 1740026386890, 'datetime': '2025-02-20T04:39:46.890Z', 'lastTradeTimestamp': 1740026386890, 'lastUpdateTimestamp': 1740026386890, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.65801, 'triggerPrice': None, 'amount': 153.5, 'cost': 101.00453, 'average': 0.65801, 'filled': 153.5, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:39:47,786 - INFO - 开空仓，数量: 150.8221872379216
+2025-02-20 12:39:48,116 - INFO - 订单创建成功: {'info': {'orderId': '223638724', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcueb2741ed3fc2570b8a5536', 'price': '0.000000', 'avgPrice': '0.6582000', 'origQty': '150.8', 'executedQty': '150.8', 'cumQty': '150.8', 'cumQuote': '99.2565600', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740026388229'}, 'id': '223638724', 'clientOrderId': 'x-xcKtGhcueb2741ed3fc2570b8a5536', 'timestamp': 1740026388229, 'datetime': '2025-02-20T04:39:48.229Z', 'lastTradeTimestamp': 1740026388229, 'lastUpdateTimestamp': 1740026388229, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6582, 'triggerPrice': None, 'amount': 150.8, 'cost': 99.25656, 'average': 0.6582, 'filled': 150.8, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:39:48,117 - INFO - 开空仓成功: {'info': {'orderId': '223638724', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcueb2741ed3fc2570b8a5536', 'price': '0.000000', 'avgPrice': '0.6582000', 'origQty': '150.8', 'executedQty': '150.8', 'cumQty': '150.8', 'cumQuote': '99.2565600', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740026388229'}, 'id': '223638724', 'clientOrderId': 'x-xcKtGhcueb2741ed3fc2570b8a5536', 'timestamp': 1740026388229, 'datetime': '2025-02-20T04:39:48.229Z', 'lastTradeTimestamp': 1740026388229, 'lastUpdateTimestamp': 1740026388229, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6582, 'triggerPrice': None, 'amount': 150.8, 'cost': 99.25656, 'average': 0.6582, 'filled': 150.8, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:39:48,480 - INFO - 当前持仓方向: 空, 持仓金额: 99.20631947
+2025-02-20 12:40:48,704 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:40:48,715 - INFO - 计算技术指标成功
+2025-02-20 12:40:48,718 - INFO - 填充NaN值成功
+2025-02-20 12:40:48,720 - INFO - 预测概率: 卖出=0.5431, 买入=0.2375, 持仓=0.2194
+2025-02-20 12:40:48,720 - INFO - 市场状态: RSI=51.56, MACD=0.00, ADX=16.84, 波动率=0.0027, 趋势强度=0.0037, 市场情绪=0.5042
+2025-02-20 12:40:48,996 - INFO - 当前持仓方向: 空, 持仓金额: 98.55290156
+2025-02-20 12:40:48,996 - INFO - 当前价格: 0.6549, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:40:49,163 - INFO - 当前持仓方向: 空, 持仓金额: 98.55290156
+2025-02-20 12:40:49,308 - INFO - 当前持仓方向: 空, 持仓金额: 98.55290156
+2025-02-20 12:41:49,615 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:41:49,625 - INFO - 计算技术指标成功
+2025-02-20 12:41:49,626 - INFO - 填充NaN值成功
+2025-02-20 12:41:49,627 - INFO - 预测概率: 卖出=0.3826, 买入=0.3809, 持仓=0.2365
+2025-02-20 12:41:49,628 - INFO - 市场状态: RSI=47.93, MACD=0.00, ADX=16.37, 波动率=0.0027, 趋势强度=0.0035, 市场情绪=0.0234
+2025-02-20 12:41:49,628 - INFO - 预测置信度0.3826低于阈值0.4，保持观望
+2025-02-20 12:41:49,894 - INFO - 当前持仓方向: 空, 持仓金额: 98.31923394
+2025-02-20 12:41:49,894 - INFO - 当前价格: 0.6518, AI信号: 0, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:41:50,041 - INFO - 当前持仓方向: 空, 持仓金额: 98.31952197
+2025-02-20 12:41:50,041 - INFO - 观望信号，保持当前仓位
+2025-02-20 12:41:50,180 - INFO - 当前持仓方向: 空, 持仓金额: 98.31952197
+2025-02-20 12:42:50,413 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:42:50,425 - INFO - 计算技术指标成功
+2025-02-20 12:42:50,427 - INFO - 填充NaN值成功
+2025-02-20 12:42:50,429 - INFO - 预测概率: 卖出=0.3467, 买入=0.4175, 持仓=0.2357
+2025-02-20 12:42:50,429 - INFO - 市场状态: RSI=46.90, MACD=0.00, ADX=15.71, 波动率=0.0027, 趋势强度=0.0032, 市场情绪=-0.0102
+2025-02-20 12:42:50,697 - INFO - 当前持仓方向: 空, 持仓金额: 98.23112
+2025-02-20 12:42:50,697 - INFO - 当前价格: 0.6512, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:42:50,853 - INFO - 当前持仓方向: 空, 持仓金额: 98.23112
+2025-02-20 12:42:50,854 - INFO - 平空仓...
+2025-02-20 12:42:51,192 - INFO - 订单创建成功: {'info': {'orderId': '223672838', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu73cfbebd3a5bce22ff74db', 'price': '0.000000', 'avgPrice': '0.6515000', 'origQty': '150.8', 'executedQty': '150.8', 'cumQty': '150.8', 'cumQuote': '98.2462000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740026571299'}, 'id': '223672838', 'clientOrderId': 'x-xcKtGhcu73cfbebd3a5bce22ff74db', 'timestamp': 1740026571299, 'datetime': '2025-02-20T04:42:51.299Z', 'lastTradeTimestamp': 1740026571299, 'lastUpdateTimestamp': 1740026571299, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.6515, 'triggerPrice': None, 'amount': 150.8, 'cost': 98.2462, 'average': 0.6515, 'filled': 150.8, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:42:51,192 - INFO - 平空仓成功: {'info': {'orderId': '223672838', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu73cfbebd3a5bce22ff74db', 'price': '0.000000', 'avgPrice': '0.6515000', 'origQty': '150.8', 'executedQty': '150.8', 'cumQty': '150.8', 'cumQuote': '98.2462000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740026571299'}, 'id': '223672838', 'clientOrderId': 'x-xcKtGhcu73cfbebd3a5bce22ff74db', 'timestamp': 1740026571299, 'datetime': '2025-02-20T04:42:51.299Z', 'lastTradeTimestamp': 1740026571299, 'lastUpdateTimestamp': 1740026571299, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.6515, 'triggerPrice': None, 'amount': 150.8, 'cost': 98.2462, 'average': 0.6515, 'filled': 150.8, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:42:52,197 - INFO - 开多仓，数量: 152.4434331081081
+2025-02-20 12:42:52,535 - INFO - 订单创建成功: {'info': {'orderId': '223673150', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcue20b2bd50b0e6cd790515c', 'price': '0.000000', 'avgPrice': '0.6516000', 'origQty': '152.4', 'executedQty': '152.4', 'cumQty': '152.4', 'cumQuote': '99.3038400', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740026572649'}, 'id': '223673150', 'clientOrderId': 'x-xcKtGhcue20b2bd50b0e6cd790515c', 'timestamp': 1740026572649, 'datetime': '2025-02-20T04:42:52.649Z', 'lastTradeTimestamp': 1740026572649, 'lastUpdateTimestamp': 1740026572649, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.6516, 'triggerPrice': None, 'amount': 152.4, 'cost': 99.30384, 'average': 0.6516, 'filled': 152.4, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:42:52,536 - INFO - 开多仓成功: {'info': {'orderId': '223673150', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcue20b2bd50b0e6cd790515c', 'price': '0.000000', 'avgPrice': '0.6516000', 'origQty': '152.4', 'executedQty': '152.4', 'cumQty': '152.4', 'cumQuote': '99.3038400', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740026572649'}, 'id': '223673150', 'clientOrderId': 'x-xcKtGhcue20b2bd50b0e6cd790515c', 'timestamp': 1740026572649, 'datetime': '2025-02-20T04:42:52.649Z', 'lastTradeTimestamp': 1740026572649, 'lastUpdateTimestamp': 1740026572649, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.6516, 'triggerPrice': None, 'amount': 152.4, 'cost': 99.30384, 'average': 0.6516, 'filled': 152.4, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:42:52,698 - INFO - 当前持仓方向: 多, 持仓金额: 99.2886
+2025-02-20 12:43:52,998 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:43:53,004 - INFO - 计算技术指标成功
+2025-02-20 12:43:53,006 - INFO - 填充NaN值成功
+2025-02-20 12:43:53,007 - INFO - 预测概率: 卖出=0.3043, 买入=0.4628, 持仓=0.2328
+2025-02-20 12:43:53,007 - INFO - 市场状态: RSI=50.22, MACD=0.00, ADX=15.25, 波动率=0.0026, 趋势强度=0.0031, 市场情绪=0.0626
+2025-02-20 12:43:53,277 - INFO - 当前持仓方向: 多, 持仓金额: 99.48941595
+2025-02-20 12:43:53,278 - INFO - 当前价格: 0.6525, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:43:53,433 - INFO - 当前持仓方向: 多, 持仓金额: 99.48941595
+2025-02-20 12:43:53,700 - INFO - 当前持仓方向: 多, 持仓金额: 99.48941595
+2025-02-20 12:44:53,923 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:44:53,935 - INFO - 计算技术指标成功
+2025-02-20 12:44:53,938 - INFO - 填充NaN值成功
+2025-02-20 12:44:53,939 - INFO - 预测概率: 卖出=0.2509, 买入=0.5268, 持仓=0.2223
+2025-02-20 12:44:53,939 - INFO - 市场状态: RSI=52.50, MACD=0.00, ADX=15.77, 波动率=0.0026, 趋势强度=0.0031, 市场情绪=0.1152
+2025-02-20 12:44:54,210 - INFO - 当前持仓方向: 多, 持仓金额: 99.53852076
+2025-02-20 12:44:54,211 - INFO - 当前价格: 0.6533, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:44:54,356 - INFO - 当前持仓方向: 多, 持仓金额: 99.53852076
+2025-02-20 12:44:54,487 - INFO - 当前持仓方向: 多, 持仓金额: 99.53852076
+2025-02-20 12:45:54,706 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:45:54,717 - INFO - 计算技术指标成功
+2025-02-20 12:45:54,720 - INFO - 填充NaN值成功
+2025-02-20 12:45:54,722 - INFO - 预测概率: 卖出=0.2741, 买入=0.4988, 持仓=0.2272
+2025-02-20 12:45:54,722 - INFO - 市场状态: RSI=45.23, MACD=0.00, ADX=14.86, 波动率=0.0027, 趋势强度=0.0027, 市场情绪=-0.0382
+2025-02-20 12:45:54,980 - INFO - 当前持仓方向: 多, 持仓金额: 99.17453012
+2025-02-20 12:45:54,980 - INFO - 当前价格: 0.6507, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:45:55,122 - INFO - 当前持仓方向: 多, 持仓金额: 99.17453012
+2025-02-20 12:45:55,273 - INFO - 当前持仓方向: 多, 持仓金额: 99.17453012
+2025-02-20 12:46:55,590 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:46:55,601 - INFO - 计算技术指标成功
+2025-02-20 12:46:55,605 - INFO - 填充NaN值成功
+2025-02-20 12:46:55,606 - INFO - 预测概率: 卖出=0.2548, 买入=0.5224, 持仓=0.2229
+2025-02-20 12:46:55,607 - INFO - 市场状态: RSI=48.30, MACD=0.00, ADX=14.03, 波动率=0.0029, 趋势强度=0.0025, 市场情绪=0.0287
+2025-02-20 12:46:55,877 - INFO - 当前持仓方向: 多, 持仓金额: 99.33236775
+2025-02-20 12:46:55,877 - INFO - 当前价格: 0.6515, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:46:56,015 - INFO - 当前持仓方向: 多, 持仓金额: 99.32824686
+2025-02-20 12:46:56,152 - INFO - 当前持仓方向: 多, 持仓金额: 99.32824686
+2025-02-20 12:47:56,366 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:47:56,375 - INFO - 计算技术指标成功
+2025-02-20 12:47:56,377 - INFO - 填充NaN值成功
+2025-02-20 12:47:56,378 - INFO - 预测概率: 卖出=0.2504, 买入=0.5278, 持仓=0.2217
+2025-02-20 12:47:56,378 - INFO - 市场状态: RSI=45.56, MACD=0.00, ADX=13.30, 波动率=0.0028, 趋势强度=0.0022, 市场情绪=-0.0198
+2025-02-20 12:47:56,636 - INFO - 当前持仓方向: 多, 持仓金额: 99.1362
+2025-02-20 12:47:56,636 - INFO - 当前价格: 0.6505, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:47:56,787 - INFO - 当前持仓方向: 多, 持仓金额: 99.1362
+2025-02-20 12:47:56,924 - INFO - 当前持仓方向: 多, 持仓金额: 99.1362
+2025-02-20 12:48:57,174 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:48:57,186 - INFO - 计算技术指标成功
+2025-02-20 12:48:57,189 - INFO - 填充NaN值成功
+2025-02-20 12:48:57,190 - INFO - 预测概率: 卖出=0.2562, 买入=0.5207, 持仓=0.2231
+2025-02-20 12:48:57,191 - INFO - 市场状态: RSI=43.09, MACD=-0.00, ADX=13.64, 波动率=0.0029, 趋势强度=0.0018, 市场情绪=-0.0514
+2025-02-20 12:48:57,456 - INFO - 当前持仓方向: 多, 持仓金额: 98.9838
+2025-02-20 12:48:57,456 - INFO - 当前价格: 0.6494, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:48:57,602 - INFO - 当前持仓方向: 多, 持仓金额: 98.9838
+2025-02-20 12:48:57,755 - INFO - 当前持仓方向: 多, 持仓金额: 98.9838
+2025-02-20 12:49:57,977 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:49:57,988 - INFO - 计算技术指标成功
+2025-02-20 12:49:57,991 - INFO - 填充NaN值成功
+2025-02-20 12:49:57,993 - INFO - 预测概率: 卖出=0.4769, 买入=0.2939, 持仓=0.2292
+2025-02-20 12:49:57,993 - INFO - 市场状态: RSI=42.35, MACD=-0.00, ADX=14.02, 波动率=0.0029, 趋势强度=0.0015, 市场情绪=-0.0495
+2025-02-20 12:49:58,437 - INFO - 当前持仓方向: 多, 持仓金额: 98.91785499
+2025-02-20 12:49:58,437 - INFO - 当前价格: 0.649, AI信号: -1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:49:58,584 - INFO - 当前持仓方向: 多, 持仓金额: 98.91785499
+2025-02-20 12:49:58,584 - INFO - 平多仓...
+2025-02-20 12:49:58,924 - INFO - 订单创建成功: {'info': {'orderId': '223733909', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu5447f5cd697e4b94017e99', 'price': '0.000000', 'avgPrice': '0.6491000', 'origQty': '152.4', 'executedQty': '152.4', 'cumQty': '152.4', 'cumQuote': '98.9228400', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740026999035'}, 'id': '223733909', 'clientOrderId': 'x-xcKtGhcu5447f5cd697e4b94017e99', 'timestamp': 1740026999035, 'datetime': '2025-02-20T04:49:59.035Z', 'lastTradeTimestamp': 1740026999035, 'lastUpdateTimestamp': 1740026999035, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6491, 'triggerPrice': None, 'amount': 152.4, 'cost': 98.92284, 'average': 0.6491, 'filled': 152.4, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:49:58,924 - INFO - 平多仓成功: {'info': {'orderId': '223733909', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu5447f5cd697e4b94017e99', 'price': '0.000000', 'avgPrice': '0.6491000', 'origQty': '152.4', 'executedQty': '152.4', 'cumQty': '152.4', 'cumQuote': '98.9228400', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740026999035'}, 'id': '223733909', 'clientOrderId': 'x-xcKtGhcu5447f5cd697e4b94017e99', 'timestamp': 1740026999035, 'datetime': '2025-02-20T04:49:59.035Z', 'lastTradeTimestamp': 1740026999035, 'lastUpdateTimestamp': 1740026999035, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6491, 'triggerPrice': None, 'amount': 152.4, 'cost': 98.92284, 'average': 0.6491, 'filled': 152.4, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:49:59,935 - INFO - 开空仓，数量: 152.96019050847457
+2025-02-20 12:50:00,261 - INFO - 订单创建成功: {'info': {'orderId': '223734058', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu9c94b98cc459ac95f79adf', 'price': '0.000000', 'avgPrice': '0.6493000', 'origQty': '152.9', 'executedQty': '152.9', 'cumQty': '152.9', 'cumQuote': '99.2779700', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740027000381'}, 'id': '223734058', 'clientOrderId': 'x-xcKtGhcu9c94b98cc459ac95f79adf', 'timestamp': 1740027000381, 'datetime': '2025-02-20T04:50:00.381Z', 'lastTradeTimestamp': 1740027000381, 'lastUpdateTimestamp': 1740027000381, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6493, 'triggerPrice': None, 'amount': 152.9, 'cost': 99.27797, 'average': 0.6493, 'filled': 152.9, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:50:00,262 - INFO - 开空仓成功: {'info': {'orderId': '223734058', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu9c94b98cc459ac95f79adf', 'price': '0.000000', 'avgPrice': '0.6493000', 'origQty': '152.9', 'executedQty': '152.9', 'cumQty': '152.9', 'cumQuote': '99.2779700', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740027000381'}, 'id': '223734058', 'clientOrderId': 'x-xcKtGhcu9c94b98cc459ac95f79adf', 'timestamp': 1740027000381, 'datetime': '2025-02-20T04:50:00.381Z', 'lastTradeTimestamp': 1740027000381, 'lastUpdateTimestamp': 1740027000381, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.6493, 'triggerPrice': None, 'amount': 152.9, 'cost': 99.27797, 'average': 0.6493, 'filled': 152.9, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:50:00,429 - INFO - 当前持仓方向: 空, 持仓金额: 99.24739
+2025-02-20 12:51:00,641 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:51:00,650 - INFO - 计算技术指标成功
+2025-02-20 12:51:00,652 - INFO - 填充NaN值成功
+2025-02-20 12:51:00,653 - INFO - 预测概率: 卖出=0.2686, 买入=0.5055, 持仓=0.2258
+2025-02-20 12:51:00,653 - INFO - 市场状态: RSI=43.70, MACD=-0.00, ADX=14.00, 波动率=0.0028, 趋势强度=0.0013, 市场情绪=-0.0210
+2025-02-20 12:51:00,909 - INFO - 当前持仓方向: 空, 持仓金额: 99.31537851
+2025-02-20 12:51:00,909 - INFO - 当前价格: 0.6495, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:51:01,046 - INFO - 当前持仓方向: 空, 持仓金额: 99.32467177
+2025-02-20 12:51:01,046 - INFO - 平空仓...
+2025-02-20 12:51:01,366 - INFO - 订单创建成功: {'info': {'orderId': '223741719', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu6e5bda5c6897b607012ca', 'price': '0.000000', 'avgPrice': '0.6497000', 'origQty': '152.9', 'executedQty': '152.9', 'cumQty': '152.9', 'cumQuote': '99.3391300', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740027061492'}, 'id': '223741719', 'clientOrderId': 'x-xcKtGhcu6e5bda5c6897b607012ca', 'timestamp': 1740027061492, 'datetime': '2025-02-20T04:51:01.492Z', 'lastTradeTimestamp': 1740027061492, 'lastUpdateTimestamp': 1740027061492, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.6497, 'triggerPrice': None, 'amount': 152.9, 'cost': 99.33913, 'average': 0.6497, 'filled': 152.9, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:51:01,367 - INFO - 平空仓成功: {'info': {'orderId': '223741719', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu6e5bda5c6897b607012ca', 'price': '0.000000', 'avgPrice': '0.6497000', 'origQty': '152.9', 'executedQty': '152.9', 'cumQty': '152.9', 'cumQuote': '99.3391300', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740027061492'}, 'id': '223741719', 'clientOrderId': 'x-xcKtGhcu6e5bda5c6897b607012ca', 'timestamp': 1740027061492, 'datetime': '2025-02-20T04:51:01.492Z', 'lastTradeTimestamp': 1740027061492, 'lastUpdateTimestamp': 1740027061492, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.6497, 'triggerPrice': None, 'amount': 152.9, 'cost': 99.33913, 'average': 0.6497, 'filled': 152.9, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:51:02,369 - INFO - 开多仓，数量: 152.8424382448037
+2025-02-20 12:51:02,698 - INFO - 订单创建成功: {'info': {'orderId': '223741835', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu279bbaa9f2ac48ad52fedd', 'price': '0.000000', 'avgPrice': '0.6497000', 'origQty': '152.8', 'executedQty': '152.8', 'cumQty': '152.8', 'cumQuote': '99.2741600', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740027062819'}, 'id': '223741835', 'clientOrderId': 'x-xcKtGhcu279bbaa9f2ac48ad52fedd', 'timestamp': 1740027062819, 'datetime': '2025-02-20T04:51:02.819Z', 'lastTradeTimestamp': 1740027062819, 'lastUpdateTimestamp': 1740027062819, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.6497, 'triggerPrice': None, 'amount': 152.8, 'cost': 99.27416, 'average': 0.6497, 'filled': 152.8, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:51:02,698 - INFO - 开多仓成功: {'info': {'orderId': '223741835', 'symbol': 'LAYERUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu279bbaa9f2ac48ad52fedd', 'price': '0.000000', 'avgPrice': '0.6497000', 'origQty': '152.8', 'executedQty': '152.8', 'cumQty': '152.8', 'cumQuote': '99.2741600', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740027062819'}, 'id': '223741835', 'clientOrderId': 'x-xcKtGhcu279bbaa9f2ac48ad52fedd', 'timestamp': 1740027062819, 'datetime': '2025-02-20T04:51:02.819Z', 'lastTradeTimestamp': 1740027062819, 'lastUpdateTimestamp': 1740027062819, 'symbol': 'LAYER/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.6497, 'triggerPrice': None, 'amount': 152.8, 'cost': 99.27416, 'average': 0.6497, 'filled': 152.8, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-20 12:51:02,850 - INFO - 当前持仓方向: 多, 持仓金额: 99.26040341
+2025-02-20 12:52:03,060 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:52:03,067 - INFO - 计算技术指标成功
+2025-02-20 12:52:03,069 - INFO - 填充NaN值成功
+2025-02-20 12:52:03,070 - INFO - 预测概率: 卖出=0.2520, 买入=0.5258, 持仓=0.2222
+2025-02-20 12:52:03,071 - INFO - 市场状态: RSI=41.87, MACD=-0.00, ADX=14.50, 波动率=0.0026, 趋势强度=0.0007, 市场情绪=-0.0314
+2025-02-20 12:52:03,327 - INFO - 当前持仓方向: 多, 持仓金额: 99.1852686
+2025-02-20 12:52:03,327 - INFO - 当前价格: 0.6489, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:52:03,478 - INFO - 当前持仓方向: 多, 持仓金额: 99.1852686
+2025-02-20 12:52:03,817 - INFO - 当前持仓方向: 多, 持仓金额: 99.1852686
+2025-02-20 12:53:04,029 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:53:04,035 - INFO - 计算技术指标成功
+2025-02-20 12:53:04,038 - INFO - 填充NaN值成功
+2025-02-20 12:53:04,039 - INFO - 预测概率: 卖出=0.2555, 买入=0.5216, 持仓=0.2229
+2025-02-20 12:53:04,039 - INFO - 市场状态: RSI=40.25, MACD=-0.00, ADX=14.92, 波动率=0.0026, 趋势强度=0.0007, 市场情绪=-0.0526
+2025-02-20 12:53:04,315 - INFO - 当前持仓方向: 多, 持仓金额: 99.06829867
+2025-02-20 12:53:04,315 - INFO - 当前价格: 0.6481, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:53:04,453 - INFO - 当前持仓方向: 多, 持仓金额: 99.06829867
+2025-02-20 12:53:04,590 - INFO - 当前持仓方向: 多, 持仓金额: 99.06829867
+2025-02-20 12:54:05,339 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:54:05,350 - INFO - 计算技术指标成功
+2025-02-20 12:54:05,353 - INFO - 填充NaN值成功
+2025-02-20 12:54:05,355 - INFO - 预测概率: 卖出=0.2557, 买入=0.5215, 持仓=0.2229
+2025-02-20 12:54:05,355 - INFO - 市场状态: RSI=39.73, MACD=-0.00, ADX=15.52, 波动率=0.0026, 趋势强度=0.0004, 市场情绪=-0.0463
+2025-02-20 12:54:06,152 - INFO - 当前持仓方向: 多, 持仓金额: 99.0144
+2025-02-20 12:54:06,152 - INFO - 当前价格: 0.6479, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:54:06,304 - INFO - 当前持仓方向: 多, 持仓金额: 98.97770355
+2025-02-20 12:54:06,459 - INFO - 当前持仓方向: 多, 持仓金额: 98.97770355
+2025-02-20 12:55:06,726 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:55:06,738 - INFO - 计算技术指标成功
+2025-02-20 12:55:06,740 - INFO - 填充NaN值成功
+2025-02-20 12:55:06,742 - INFO - 预测概率: 卖出=0.2525, 买入=0.5251, 持仓=0.2224
+2025-02-20 12:55:06,743 - INFO - 市场状态: RSI=41.84, MACD=-0.00, ADX=17.07, 波动率=0.0026, 趋势强度=0.0000, 市场情绪=-0.0057
+2025-02-20 12:55:07,014 - INFO - 当前持仓方向: 多, 持仓金额: 99.07552
+2025-02-20 12:55:07,014 - INFO - 当前价格: 0.6485, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:55:07,156 - INFO - 当前持仓方向: 多, 持仓金额: 99.07552
+2025-02-20 12:55:07,302 - INFO - 当前持仓方向: 多, 持仓金额: 99.07552
+2025-02-20 12:56:07,549 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:56:07,558 - INFO - 计算技术指标成功
+2025-02-20 12:56:07,560 - INFO - 填充NaN值成功
+2025-02-20 12:56:07,562 - INFO - 预测概率: 卖出=0.2621, 买入=0.5127, 持仓=0.2251
+2025-02-20 12:56:07,562 - INFO - 市场状态: RSI=43.25, MACD=-0.00, ADX=16.84, 波动率=0.0026, 趋势强度=0.0001, 市场情绪=0.0122
+2025-02-20 12:56:07,849 - INFO - 当前持仓方向: 多, 持仓金额: 99.15104598
+2025-02-20 12:56:07,849 - INFO - 当前价格: 0.649, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:56:07,997 - INFO - 当前持仓方向: 多, 持仓金额: 99.1511942
+2025-02-20 12:56:08,147 - INFO - 当前持仓方向: 多, 持仓金额: 99.1511942
+2025-02-20 12:57:08,437 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:57:08,448 - INFO - 计算技术指标成功
+2025-02-20 12:57:08,451 - INFO - 填充NaN值成功
+2025-02-20 12:57:08,453 - INFO - 预测概率: 卖出=0.2519, 买入=0.5252, 持仓=0.2229
+2025-02-20 12:57:08,453 - INFO - 市场状态: RSI=49.13, MACD=-0.00, ADX=15.38, 波动率=0.0026, 趋势强度=0.0000, 市场情绪=0.0804
+2025-02-20 12:57:08,730 - INFO - 当前持仓方向: 多, 持仓金额: 99.35847198
+2025-02-20 12:57:08,730 - INFO - 当前价格: 0.6501, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:57:08,883 - INFO - 当前持仓方向: 多, 持仓金额: 99.35847198
+2025-02-20 12:57:09,041 - INFO - 当前持仓方向: 多, 持仓金额: 99.35847045
+2025-02-20 12:58:09,361 - INFO - 成功获取1000根1mK线数据
+2025-02-20 12:58:09,367 - INFO - 计算技术指标成功
+2025-02-20 12:58:09,369 - INFO - 填充NaN值成功
+2025-02-20 12:58:09,370 - INFO - 预测概率: 卖出=0.2578, 买入=0.5180, 持仓=0.2242
+2025-02-20 12:58:09,370 - INFO - 市场状态: RSI=46.15, MACD=-0.00, ADX=14.31, 波动率=0.0025, 趋势强度=0.0000, 市场情绪=0.0523
+2025-02-20 12:58:09,652 - INFO - 当前持仓方向: 多, 持仓金额: 99.33509664
+2025-02-20 12:58:09,652 - INFO - 当前价格: 0.6495, AI信号: 1, 未实现盈亏: 0.00 USDT, 盈亏率: 0.00%
+2025-02-20 12:58:09,800 - INFO - 当前持仓方向: 多, 持仓金额: 99.33509664
+2025-02-20 12:58:09,941 - INFO - 当前持仓方向: 多, 持仓金额: 99.33485521

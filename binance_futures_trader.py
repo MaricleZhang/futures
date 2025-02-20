@@ -308,29 +308,51 @@ class BinanceFuturesTrader:
             
     @retry_on_error()
     def get_klines(self, interval='1m', limit=100):
-        """
-        获取K线数据
-        :param interval: K线间隔
-        :param limit: 获取数量
-        :return: K线数据列表
+        """获取K线数据
+        
+        Args:
+            interval: K线周期，支持 1m, 5m, 15m, 1h, 4h, 1d
+            limit: 获取的K线数量，最大1500
+        
+        Returns:
+            K线数据列表，每个K线包含 [timestamp, open, high, low, close, volume]
         """
         try:
+            # 限制最大获取数量
+            if limit > 1500:
+                limit = 1500
+                self.logger.warning("K线数量超过最大限制1500，已自动调整")
+                
+            # 获取K线数据
             klines = self.exchange.fetch_ohlcv(
-                symbol=config.SYMBOL,
+                symbol=self.symbol,
                 timeframe=interval,
-                limit=limit
+                limit=limit,
+                params={'type': 'future'}  # 指定为期货
             )
             
-            if not klines or len(klines) == 0:
-                self.logger.error("获取到的K线数据为空")
+            if klines and len(klines) > 0:
+                # 转换数据格式
+                formatted_klines = []
+                for k in klines:
+                    formatted_klines.append([
+                        int(k[0]),  # timestamp
+                        float(k[1]),  # open
+                        float(k[2]),  # high
+                        float(k[3]),  # low
+                        float(k[4]),  # close
+                        float(k[5])   # volume
+                    ])
+                self.logger.info(f"成功获取{len(formatted_klines)}根{interval}K线数据")
+                return formatted_klines
+            else:
+                self.logger.error(f"获取{interval}K线数据失败")
                 return []
                 
-            return klines
-            
         except Exception as e:
-            self.logger.error(f"获取K线数据失败: {str(e)}")
-            raise
-            
+            self.logger.error(f"获取K线数据时出错: {str(e)}")
+            return []
+        
     def open_long(self, amount):
         """开多仓"""
         return self.place_order(side='buy', amount=amount)

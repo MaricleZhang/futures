@@ -37,15 +37,17 @@ def retry_on_error(max_retries=None, retry_delay=None):
     return decorator
 
 class BinanceFuturesTrader:
-    def __init__(self):
+    def __init__(self, symbol=None):
         """初始化交易器"""
         try:
             # 清除可能的代理设置
             os.environ.pop('HTTP_PROXY', None)
             os.environ.pop('HTTPS_PROXY', None)
             
-            # 初始化日志
-            self.logger = Logger.get_logger()
+            # 初始化日志记录器，添加交易对标识
+            self.logger = logging.getLogger()
+            if symbol:
+                self.logger = logging.getLogger(symbol)
             
             # 初始化交易所
             self.exchange = ccxt.binanceusdm({
@@ -65,38 +67,47 @@ class BinanceFuturesTrader:
             })
             
             # 设置交易对
-            self.symbol = config.SYMBOL
+            self.symbol = symbol
+            self.symbol_config = config.SYMBOL_CONFIGS.get(symbol, {})
             
             # 取消所有未完成的订单
-            self.cancel_all_orders()
+            if symbol:
+                self.cancel_all_orders()
+                
+                # 设置持仓模式为单向持仓
+                self.set_position_mode(False)
+                
+                # 设置杠杆倍数
+                if self.symbol in config.SYMBOL_CONFIGS:
+                    leverage = config.SYMBOL_CONFIGS[self.symbol].get('leverage', config.DEFAULT_LEVERAGE)
+                else:
+                    leverage = config.DEFAULT_LEVERAGE
+                self.set_leverage(leverage)
+                
+                # 设置保证金模式
+                self.set_margin_type(config.MARGIN_TYPE)
             
-            # 设置持仓模式为单向持仓
-            self.set_position_mode(False)
-            
-            # 设置杠杆倍数
-            self.set_leverage(config.LEVERAGE)
-            
-            # 设置保证金模式
-            self.set_margin_type(config.MARGIN_TYPE)
-            
-            self.logger.info("交易器初始化成功")
+            self.logger.info(f"交易器初始化成功 {'for ' + symbol if symbol else 'for all symbols'}")
             
         except Exception as e:
             self.logger.error(f"交易器初始化失败: {str(e)}")
             raise
             
     @retry_on_error()
-    def get_market_price(self):
+    def get_market_price(self, symbol=None):
         """获取当前市场价格"""
         try:
-            ticker = self.exchange.fetch_ticker(self.symbol)
+            symbol = symbol or self.symbol
+            if not symbol:
+                raise ValueError("Symbol not specified")
+            ticker = self.exchange.fetch_ticker(symbol)
             return float(ticker['last'])
         except Exception as e:
             self.logger.error(f"获取市场价格失败: {str(e)}")
             raise
             
     @retry_on_error()
-    def get_balance(self):
+    def get_balance(self, symbol=None):
         """获取账户余额"""
         try:
             balance = self.exchange.fetch_balance()
@@ -108,10 +119,13 @@ class BinanceFuturesTrader:
             raise
             
     @retry_on_error()
-    def get_position(self):
+    def get_position(self, symbol=None):
         """获取当前持仓"""
         try:
-            positions = self.exchange.fetch_positions([self.symbol])
+            symbol = symbol or self.symbol
+            if not symbol:
+                raise ValueError("Symbol not specified")
+            positions = self.exchange.fetch_positions([symbol])
             if not positions:
                 self.logger.info("当前没有持仓信息")
                 return None
@@ -124,7 +138,8 @@ class BinanceFuturesTrader:
                 if abs(position_amt) > 0:
                     # 使用positionAmt判断方向
                     direction = "多" if position_amt > 0 else "空"
-                    self.logger.info(f"当前持仓方向: {direction}, 持仓金额: {abs(float(position['info'].get('notional', 0)))}")
+                    position_size = float(position['info'].get('positionAmt', 0)) if position else 0
+                    self.logger.info(f"当前持仓方向: {direction}，持仓金额: {abs(float(position['info'].get('notional', 0)))}，当前持仓量: {position_size}")
                     return position
             return None
         except Exception as e:
@@ -132,10 +147,13 @@ class BinanceFuturesTrader:
             raise
             
     @retry_on_error()
-    def get_market_info(self):
+    def get_market_info(self, symbol=None):
         """获取交易对信息"""
         try:
-            market = self.exchange.market(self.symbol)
+            symbol = symbol or self.symbol
+            if not symbol:
+                raise ValueError("Symbol not specified")
+            market = self.exchange.market(symbol)
             return market
         except Exception as e:
             self.logger.error(f"获取交易对信息失败: {str(e)}")
@@ -145,6 +163,8 @@ class BinanceFuturesTrader:
     def fetch_klines(self, symbol=None, timeframe=None, limit=None):
         """获取K线数据，带重试机制"""
         symbol = symbol or self.symbol
+        if not symbol:
+            raise ValueError("Symbol not specified")
         timeframe = timeframe or config.DEFAULT_TIMEFRAME
         limit = limit or config.DEFAULT_KLINE_LIMIT
         
@@ -156,10 +176,15 @@ class BinanceFuturesTrader:
             raise
             
     @retry_on_error()
-    def check_order_amount(self, amount):
+    def check_order_amount(self, symbol=None, amount=None):
         """检查下单数量是否符合要求"""
         try:
-            market = self.get_market_info()
+            symbol = symbol or self.symbol
+            if not symbol:
+                raise ValueError("Symbol not specified")
+            if not amount:
+                raise ValueError("Amount not specified")
+            market = self.get_market_info(symbol)
             min_amount = market['limits']['amount']['min']
             
             if amount < min_amount:
@@ -171,9 +196,10 @@ class BinanceFuturesTrader:
             raise
             
     @retry_on_error()
-    def place_order(self, side, amount, order_type=None, price=None, stop_loss=None, take_profit=None):
+    def place_order(self, symbol=None, side=None, amount=None, order_type=None, price=None, stop_loss=None, take_profit=None):
         """
         下单函数
+        :param symbol: 交易对
         :param side: 'buy' 或 'sell'
         :param amount: 下单数量
         :param order_type: 订单类型，默认为配置中的类型
@@ -182,16 +208,24 @@ class BinanceFuturesTrader:
         :param take_profit: 止盈价格
         """
         try:
+            symbol = symbol or self.symbol
+            if not symbol:
+                raise ValueError("Symbol not specified")
+            if not side:
+                raise ValueError("Side not specified")
+            if not amount:
+                raise ValueError("Amount not specified")
             if order_type is None:
                 order_type = config.DEFAULT_ORDER_TYPE
                 
             # 检查并调整下单数量
-            amount = self.check_order_amount(amount)
+            amount = self.check_order_amount(symbol, amount)
                 
-            current_price = self.get_market_price()
+            current_price = self.get_market_price(symbol)
             # 检查下单数量是否小于最小名义价值
-            if amount * current_price < config.MIN_NOTIONAL:
-                raise ValueError(f"下单金额 {amount * current_price} USDT 小于最小名义价值 {config.MIN_NOTIONAL} USDT")
+            min_notional = self.symbol_config.get('min_notional', 20)  # 默认值为20
+            if amount * current_price < min_notional:
+                raise ValueError(f"下单金额 {amount * current_price} USDT 小于最小名义价值 {min_notional} USDT")
 
             # 创建订单
             params = {
@@ -200,7 +234,7 @@ class BinanceFuturesTrader:
             
             # 基础订单参数
             order_params = {
-                'symbol': self.symbol,
+                'symbol': symbol,
                 'type': order_type.upper(),
                 'side': side.upper(),
                 'amount': amount,
@@ -227,7 +261,7 @@ class BinanceFuturesTrader:
             # # 设置止损单
             # if stop_loss is not None:
             #     stop_loss_params = {
-            #         'symbol': self.symbol,
+            #         'symbol': symbol,
             #         'type': 'STOP_MARKET',
             #         'side': 'SELL' if side.upper() == 'BUY' else 'BUY',
             #         'amount': amount,
@@ -242,7 +276,7 @@ class BinanceFuturesTrader:
             # # 设置止盈单
             # if take_profit is not None:
             #     take_profit_params = {
-            #         'symbol': self.symbol,
+            #         'symbol': symbol,
             #         'type': 'TAKE_PROFIT_MARKET',
             #         'side': 'SELL' if side.upper() == 'BUY' else 'BUY',
             #         'amount': amount,
@@ -261,10 +295,13 @@ class BinanceFuturesTrader:
             raise
             
     @retry_on_error()
-    def close_position(self):
+    def close_position(self, symbol=None):
         """平掉当前所有持仓"""
         try:
-            position = self.get_position()
+            symbol = symbol or self.symbol
+            if not symbol:
+                raise ValueError("Symbol not specified")
+            position = self.get_position(symbol)
             if position is None or float(position['info'].get('positionAmt', 0)) == 0:
                 self.logger.info("当前没有持仓")
                 return
@@ -274,7 +311,7 @@ class BinanceFuturesTrader:
             amount = abs(float(position['info'].get('positionAmt', 0)))
             
             # 市价平仓
-            order = self.place_order(side=side, amount=amount)
+            order = self.place_order(symbol, side, amount)
             self.logger.info(f"平仓成功: {order}")
             return order
             
@@ -283,18 +320,21 @@ class BinanceFuturesTrader:
             raise
             
     @retry_on_error()
-    def cancel_all_orders(self):
+    def cancel_all_orders(self, symbol=None):
         """
         取消所有未完成的订单（包括止损止盈委托）
         """
         try:
+            symbol = symbol or self.symbol
+            if not symbol:
+                raise ValueError("Symbol not specified")
             # 获取所有未完成的订单
-            open_orders = self.exchange.fetch_open_orders(symbol=self.symbol)
+            open_orders = self.exchange.fetch_open_orders(symbol=symbol)
             
             # 取消每个订单
             for order in open_orders:
                 try:
-                    self.exchange.cancel_order(order['id'], self.symbol)
+                    self.exchange.cancel_order(order['id'], symbol)
                     self.logger.info(f"取消订单成功: {order['id']}")
                 except Exception as e:
                     self.logger.error(f"取消订单失败 {order['id']}: {str(e)}")
@@ -307,10 +347,11 @@ class BinanceFuturesTrader:
             raise
             
     @retry_on_error()
-    def get_klines(self, interval='1m', limit=100):
+    def get_klines(self, symbol=None, interval='1m', limit=100):
         """获取K线数据
         
         Args:
+            symbol: 交易对
             interval: K线周期，支持 1m, 5m, 15m, 1h, 4h, 1d
             limit: 获取的K线数量，最大1500
         
@@ -318,6 +359,9 @@ class BinanceFuturesTrader:
             K线数据列表，每个K线包含 [timestamp, open, high, low, close, volume]
         """
         try:
+            symbol = symbol or self.symbol
+            if not symbol:
+                raise ValueError("Symbol not specified")
             # 限制最大获取数量
             if limit > 1500:
                 limit = 1500
@@ -325,7 +369,7 @@ class BinanceFuturesTrader:
                 
             # 获取K线数据
             klines = self.exchange.fetch_ohlcv(
-                symbol=self.symbol,
+                symbol=symbol,
                 timeframe=interval,
                 limit=limit,
                 params={'type': 'future'}  # 指定为期货
@@ -353,29 +397,33 @@ class BinanceFuturesTrader:
             self.logger.error(f"获取K线数据时出错: {str(e)}")
             return []
         
-    def open_long(self, amount):
+    def open_long(self, symbol=None, amount=None):
         """开多仓"""
-        return self.place_order(side='buy', amount=amount)
+        return self.place_order(symbol, 'buy', amount)
         
-    def open_short(self, amount):
+    def open_short(self, symbol=None, amount=None):
         """开空仓"""
-        return self.place_order(side='sell', amount=amount)
+        return self.place_order(symbol, 'sell', amount)
         
-    def close_long(self, amount):
+    def close_long(self, symbol=None, amount=None):
         """平多仓"""
-        return self.place_order(side='sell', amount=amount)
+        return self.place_order(symbol, 'sell', amount)
         
-    def close_short(self, amount):
+    def close_short(self, symbol=None, amount=None):
         """平空仓"""
-        return self.place_order(side='buy', amount=amount)
+        return self.place_order(symbol, 'buy', amount)
         
     @retry_on_error()
-    def set_position_mode(self, dual_side_position=False):
+    def set_position_mode(self, symbol=None, dual_side_position=False):
         """设置持仓模式
         Args:
+            symbol: 交易对
             dual_side_position (bool): True为双向持仓，False为单向持仓
         """
         try:
+            symbol = symbol or self.symbol
+            if not symbol:
+                raise ValueError("Symbol not specified")
             self.exchange.fapiPrivatePostPositionSideDual({
                 'dualSidePosition': 'true' if dual_side_position else 'false'
             })
@@ -389,12 +437,22 @@ class BinanceFuturesTrader:
                 raise
 
     @retry_on_error()
-    def set_leverage(self, leverage):
+    def set_leverage(self, leverage=None):
         """设置杠杆倍数
         Args:
             leverage (int): 杠杆倍数
         """
         try:
+            if not self.symbol:
+                raise ValueError("Symbol not specified")
+                
+            # 如果没有指定杠杆倍数，使用配置中的默认值
+            if leverage is None:
+                if self.symbol in config.SYMBOL_CONFIGS:
+                    leverage = config.SYMBOL_CONFIGS[self.symbol].get('leverage', config.DEFAULT_LEVERAGE)
+                else:
+                    leverage = config.DEFAULT_LEVERAGE
+                
             self.exchange.fapiPrivatePostLeverage({
                 'symbol': self.exchange.market(self.symbol)['id'],
                 'leverage': leverage
@@ -405,12 +463,16 @@ class BinanceFuturesTrader:
             raise
 
     @retry_on_error()
-    def set_margin_type(self, margin_type):
+    def set_margin_type(self, margin_type=None):
         """设置保证金模式
         Args:
             margin_type (str): 'ISOLATED' 或 'CROSSED'
         """
         try:
+            if not self.symbol:
+                raise ValueError("Symbol not specified")
+            if not margin_type:
+                raise ValueError("Margin type not specified")
             self.exchange.fapiPrivatePostMarginType({
                 'symbol': self.exchange.market(self.symbol)['id'],
                 'marginType': margin_type.upper()

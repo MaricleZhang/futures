@@ -3,13 +3,20 @@
 """
 from abc import ABC, abstractmethod
 import time
+import logging
 
 class BaseStrategy(ABC):
     def __init__(self, trader):
-        """初始化策略"""
+        """初始化基础策略
+        Args:
+            trader (BinanceFuturesTrader): 交易者实例
+        """
         self.trader = trader
-        from utils.logger import Logger
-        self.logger = Logger.get_logger()
+        self.logger = self.get_logger()
+        
+    def get_logger(self):
+        """获取带有交易对标识的日志记录器"""
+        return logging.getLogger(self.trader.symbol if self.trader and self.trader.symbol else 'root')
         
     def run(self):
         """运行策略"""

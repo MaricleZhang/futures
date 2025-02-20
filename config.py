@@ -10,22 +10,34 @@ PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
 PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
-# 请求头设置
-USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-
 # 交易设置
-SYMBOL = 'SOLUSDT'  # 交易对
-LEVERAGE = 5  # 杠杆倍数
+SYMBOLS = ['ETHUSDT']  # 支持多个交易对
+SYMBOL_CONFIGS = {
+    # 'SOLUSDT': {
+    #     'leverage': 5,
+    #     'min_notional': 20,
+    #     'max_position_size': 200,
+    # },
+    # 'BTCUSDT': {
+    #     'leverage': 3,
+    #     'min_notional': 100,
+    #     'max_position_size': 1,
+    # },
+    'ETHUSDT': {
+        'leverage': 4,
+        'min_notional': 50,
+        'max_position_size': 5,
+    }
+}
+DEFAULT_LEVERAGE = 5  # 默认杠杆倍数
 MARGIN_TYPE = 'CROSSED'  # 保证金模式：CROSSED(全仓) ISOLATED(逐仓)
 POSITION_SIDE = 'BOTH'  # 持仓模式：BOTH(单向持仓) LONG/SHORT(双向持仓)
-MIN_NOTIONAL = 20  # 最小名义价值（USDT）
 
 # 订单设置
 DEFAULT_ORDER_TYPE = 'market'  # 默认订单类型：market(市价) 或 limit(限价)
 TIME_IN_FORCE = 'GTC'  # 订单有效期: GTC(永久有效) GTX(立即成交或取消) IOC(立即成交剩余取消)
 
 # 风控设置
-MAX_POSITION_SIZE = 200  # 最大持仓量(BTC)
 MAX_LEVERAGE = 10  # 最大允许杠杆
 DEFAULT_STOP_LOSS_PERCENT = 50  # 默认止损百分比
 DEFAULT_TAKE_PROFIT_PERCENT = 10000  # 默认止盈百分比
@@ -37,20 +49,6 @@ DEFAULT_KLINE_LIMIT = 100  # 默认K线获取数量
 # API设置
 API_TIMEOUT = 10000  # API超时时间(毫秒)
 ENABLE_RATE_LIMIT = True  # 是否启用频率限制
-
-# 交易所设置
-EXCHANGE_ID = 'binance'  # 交易所ID
-EXCHANGE_OPTIONS = {
-    'defaultType': 'future',  # 使用期货模式
-    'adjustForTimeDifference': True,  # 调整服务器时间差
-    'recvWindow': 5000,  # 请求有效时间窗口(毫秒)
-    'urls': {
-        'api': {
-            'public': 'https://fapi.binance.com/fapi/v1',
-            'private': 'https://fapi.binance.com/fapi/v1',
-        }
-    }
-}
 
 # AI策略设置
 AI_KLINES_LIMIT = 1000  # AI分析所需的K线数量

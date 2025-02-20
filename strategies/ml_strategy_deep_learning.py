@@ -10,6 +10,7 @@ import config
 import talib
 from sklearn.preprocessing import StandardScaler
 import time
+import logging
 
 class DeepLearningModel(nn.Module):
     def __init__(self, input_size):
@@ -61,14 +62,14 @@ class DeepLearningStrategy(MLStrategy):
     def __init__(self, trader):
         """初始化深度学习策略"""
         super().__init__(trader)
-        self.logger = Logger.get_logger()
+        self.logger = self.get_logger()
         
         # 深度学习特定参数
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.batch_size = 32
         self.learning_rate = 0.001
         self.n_epochs = 20
-        self.confidence_threshold = 0.4
+        self.confidence_threshold = 0.9
         
         # 初始化StandardScaler
         self.scaler = StandardScaler()
@@ -212,6 +213,7 @@ class DeepLearningStrategy(MLStrategy):
                 # 计算波动率
                 df['volatility'] = df['returns'].rolling(window=20).std()
                 
+                self.logger = self.get_logger()
                 self.logger.info("计算技术指标成功")
             except Exception as e:
                 self.logger.error(f"计算技术指标失败: {str(e)}")
@@ -265,6 +267,8 @@ class DeepLearningStrategy(MLStrategy):
                 # 获取预测概率
                 probs = probabilities[0]
                 max_prob = torch.max(probs).item()
+                
+                self.logger = self.get_logger()
                 
                 # 记录预测概率（0=卖出，1=买入，2=持仓）
                 self.logger.info(f"预测概率: 卖出={probs[0]:.4f}, 买入={probs[1]:.4f}, 持仓={probs[2]:.4f}")

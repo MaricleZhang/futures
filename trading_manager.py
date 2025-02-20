@@ -88,6 +88,9 @@ class TradingManager:
                         if pos_amt < 0:  # 有空仓，先平仓
                             logger.info("有空仓，先平仓...")
                             trader.close_position(symbol)
+                        elif pos_amt > 0:  # 已有多仓，不再开仓
+                            logger.info("已有多仓，保持当前仓位")
+                            continue
                     logger.info("开多信号，准备开仓...")
                     trader.open_long(symbol, trade_amount)
                 elif signal == -1:  # 开空信号
@@ -96,12 +99,14 @@ class TradingManager:
                         if pos_amt > 0:  # 有多仓，先平仓
                             logger.info("有多仓，先平仓...")
                             trader.close_position(symbol)
+                        elif pos_amt < 0:  # 已有空仓，不再开仓
+                            logger.info("已有空仓，保持当前仓位")
+                            continue
                     logger.info("开空信号，准备开仓...")
                     trader.open_short(symbol, trade_amount)
-                elif signal == 0:  # 平仓信号
-                    if position and float(position['info'].get('positionAmt', 0)) != 0:
-                        logger.info("平仓信号，准备平仓...")
-                        trader.close_position(symbol)
+                elif signal == 0:  # 观望信号或持仓信号
+                    logger.info("观望信号或持仓信号，保持当前仓位")
+                    continue
                 
             except Exception as e:
                 logger.error(f"{symbol} 交易过程出错: {str(e)}")

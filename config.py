@@ -24,8 +24,8 @@ SYMBOL_CONFIGS = {
     #     'max_position_size': 1,
     # },
     'ETHUSDT': {
-        'leverage': 4,
-        'min_notional': 50,
+        'leverage': 2,
+        'min_notional': 20,
         'max_position_size': 5,
         'check_interval': 60,  # 交易检查间隔(秒)
     }

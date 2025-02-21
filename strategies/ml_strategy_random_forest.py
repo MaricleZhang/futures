@@ -29,16 +29,16 @@ class RandomForestStrategy(MLStrategy):
         self.logger = self.get_logger()
         
         # 随机森林特定参数
-        self.n_estimators = 50   # 保持树的数量
-        self.max_depth = 4       # 保持树的深度
-        self.min_samples_split = 20
-        self.min_samples_leaf = 10
-        self.confidence_threshold = 0.45  # 降低置信度阈值，使模型更容易产生交易信号
+        self.n_estimators = 100  # 增加树的数量
+        self.max_depth = 5      # 略微增加深度
+        self.min_samples_split = 30  # 增加分裂所需样本数
+        self.min_samples_leaf = 15   # 增加叶节点最小样本数
+        self.confidence_threshold = 0.42  # 提高置信度阈值
         
         # K线设置
         self.kline_interval = '1m'
         self.training_lookback = 1000
-        self.retraining_interval = 300
+        self.retraining_interval = 300  # 5分钟重新训练一次
         self.last_training_time = 0
         
         # 初始化StandardScaler
@@ -50,6 +50,10 @@ class RandomForestStrategy(MLStrategy):
         # 模型评估指标
         self.feature_importance = None
         self.val_accuracies = []
+        
+        # 趋势状态
+        self.trend_state = 0  # -1: 下跌, 0: 盘整, 1: 上涨
+        self.trend_confidence = 0.0  # 趋势置信度
         
         # 获取历史数据进行训练
         try:
@@ -79,10 +83,10 @@ class RandomForestStrategy(MLStrategy):
             min_samples_leaf=self.min_samples_leaf,
             random_state=42,
             n_jobs=-1,
-            class_weight='balanced_subsample',  
+            class_weight='balanced',  # 使用balanced而不是balanced_subsample
             bootstrap=True,
             max_features='sqrt',
-            max_samples=0.7  
+            max_samples=0.8  # 增加采样比例
         )
 
     def prepare_features(self, klines):
@@ -183,6 +187,46 @@ class RandomForestStrategy(MLStrategy):
             self.logger.error(f"数据预处理失败: {str(e)}")
             return None
 
+    def update_trend_state(self, df):
+        """更新趋势状态"""
+        try:
+            # 计算多个时间窗口的趋势
+            ma_short = df['close'].rolling(5).mean()
+            ma_mid = df['close'].rolling(10).mean()
+            ma_long = df['close'].rolling(20).mean()
+            
+            # 计算趋势方向
+            trend_short = (ma_short - ma_short.shift(1)) / ma_short.shift(1)
+            trend_mid = (ma_mid - ma_mid.shift(1)) / ma_mid.shift(1)
+            trend_long = (ma_long - ma_long.shift(1)) / ma_long.shift(1)
+            
+            # 获取最新趋势
+            latest_trend_short = trend_short.iloc[-1]
+            latest_trend_mid = trend_mid.iloc[-1]
+            latest_trend_long = trend_long.iloc[-1]
+            
+            # 计算趋势一致性
+            trends = [latest_trend_short, latest_trend_mid, latest_trend_long]
+            up_trends = sum(1 for t in trends if t > 0)
+            down_trends = sum(1 for t in trends if t < 0)
+            
+            # 更新趋势状态
+            if up_trends >= 2:
+                self.trend_state = 1
+                self.trend_confidence = up_trends / 3
+            elif down_trends >= 2:
+                self.trend_state = -1
+                self.trend_confidence = down_trends / 3
+            else:
+                self.trend_state = 0
+                self.trend_confidence = 0.5
+                
+            self.logger.info(f"趋势状态: {['下跌', '盘整', '上涨'][self.trend_state + 1]}, "
+                           f"置信度: {self.trend_confidence:.2f}")
+                           
+        except Exception as e:
+            self.logger.error(f"趋势状态更新失败: {str(e)}")
+
     def generate_signals(self, klines):
         """生成交易信号"""
         try:
@@ -196,6 +240,9 @@ class RandomForestStrategy(MLStrategy):
             features = self.prepare_features(klines)
             if features is None or features.empty:
                 return 0
+                
+            # 更新趋势状态
+            self.update_trend_state(features)
 
             # 选择最新的数据点
             latest_features = features.iloc[-1:]
@@ -221,29 +268,44 @@ class RandomForestStrategy(MLStrategy):
             # 预测概率
             probabilities = self.model.predict_proba(X_scaled)[0]
             
-            # 记录预测概率
-            self.logger.info(f"预测概率: 卖出={probabilities[0]:.4f}, 观望={probabilities[1]:.4f}, 买入={probabilities[2]:.4f}")
+            # 记录原始预测概率
+            self.logger.info(f"原始预测概率: 卖出={probabilities[0]:.4f}, "
+                           f"观望={probabilities[1]:.4f}, "
+                           f"买入={probabilities[2]:.4f}")
+            
+            # 根据趋势调整概率
+            if self.trend_state == 1:  # 上涨趋势
+                # 增强买入信号，抑制卖出信号
+                probabilities[2] *= (1 + 0.2 * self.trend_confidence)  # 买入
+                probabilities[0] *= (1 - 0.2 * self.trend_confidence)  # 卖出
+            elif self.trend_state == -1:  # 下跌趋势
+                # 增强卖出信号，抑制买入信号
+                probabilities[0] *= (1 + 0.2 * self.trend_confidence)  # 卖出
+                probabilities[2] *= (1 - 0.2 * self.trend_confidence)  # 买入
+                
+            # 重新归一化概率
+            probabilities = probabilities / np.sum(probabilities)
+            
+            # 记录调整后的预测概率
+            self.logger.info(f"趋势调整后概率: 卖出={probabilities[0]:.4f}, "
+                           f"观望={probabilities[1]:.4f}, "
+                           f"买入={probabilities[2]:.4f}")
             
             # 获取最高概率及其对应的类别
             max_prob = max(probabilities)
             predicted_class = np.argmax(probabilities)
             
             # 记录预测结果和置信度
-            self.logger.info(f"预测结果: {['卖出', '观望', '买入'][predicted_class]} (置信度: {max_prob:.4f})")
+            self.logger.info(f"最终预测: {['卖出', '观望', '买入'][predicted_class]} "
+                           f"(置信度: {max_prob:.4f})")
             
-            # 根据置信度阈值和预测类别生成信号
+            # 生成交易信号
             if max_prob >= self.confidence_threshold:
                 if predicted_class == 0:  # 卖出信号
-                    return -1
-                elif predicted_class == 2:  # 买入信号
-                    return 1
-            elif max_prob < 0.4:  # 如果最高概率太低，考虑次高概率
-                sorted_probs = sorted(enumerate(probabilities), key=lambda x: x[1], reverse=True)
-                second_class, second_prob = sorted_probs[1]
-                if second_prob >= self.confidence_threshold * 0.9:  # 稍微降低次优选择的阈值
-                    if second_class == 0:  # 卖出信号
+                    if probabilities[0] - probabilities[2] > 0.2:  # 要求卖出概率显著高于买入
                         return -1
-                    elif second_class == 2:  # 买入信号
+                elif predicted_class == 2:  # 买入信号
+                    if probabilities[2] - probabilities[0] > 0.2:  # 要求买入概率显著高于卖出
                         return 1
             
             return 0  # 持仓不变
@@ -251,7 +313,7 @@ class RandomForestStrategy(MLStrategy):
         except Exception as e:
             self.logger.error(f"生成信号失败: {str(e)}")
             return 0
-
+            
     def train_model(self, klines):
         """训练随机森林模型"""
         try:
@@ -271,7 +333,7 @@ class RandomForestStrategy(MLStrategy):
             
             # 确保特征和标签的长度一致
             X = features_df[feature_columns].values
-            X = X[:-5]  # 去掉最后5行，因为标签生成时去掉了最后5个点
+            X = X[:-10]  # 去掉最后10行，因为标签生成时去掉了最后10个点
             y = labels
 
             if len(X) != len(y):
@@ -307,75 +369,86 @@ class RandomForestStrategy(MLStrategy):
     def generate_labels(self, df):
         """生成训练标签"""
         try:
-            if len(df) < 6:
+            if len(df) < 10:  # 增加最小数据要求
                 self.logger.error("数据长度不足以生成标签")
                 return None
                 
             # 计算多个时间窗口的未来收益
-            future_returns_1m = df['close'].pct_change(-1)
-            future_returns_3m = df['close'].pct_change(-3)
-            future_returns_5m = df['close'].pct_change(-5)
+            future_returns = {
+                '1m': df['close'].pct_change(-1),
+                '3m': df['close'].pct_change(-3),
+                '5m': df['close'].pct_change(-5),
+                '10m': df['close'].pct_change(-10)
+            }
+            
+            # 计算成交量权重
+            volume_ma = df['volume'].rolling(5).mean()
+            volume_weight = df['volume'] / volume_ma
+            volume_weight = volume_weight.clip(0.5, 2)  # 限制权重范围
             
             # 计算波动率
             volatility = df['volatility_1m'].ffill().rolling(5, min_periods=1).mean()
             avg_volatility = volatility.mean()
             
-            # 动态阈值：基于平均波动率调整
-            base_threshold = 0.0004  
-            vol_multiplier = 0.8     
+            # 计算趋势强度
+            trend_strength = abs(df['close'].pct_change(5))  # 5分钟趋势强度
             
-            # 计算动态阈值，使用平均波动率
+            # 动态阈值
+            base_threshold = 0.0006  # 增加基础阈值
+            vol_multiplier = 1.0     # 增加波动率影响
+            
+            # 计算动态阈值
             dynamic_threshold = base_threshold * (1 + vol_multiplier * (volatility / avg_volatility).ffill())
             
             # 初始化标签
-            labels = np.zeros(len(df)-5)
+            labels = np.zeros(len(df)-10)  # 增加预测窗口
             
             # 确保所有数据都有效
-            future_returns_1m = future_returns_1m.ffill()
-            future_returns_3m = future_returns_3m.ffill()
-            future_returns_5m = future_returns_5m.ffill()
+            for key in future_returns:
+                future_returns[key] = future_returns[key].ffill()
             
             # 截断数据以匹配长度
-            future_returns_1m = future_returns_1m[:-5].values
-            future_returns_3m = future_returns_3m[:-5].values
-            future_returns_5m = future_returns_5m[:-5].values
-            dynamic_threshold = dynamic_threshold[:-5].values
+            for key in future_returns:
+                future_returns[key] = future_returns[key][:-10].values
+            dynamic_threshold = dynamic_threshold[:-10].values
+            volume_weight = volume_weight[:-10].values
+            trend_strength = trend_strength[:-10].values
             
-            # 生成标签（考虑多个时间窗口的走势）
+            # 生成标签
             for i in range(len(labels)):
-                # 计算综合收益率（进一步增加短期权重）
+                # 加权计算未来收益，降低短期影响
                 weighted_return = (
-                    0.8 * future_returns_1m[i] +  
-                    0.15 * future_returns_3m[i] + 
-                    0.05 * future_returns_5m[i]   
+                    0.3 * future_returns['1m'][i] +
+                    0.3 * future_returns['3m'][i] +
+                    0.2 * future_returns['5m'][i] +
+                    0.2 * future_returns['10m'][i]
                 )
                 
-                # 根据动态阈值判断买卖信号
-                if weighted_return > dynamic_threshold[i]:
+                # 应用成交量权重和趋势强度
+                weighted_return *= volume_weight[i]
+                threshold = dynamic_threshold[i] * (1 + trend_strength[i])
+                
+                # 生成标签
+                if weighted_return > threshold:
                     labels[i] = 2  # 买入
-                elif weighted_return < -dynamic_threshold[i]:
+                elif weighted_return < -threshold:
                     labels[i] = 0  # 卖出
                 else:
-                    labels[i] = 1  # 持有
+                    labels[i] = 1  # 观望
             
-            if len(labels) == 0:
-                self.logger.error("生成的标签为空")
-                return None
-                
-            # 打印标签分布情况
+            # 记录标签分布
             unique, counts = np.unique(labels, return_counts=True)
-            distribution = dict(zip(unique, counts))
-            self.logger.info(f"标签分布: 卖出={distribution.get(0, 0)}, "
-                           f"观望={distribution.get(1, 0)}, "
-                           f"买入={distribution.get(2, 0)}")
+            distribution = dict(zip(['卖出', '观望', '买入'], counts))
+            self.logger.info(f"标签分布: 卖出={distribution['卖出']}, "
+                           f"观望={distribution['观望']}, "
+                           f"买入={distribution['买入']}")
             
             # 计算买卖信号比例
-            total_samples = len(labels)
-            action_ratio = (distribution.get(0, 0) + distribution.get(2, 0)) / total_samples
-            self.logger.info(f"买卖信号比例: {action_ratio:.2%}")
+            signal_ratio = (distribution['买入'] + distribution['卖出']) / len(labels) * 100
+            self.logger.info(f"买卖信号比例: {signal_ratio:.2f}%")
             
-            return labels
+            return labels.astype(int)
             
         except Exception as e:
-            self.logger.error(f"生成标签失败: {str(e)}")
+            self.logger.error(f"标签生成失败: {str(e)}")
             return None

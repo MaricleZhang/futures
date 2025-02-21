@@ -29,15 +29,30 @@ class SelfAttention(nn.Module):
 class DeepNet(nn.Module):
     def __init__(self, input_size):
         super(DeepNet, self).__init__()
-        self.attention = SelfAttention(input_size)
         
-        # 简化网络结构
-        self.layers = nn.Sequential(
-            nn.Linear(input_size, 64),
+        # 1. 特征提取层
+        self.feature_extractor = nn.Sequential(
+            nn.Linear(input_size, 128),
+            nn.BatchNorm1d(128),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            
+            nn.Linear(128, 64),
             nn.BatchNorm1d(64),
             nn.ReLU(),
-            nn.Dropout(0.1),
-            
+            nn.Dropout(0.2)
+        )
+        
+        # 2. 注意力机制
+        self.attention = nn.Sequential(
+            nn.Linear(64, 64),
+            nn.Tanh(),
+            nn.Linear(64, 1),
+            nn.Softmax(dim=1)
+        )
+        
+        # 3. 预测层
+        self.predictor = nn.Sequential(
             nn.Linear(64, 32),
             nn.BatchNorm1d(32),
             nn.ReLU(),
@@ -50,16 +65,32 @@ class DeepNet(nn.Module):
             nn.Linear(16, 3)
         )
         
-        # 降低正则化强度
-        self.l1_lambda = 0.001
-        self.l2_lambda = 0.0005
+        # 4. 残差连接
+        self.shortcut = nn.Sequential(
+            nn.Linear(input_size, 3),
+            nn.BatchNorm1d(3)
+        )
+        
+        # 正则化参数
+        self.l1_lambda = 0.0005
+        self.l2_lambda = 0.0001
         
     def forward(self, x):
-        # 应用注意力机制
-        x = self.attention(x)
-        # 通过主网络
-        x = self.layers(x)
-        return torch.softmax(x, dim=1)
+        # 1. 特征提取
+        features = self.feature_extractor(x)
+        
+        # 2. 注意力机制
+        attention_weights = self.attention(features)
+        attended = features * attention_weights
+        
+        # 3. 预测
+        out = self.predictor(attended)
+        
+        # 4. 残差连接
+        shortcut = self.shortcut(x)
+        out = out + shortcut
+        
+        return torch.softmax(out, dim=1)
     
     def regularization_loss(self):
         l1_loss = 0
@@ -104,7 +135,7 @@ class HybridStrategy(MLStrategy):
         self.epochs = 10  # 增加训练轮数到10轮
         
         # 通用参数
-        self.confidence_threshold = 0.45
+        self.confidence_threshold = 0.42
         self.kline_interval = '1m'
         self.training_lookback = 1000
         self.retraining_interval = 300
@@ -208,77 +239,90 @@ class HybridStrategy(MLStrategy):
     def generate_labels(self, df):
         """生成训练标签"""
         try:
-            if len(df) < 6:
+            if len(df) < 10:  # 增加最小数据要求
                 self.logger.error("数据长度不足以生成标签")
                 return None
                 
             # 计算多个时间窗口的未来收益
-            future_returns_1m = df['close'].pct_change(-1)
-            future_returns_3m = df['close'].pct_change(-3)
-            future_returns_5m = df['close'].pct_change(-5)
+            future_returns = {
+                '1m': df['close'].pct_change(-1),
+                '3m': df['close'].pct_change(-3),
+                '5m': df['close'].pct_change(-5),
+                '10m': df['close'].pct_change(-10)
+            }
+            
+            # 计算成交量权重
+            volume_ma = df['volume'].rolling(5).mean()
+            volume_weight = df['volume'] / volume_ma
+            volume_weight = volume_weight.clip(0.5, 2)  # 限制权重范围
             
             # 计算波动率
             volatility = df['volatility_1m'].ffill().rolling(5, min_periods=1).mean()
             avg_volatility = volatility.mean()
             
+            # 计算趋势强度
+            trend_strength = abs(df['close'].pct_change(5))  # 5分钟趋势强度
+            
             # 动态阈值
-            base_threshold = 0.0004
-            vol_multiplier = 0.8
+            base_threshold = 0.0006  # 增加基础阈值
+            vol_multiplier = 1.0     # 增加波动率影响
             
             # 计算动态阈值
             dynamic_threshold = base_threshold * (1 + vol_multiplier * (volatility / avg_volatility).ffill())
             
             # 初始化标签
-            labels = np.zeros(len(df)-5)
+            labels = np.zeros(len(df)-10)  # 增加预测窗口
             
             # 确保所有数据都有效
-            future_returns_1m = future_returns_1m.ffill()
-            future_returns_3m = future_returns_3m.ffill()
-            future_returns_5m = future_returns_5m.ffill()
+            for key in future_returns:
+                future_returns[key] = future_returns[key].ffill()
             
             # 截断数据以匹配长度
-            future_returns_1m = future_returns_1m[:-5].values
-            future_returns_3m = future_returns_3m[:-5].values
-            future_returns_5m = future_returns_5m[:-5].values
-            dynamic_threshold = dynamic_threshold[:-5].values
+            for key in future_returns:
+                future_returns[key] = future_returns[key][:-10].values
+            dynamic_threshold = dynamic_threshold[:-10].values
+            volume_weight = volume_weight[:-10].values
+            trend_strength = trend_strength[:-10].values
             
             # 生成标签
             for i in range(len(labels)):
+                # 加权计算未来收益，降低短期影响
                 weighted_return = (
-                    0.8 * future_returns_1m[i] +
-                    0.15 * future_returns_3m[i] +
-                    0.05 * future_returns_5m[i]
+                    0.3 * future_returns['1m'][i] +
+                    0.3 * future_returns['3m'][i] +
+                    0.2 * future_returns['5m'][i] +
+                    0.2 * future_returns['10m'][i]
                 )
                 
-                if weighted_return > dynamic_threshold[i]:
+                # 应用成交量权重和趋势强度
+                weighted_return *= volume_weight[i]
+                threshold = dynamic_threshold[i] * (1 + trend_strength[i])
+                
+                # 生成标签
+                if weighted_return > threshold:
                     labels[i] = 2  # 买入
-                elif weighted_return < -dynamic_threshold[i]:
+                elif weighted_return < -threshold:
                     labels[i] = 0  # 卖出
                 else:
-                    labels[i] = 1  # 持有
+                    labels[i] = 1  # 观望
             
-            if len(labels) == 0:
-                self.logger.error("生成的标签为空")
-                return None
-                
-            # 打印标签分布
+            # 记录标签分布
             unique, counts = np.unique(labels, return_counts=True)
-            distribution = dict(zip(unique, counts))
-            self.logger.info(f"标签分布: 卖出={distribution.get(0, 0)}, "
-                           f"观望={distribution.get(1, 0)}, "
-                           f"买入={distribution.get(2, 0)}")
+            distribution = dict(zip(['卖出', '观望', '买入'], counts))
+            self.logger.info(f"标签分布: 卖出={distribution['卖出']}, "
+                           f"观望={distribution['观望']}, "
+                           f"买入={distribution['买入']}")
             
             # 计算买卖信号比例
-            total_samples = len(labels)
-            action_ratio = (distribution.get(0, 0) + distribution.get(2, 0)) / total_samples
-            self.logger.info(f"买卖信号比例: {action_ratio:.2%}")
+            signal_ratio = (distribution['买入'] + distribution['卖出']) / len(labels) * 100
+            self.logger.info(f"买卖信号比例: {signal_ratio:.2f}%")
             
-            return labels
+            return labels.astype(int)
             
         except Exception as e:
-            self.logger.error(f"生成标签失败: {str(e)}")
+            self.logger.error(f"标签生成失败: {str(e)}")
             return None
-    
+
     def initialize_models(self, input_size):
         """初始化随机森林和深度学习模型"""
         # 初始化随机森林
@@ -319,7 +363,7 @@ class HybridStrategy(MLStrategy):
             
             # 准备训练数据
             X = features_df[feature_columns].values
-            X = X[:-5]  # 匹配标签长度
+            X = X[:-10]  # 匹配标签长度
             y = labels
 
             if len(X) != len(y):
@@ -345,20 +389,47 @@ class HybridStrategy(MLStrategy):
             # 准备深度学习数据
             X_tensor = torch.FloatTensor(X_scaled)
             y_tensor = torch.LongTensor(y)
+            
+            # 使用数据增强
+            augmented_X = []
+            augmented_y = []
+            
+            # 1. 添加高斯噪声
+            noise_scale = 0.01
+            noisy_X = X_tensor + torch.randn_like(X_tensor) * noise_scale
+            augmented_X.append(noisy_X)
+            augmented_y.append(y_tensor)
+            
+            # 2. 特征缩放
+            scale_factor = torch.randn(X_tensor.size(0), 1) * 0.1 + 1.0
+            scaled_X = X_tensor * scale_factor
+            augmented_X.append(scaled_X)
+            augmented_y.append(y_tensor)
+            
+            # 合并原始数据和增强数据
+            X_tensor = torch.cat(augmented_X, dim=0)
+            y_tensor = torch.cat(augmented_y, dim=0)
+            
+            # 创建数据集和数据加载器
             dataset = torch.utils.data.TensorDataset(X_tensor, y_tensor)
-            dataloader = torch.utils.data.DataLoader(dataset, batch_size=self.batch_size, shuffle=True)
+            dataloader = torch.utils.data.DataLoader(
+                dataset, 
+                batch_size=self.batch_size, 
+                shuffle=True,
+                drop_last=True  # 确保batch size固定
+            )
             
             # 设置学习率衰减
             scheduler = optim.lr_scheduler.ReduceLROnPlateau(
                 self.optimizer, 
                 mode='min', 
-                factor=0.7,  # 降低学习率衰减速度
+                factor=0.7,
                 patience=3,
                 verbose=True
             )
             
             # 使用加权交叉熵损失
-            weighted_criterion = nn.CrossEntropyLoss(weight=class_weights)
+            criterion = nn.CrossEntropyLoss(weight=class_weights)
             
             # 训练深度学习模型
             self.dl_model.train()
@@ -369,22 +440,25 @@ class HybridStrategy(MLStrategy):
                 total_loss = 0
                 for batch_X, batch_y in dataloader:
                     self.optimizer.zero_grad()
+                    
+                    # 前向传播
                     outputs = self.dl_model(batch_X)
                     
-                    # 计算加权交叉熵损失
-                    loss = weighted_criterion(outputs, batch_y)
-                    # 添加正则化损失
+                    # 计算损失
+                    loss = criterion(outputs, batch_y)
                     loss += self.dl_model.regularization_loss()
                     
+                    # 反向传播
                     loss.backward()
+                    
                     # 梯度裁剪
                     torch.nn.utils.clip_grad_norm_(self.dl_model.parameters(), max_norm=1.0)
                     
+                    # 优化器步进
                     self.optimizer.step()
                     total_loss += loss.item()
                 
                 avg_loss = total_loss / len(dataloader)
-                # 更新学习率
                 scheduler.step(avg_loss)
                 
                 # 早停检查
@@ -393,7 +467,7 @@ class HybridStrategy(MLStrategy):
                     patience_counter = 0
                 else:
                     patience_counter += 1
-                    if patience_counter >= 4:  # 增加早停耐心值
+                    if patience_counter >= 4:
                         self.logger.info(f"Early stopping at epoch {epoch+1}")
                         break
                 
@@ -403,9 +477,9 @@ class HybridStrategy(MLStrategy):
             # 评估深度学习模型
             self.dl_model.eval()
             with torch.no_grad():
-                dl_outputs = self.dl_model(X_tensor)
+                dl_outputs = self.dl_model(torch.FloatTensor(X_scaled))
                 dl_predictions = torch.argmax(dl_outputs, dim=1)
-                dl_accuracy = (dl_predictions == y_tensor).float().mean().item()
+                dl_accuracy = (dl_predictions == torch.LongTensor(y)).float().mean().item()
             
             # 记录训练结果
             self.logger.info(f"随机森林准确率: {rf_accuracy:.4f}")
@@ -424,86 +498,190 @@ class HybridStrategy(MLStrategy):
             self.logger.error(f"模型训练失败: {str(e)}")
             return False
     
+    def predict(self, features):
+        """预测并生成交易信号"""
+        try:
+            # 标准化特征
+            features_scaled = self.scaler.transform(features)
+            features_tensor = torch.FloatTensor(features_scaled)
+            
+            # 获取随机森林预测
+            rf_probabilities = self.rf_model.predict_proba(features_scaled)
+            
+            # 深度学习预测
+            X_tensor = torch.FloatTensor(features_scaled)
+            self.dl_model.eval()
+            with torch.no_grad():
+                dl_probabilities = self.dl_model(X_tensor).numpy()
+            
+            # 确保预测结果是标准Python数值而不是numpy数组
+            rf_sell = float(rf_probabilities[0][0])
+            rf_hold = float(rf_probabilities[0][1])
+            rf_buy = float(rf_probabilities[0][2])
+            
+            dl_sell = float(dl_probabilities[0][0])
+            dl_hold = float(dl_probabilities[0][1])
+            dl_buy = float(dl_probabilities[0][2])
+            
+            # 集成预测结果
+            ensemble_sell = self.rf_weight * rf_sell + self.dl_weight * dl_sell
+            ensemble_hold = self.rf_weight * rf_hold + self.dl_weight * dl_hold
+            ensemble_buy = self.rf_weight * rf_buy + self.dl_weight * dl_buy
+            
+            # 记录预测概率
+            self.logger.info(f"随机森林预测: 卖出={rf_sell:.4f}, "
+                           f"观望={rf_hold:.4f}, "
+                           f"买入={rf_buy:.4f}")
+            self.logger.info(f"深度学习预测: 卖出={dl_sell:.4f}, "
+                           f"观望={dl_hold:.4f}, "
+                           f"买入={dl_buy:.4f}")
+            self.logger.info(f"集成预测结果: 卖出={ensemble_sell:.4f}, "
+                           f"观望={ensemble_hold:.4f}, "
+                           f"买入={ensemble_buy:.4f}")
+            
+            # 生成交易信号
+            ensemble_probs = [ensemble_sell, ensemble_hold, ensemble_buy]
+            signal = self.generate_signal(ensemble_probs)
+            
+            # 记录最终预测和置信度
+            if signal == 1:
+                self.logger.info(f"最终预测: 买入 (置信度: {ensemble_buy:.4f})")
+            elif signal == -1:
+                self.logger.info(f"最终预测: 卖出 (置信度: {ensemble_sell:.4f})")
+            else:
+                self.logger.info(f"最终预测: 观望 (置信度: {ensemble_hold:.4f})")
+            
+            return signal
+            
+        except Exception as e:
+            self.logger.error(f"预测失败: {str(e)}")
+            return 0  # 发生错误时返回观望信号
+
+    def generate_signal(self, predictions):
+        """根据预测结果生成交易信号"""
+        try:
+            # 确保输入是Python原生float类型
+            sell_prob = float(predictions[0])
+            hold_prob = float(predictions[1])
+            buy_prob = float(predictions[2])
+            
+            # 计算买卖差值和波动强度
+            trade_diff = abs(buy_prob - sell_prob)
+            volatility = 1 - hold_prob  # 市场波动性指标
+            
+            # 设置动态阈值
+            base_threshold = self.confidence_threshold
+            dynamic_threshold = base_threshold * (1 + volatility)  # 波动大时提高阈值
+            
+            # 提高信号要求
+            min_prob_threshold = 0.45        # 最小概率要求
+            min_trade_diff = 0.15           # 最小买卖差值
+            min_strength_ratio = 1.5        # 最小强度比
+            
+            # 观望的情况
+            if hold_prob > max(buy_prob, sell_prob) or max(buy_prob, sell_prob) < min_prob_threshold:
+                return 0
+            
+            # 计算买卖信号强度比
+            if buy_prob > sell_prob:
+                strength_ratio = buy_prob / (sell_prob + hold_prob)
+                if (strength_ratio > min_strength_ratio and 
+                    trade_diff > min_trade_diff and 
+                    buy_prob > dynamic_threshold):
+                    return 1  # 买入信号
+            else:
+                strength_ratio = sell_prob / (buy_prob + hold_prob)
+                if (strength_ratio > min_strength_ratio and 
+                    trade_diff > min_trade_diff and 
+                    sell_prob > dynamic_threshold):
+                    return -1  # 卖出信号
+                    
+            return 0  # 默认观望
+            
+        except Exception as e:
+            self.logger.error(f"信号生成失败: {str(e)}")
+            return 0  # 发生错误时返回观望信号
+
     def generate_signals(self, klines):
         """生成交易信号"""
         try:
-            # 检查是否需要重新训练
-            current_time = time.time()
-            if current_time - self.last_training_time > self.retraining_interval:
-                self.train_model(klines)
-                self.last_training_time = current_time
-
-            # 准备特征
-            features = self.prepare_features(klines)
-            if features is None or features.empty:
+            # 准备特征数据
+            features_df = self.prepare_features(klines)
+            if features_df is None or features_df.empty:
+                self.logger.error("特征准备失败")
                 return 0
-
-            # 选择最新的数据点
-            latest_features = features.iloc[-1:]
             
             # 选择特征列
-            feature_columns = [col for col in features.columns 
+            feature_columns = [col for col in features_df.columns 
                              if col not in ['timestamp', 'open', 'high', 'low', 'close', 'volume']]
-            X = latest_features[feature_columns].values
-
-            # 标准化特征
-            try:
-                X_scaled = self.scaler.transform(X)
-            except Exception as e:
-                self.logger.error(f"特征标准化失败: {str(e)}")
-                self.train_model(klines)
-                return 0
-
-            # 随机森林预测
-            rf_probabilities = self.rf_model.predict_proba(X_scaled)[0]
             
-            # 深度学习预测
-            X_tensor = torch.FloatTensor(X_scaled)
-            self.dl_model.eval()
-            with torch.no_grad():
-                dl_probabilities = self.dl_model(X_tensor).numpy()[0]
+            # 获取最新的特征数据
+            latest_features = features_df[feature_columns].iloc[-1:].values
             
-            # 集成预测结果
-            ensemble_probabilities = (
-                self.rf_weight * rf_probabilities +
-                self.dl_weight * dl_probabilities
-            )
+            # 检查是否需要重新训练
+            current_time = time.time()
+            if current_time - self.last_training_time >= self.retraining_interval:
+                self.logger.info("开始重新训练模型...")
+                if self.train_model(klines):
+                    self.last_training_time = current_time
+                    self.logger.info("模型重新训练完成")
+                else:
+                    self.logger.error("模型重新训练失败")
             
-            # 记录预测概率
-            self.logger.info(f"随机森林预测: 卖出={rf_probabilities[0]:.4f}, "
-                           f"观望={rf_probabilities[1]:.4f}, "
-                           f"买入={rf_probabilities[2]:.4f}")
-            self.logger.info(f"深度学习预测: 卖出={dl_probabilities[0]:.4f}, "
-                           f"观望={dl_probabilities[1]:.4f}, "
-                           f"买入={dl_probabilities[2]:.4f}")
-            self.logger.info(f"集成预测结果: 卖出={ensemble_probabilities[0]:.4f}, "
-                           f"观望={ensemble_probabilities[1]:.4f}, "
-                           f"买入={ensemble_probabilities[2]:.4f}")
+            # 生成交易信号
+            signal = self.predict(latest_features)
             
-            # 获取最高概率及其对应的类别
-            max_prob = max(ensemble_probabilities)
-            predicted_class = np.argmax(ensemble_probabilities)
+            # 获取当前价格
+            current_price = float(klines[-1][4])  # 收盘价
+            self.logger.info(f"当前价格: {current_price:.5f}, AI信号: {signal}")
             
-            # 记录预测结果和置信度
-            self.logger.info(f"最终预测: {['卖出', '观望', '买入'][predicted_class]} (置信度: {max_prob:.4f})")
-            
-            # 根据置信度阈值和预测类别生成信号
-            if max_prob >= self.confidence_threshold:
-                if predicted_class == 0:  # 卖出信号
-                    return -1
-                elif predicted_class == 2:  # 买入信号
-                    return 1
-            elif max_prob < 0.4:  # 如果最高概率太低，考虑次高概率
-                sorted_probs = sorted(enumerate(ensemble_probabilities), key=lambda x: x[1], reverse=True)
-                second_class, second_prob = sorted_probs[1]
-                if second_prob >= self.confidence_threshold * 0.9:
-                    if second_class == 0:  # 卖出信号
-                        return -1
-                    elif second_class == 2:  # 买入信号
-                        return 1
-            
-            return 0  # 持仓不变
+            return signal
             
         except Exception as e:
             self.logger.error(f"生成信号失败: {str(e)}")
             return 0
+            
+    def generate_signal(self, predictions):
+        """根据预测结果生成交易信号"""
+        try:
+            # 确保输入是Python原生float类型
+            sell_prob = float(predictions[0])
+            hold_prob = float(predictions[1])
+            buy_prob = float(predictions[2])
+            
+            # 计算买卖差值和波动强度
+            trade_diff = abs(buy_prob - sell_prob)
+            volatility = 1 - hold_prob  # 市场波动性指标
+            
+            # 设置动态阈值
+            base_threshold = self.confidence_threshold
+            dynamic_threshold = base_threshold * (1 + volatility)  # 波动大时提高阈值
+            
+            # 提高信号要求
+            min_prob_threshold = 0.45        # 最小概率要求
+            min_trade_diff = 0.15           # 最小买卖差值
+            min_strength_ratio = 1.5        # 最小强度比
+            
+            # 观望的情况
+            if hold_prob > max(buy_prob, sell_prob) or max(buy_prob, sell_prob) < min_prob_threshold:
+                return 0
+            
+            # 计算买卖信号强度比
+            if buy_prob > sell_prob:
+                strength_ratio = buy_prob / (sell_prob + hold_prob)
+                if (strength_ratio > min_strength_ratio and 
+                    trade_diff > min_trade_diff and 
+                    buy_prob > dynamic_threshold):
+                    return 1  # 买入信号
+            else:
+                strength_ratio = sell_prob / (buy_prob + hold_prob)
+                if (strength_ratio > min_strength_ratio and 
+                    trade_diff > min_trade_diff and 
+                    sell_prob > dynamic_threshold):
+                    return -1  # 卖出信号
+                    
+            return 0  # 默认观望
+            
+        except Exception as e:
+            self.logger.error(f"信号生成失败: {str(e)}")
+            return 0  # 发生错误时返回观望信号

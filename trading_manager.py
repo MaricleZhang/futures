@@ -28,7 +28,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = HybridStrategy(trader)  # 使用混合策略
+                strategy = RandomForestStrategy(trader)  # 使用混合策略
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")

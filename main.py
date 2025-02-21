@@ -5,6 +5,7 @@ import signal
 import sys
 import ccxt
 import config
+from strategies.hybrid_strategy import HybridStrategy
 
 def main():
     # 初始化日志记录器

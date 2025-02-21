@@ -11,24 +11,31 @@ PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
 # 交易设置
-SYMBOLS = ['ETHUSDT']  # 支持多个交易对
+SYMBOLS = ['PIPPINUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
+    'PIPPINUSDT': {
+        'leverage': 5,
+        'min_notional': 20,
+        'max_position_size': 1000,
+        'check_interval': 60,  # 交易检查间隔(秒)
+    },
     # 'SOLUSDT': {
     #     'leverage': 5,
     #     'min_notional': 20,
     #     'max_position_size': 200,
+    #     'check_interval': 60,  # 交易检查间隔(秒)
     # },
     # 'BTCUSDT': {
     #     'leverage': 3,
     #     'min_notional': 100,
     #     'max_position_size': 1,
     # },
-    'ETHUSDT': {
-        'leverage': 2,
-        'min_notional': 20,
-        'max_position_size': 5,
-        'check_interval': 60,  # 交易检查间隔(秒)
-    }
+    # 'ETHUSDT': {
+    #     'leverage': 2,
+    #     'min_notional': 20,
+    #     'max_position_size': 5,
+    #     'check_interval': 60,  # 交易检查间隔(秒)
+    # }
 }
 DEFAULT_LEVERAGE = 5  # 默认杠杆倍数
 MARGIN_TYPE = 'CROSSED'  # 保证金模式：CROSSED(全仓) ISOLATED(逐仓)

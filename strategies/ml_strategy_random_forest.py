@@ -275,14 +275,15 @@ class RandomForestStrategy(MLStrategy):
                            f"买入={probabilities[2]:.4f}")
             
             # 根据趋势调整概率
+            trend_weight = 0.3  # 增加趋势权重
             if self.trend_state == 1:  # 上涨趋势
                 # 增强买入信号，抑制卖出信号
-                probabilities[2] *= (1 + 0.2 * self.trend_confidence)  # 买入
-                probabilities[0] *= (1 - 0.2 * self.trend_confidence)  # 卖出
+                probabilities[2] *= (1 + trend_weight * self.trend_confidence)  # 买入
+                probabilities[0] *= (1 - trend_weight * self.trend_confidence)  # 卖出
             elif self.trend_state == -1:  # 下跌趋势
                 # 增强卖出信号，抑制买入信号
-                probabilities[0] *= (1 + 0.2 * self.trend_confidence)  # 卖出
-                probabilities[2] *= (1 - 0.2 * self.trend_confidence)  # 买入
+                probabilities[0] *= (1 + trend_weight * self.trend_confidence)  # 卖出
+                probabilities[2] *= (1 - trend_weight * self.trend_confidence)  # 买入
                 
             # 重新归一化概率
             probabilities = probabilities / np.sum(probabilities)
@@ -300,8 +301,15 @@ class RandomForestStrategy(MLStrategy):
             self.logger.info(f"最终预测: {['卖出', '观望', '买入'][predicted_class]} "
                            f"(置信度: {max_prob:.4f})")
             
+            # 根据趋势状态调整置信度阈值
+            if (self.trend_state == -1 and predicted_class == 0) or \
+               (self.trend_state == 1 and predicted_class == 2):
+                confidence_threshold = self.confidence_threshold * 0.9
+            else:
+                confidence_threshold = self.confidence_threshold
+            
             # 生成交易信号
-            if max_prob >= self.confidence_threshold:
+            if max_prob >= confidence_threshold:
                 if predicted_class == 0:  # 卖出信号
                     if probabilities[0] - probabilities[2] > self.prob_diff_threshold:
                         return -1

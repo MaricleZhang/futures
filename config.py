@@ -16,7 +16,7 @@ SYMBOL_CONFIGS = {
     'PIPPINUSDT': {
         'leverage': 5,
         'min_notional': 20,
-        'max_position_size': 1000,
+        'max_position_size': 10000,
         'check_interval': 60,  # 交易检查间隔(秒)
     },
     # 'SOLUSDT': {

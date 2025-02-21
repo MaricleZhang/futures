@@ -33,7 +33,8 @@ class RandomForestStrategy(MLStrategy):
         self.max_depth = 5      # 略微增加深度
         self.min_samples_split = 30  # 增加分裂所需样本数
         self.min_samples_leaf = 15   # 增加叶节点最小样本数
-        self.confidence_threshold = 0.42  # 提高置信度阈值
+        self.confidence_threshold = 0.42  # 置信度阈值
+        self.prob_diff_threshold = 0.11   # 降低概率差阈值
         
         # K线设置
         self.kline_interval = '1m'
@@ -302,10 +303,10 @@ class RandomForestStrategy(MLStrategy):
             # 生成交易信号
             if max_prob >= self.confidence_threshold:
                 if predicted_class == 0:  # 卖出信号
-                    if probabilities[0] - probabilities[2] > 0.2:  # 要求卖出概率显著高于买入
+                    if probabilities[0] - probabilities[2] > self.prob_diff_threshold:
                         return -1
                 elif predicted_class == 2:  # 买入信号
-                    if probabilities[2] - probabilities[0] > 0.2:  # 要求买入概率显著高于卖出
+                    if probabilities[2] - probabilities[0] > self.prob_diff_threshold:
                         return 1
             
             return 0  # 持仓不变

@@ -88,11 +88,11 @@ class TradingManager:
                         if pos_amt < 0:  # 有空仓，先平仓
                             logger.info("有空仓，先平仓...")
                             trader.close_position(symbol)
+                            trader.open_long(symbol, trade_amount)
                         elif pos_amt > 0:  # 已有多仓，不再开仓
                             logger.info("已有多仓，保持当前仓位")
                         else:  # 没有持仓，可以开多
                             logger.info("开多信号，准备开仓...")
-                            trader.open_long(symbol, trade_amount)
                     else:  # 没有持仓，可以开多
                         logger.info("开多信号，准备开仓...")
                         trader.open_long(symbol, trade_amount)

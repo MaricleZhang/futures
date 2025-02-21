@@ -44,7 +44,7 @@ DEFAULT_STOP_LOSS_PERCENT = 50  # 默认止损百分比
 DEFAULT_TAKE_PROFIT_PERCENT = 10000  # 默认止盈百分比
 
 # K线设置
-DEFAULT_TIMEFRAME = '5m'  # 默认K线周期
+DEFAULT_TIMEFRAME = '1m'  # 默认K线周期
 DEFAULT_KLINE_LIMIT = 100  # 默认K线获取数量
 
 # API设置

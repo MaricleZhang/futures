@@ -68,7 +68,7 @@ class DeepLearningStrategy(MLStrategy):
         self.batch_size = 64  # 增加batch size
         self.learning_rate = 0.0005  # 降低学习率
         self.n_epochs = 50  # 增加训练轮数
-        self.confidence_threshold = 0.4
+        self.confidence_threshold = 0.6
         
         # K线设置
         self.kline_interval = '1m'

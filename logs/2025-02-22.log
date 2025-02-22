@@ -531,3 +531,583 @@
 2025-02-22 21:42:47 - INFO - [VINE] 预测概率: 卖出=0.5377, 观望=0.3837, 买入=0.0786
 2025-02-22 21:42:48 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 31.39827496，当前持仓量: -683.0
 2025-02-22 21:42:48 - INFO - [VINE] 当前价格: 0.04597, AI信号: -1, 持仓数量: -683.0, 开仓均价: 0.04721, 未实现盈亏: -0.85 USDT (-2.63%)
+2025-02-22 21:43:48 - INFO - [VINE] USDT余额: 可用=65.19048888, 总额=71.51541213
+2025-02-22 21:43:48 - INFO - [VINE] 当前账户余额: 可用=65.19048888 USDT, 总额=71.51541213 USDT
+2025-02-22 21:43:49 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:43:49 - INFO - [VINE] 预测概率: 卖出=0.7913, 观望=0.0891, 买入=0.1196
+2025-02-22 21:43:50 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 31.53692396，当前持仓量: -683.0
+2025-02-22 21:43:50 - INFO - [VINE] 当前价格: 0.04614, AI信号: -1, 持仓数量: -683.0, 开仓均价: 0.04721, 未实现盈亏: -0.73 USDT (-2.27%)
+2025-02-22 21:44:50 - INFO - [VINE] USDT余额: 可用=65.41716817, 总额=71.70434359
+2025-02-22 21:44:50 - INFO - [VINE] 当前账户余额: 可用=65.41716817 USDT, 总额=71.70434359 USDT
+2025-02-22 21:44:52 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:44:52 - INFO - [VINE] 预测概率: 卖出=0.6263, 观望=0.2933, 买入=0.0804
+2025-02-22 21:44:53 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 31.37019，当前持仓量: -683.0
+2025-02-22 21:44:53 - INFO - [VINE] 当前价格: 0.04591, AI信号: -1, 持仓数量: -683.0, 开仓均价: 0.04721, 未实现盈亏: -0.89 USDT (-2.75%)
+2025-02-22 21:45:53 - INFO - [VINE] USDT余额: 可用=65.28851733, 总额=71.64322875
+2025-02-22 21:45:53 - INFO - [VINE] 当前账户余额: 可用=65.28851733 USDT, 总额=71.64322875 USDT
+2025-02-22 21:45:53 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:45:54 - INFO - [VINE] 预测概率: 卖出=0.7643, 观望=0.0663, 买入=0.1694
+2025-02-22 21:45:54 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 31.46038698，当前持仓量: -683.0
+2025-02-22 21:45:54 - INFO - [VINE] 当前价格: 0.04607, AI信号: -1, 持仓数量: -683.0, 开仓均价: 0.04721, 未实现盈亏: -0.78 USDT (-2.41%)
+2025-02-22 21:46:54 - INFO - [VINE] USDT余额: 可用=65.31992941, 总额=71.62957558
+2025-02-22 21:46:54 - INFO - [VINE] 当前账户余额: 可用=65.31992941 USDT, 总额=71.62957558 USDT
+2025-02-22 21:46:56 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:46:56 - INFO - [VINE] 预测概率: 卖出=0.7961, 观望=0.0667, 买入=0.1372
+2025-02-22 21:46:56 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 31.43778651，当前持仓量: -683.0
+2025-02-22 21:46:56 - INFO - [VINE] 当前价格: 0.04596, AI信号: -1, 持仓数量: -683.0, 开仓均价: 0.04721, 未实现盈亏: -0.85 USDT (-2.65%)
+2025-02-22 21:47:56 - INFO - [VINE] USDT余额: 可用=65.49051066, 总额=71.76547209
+2025-02-22 21:47:56 - INFO - [VINE] 当前账户余额: 可用=65.49051066 USDT, 总额=71.76547209 USDT
+2025-02-22 21:47:57 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:47:57 - INFO - [VINE] 预测概率: 卖出=0.6190, 观望=0.3119, 买入=0.0691
+2025-02-22 21:47:58 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 31.30189，当前持仓量: -683.0
+2025-02-22 21:47:58 - INFO - [VINE] 当前价格: 0.04589, AI信号: -1, 持仓数量: -683.0, 开仓均价: 0.04721, 未实现盈亏: -0.90 USDT (-2.80%)
+2025-02-22 21:48:58 - INFO - [VINE] USDT余额: 可用=65.10536218, 总额=71.44446209
+2025-02-22 21:48:58 - INFO - [VINE] 当前账户余额: 可用=65.10536218 USDT, 总额=71.44446209 USDT
+2025-02-22 21:48:59 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:48:59 - INFO - [VINE] 预测概率: 卖出=0.4899, 观望=0.2256, 买入=0.2845
+2025-02-22 21:48:59 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 31.60064786，当前持仓量: -683.0
+2025-02-22 21:48:59 - INFO - [VINE] 当前价格: 0.0463, AI信号: -1, 持仓数量: -683.0, 开仓均价: 0.04721, 未实现盈亏: -0.62 USDT (-1.93%)
+2025-02-22 21:50:00 - INFO - [VINE] USDT余额: 可用=65.0608412, 总额=71.4073547
+2025-02-22 21:50:00 - INFO - [VINE] 当前账户余额: 可用=65.06084120 USDT, 总额=71.40735470 USDT
+2025-02-22 21:50:01 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:50:01 - INFO - [VINE] 预测概率: 卖出=0.1071, 观望=0.3691, 买入=0.5238
+2025-02-22 21:50:01 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 31.66105921，当前持仓量: -683.0
+2025-02-22 21:50:01 - INFO - [VINE] 当前价格: 0.04636, AI信号: 1, 持仓数量: -683.0, 开仓均价: 0.04721, 未实现盈亏: -0.58 USDT (-1.80%)
+2025-02-22 21:50:02 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 31.66105921，当前持仓量: -683.0
+2025-02-22 21:50:03 - INFO - [VINE] 订单创建成功: {'info': {'orderId': '727535323', 'symbol': 'VINEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcuda18b7313e81f4028db743', 'price': '0.0000000', 'avgPrice': '0.0463373', 'origQty': '683', 'executedQty': '683', 'cumQty': '683', 'cumQuote': '31.6483700', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740232203176'}, 'id': '727535323', 'clientOrderId': 'x-xcKtGhcuda18b7313e81f4028db743', 'timestamp': 1740232203176, 'datetime': '2025-02-22T13:50:03.176Z', 'lastTradeTimestamp': 1740232203176, 'lastUpdateTimestamp': 1740232203176, 'symbol': 'VINE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.0463373, 'triggerPrice': None, 'amount': 683.0, 'cost': 31.64837, 'average': 0.0463373, 'filled': 683.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-22 21:50:03 - INFO - [VINE] 平仓成功: {'info': {'orderId': '727535323', 'symbol': 'VINEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcuda18b7313e81f4028db743', 'price': '0.0000000', 'avgPrice': '0.0463373', 'origQty': '683', 'executedQty': '683', 'cumQty': '683', 'cumQuote': '31.6483700', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740232203176'}, 'id': '727535323', 'clientOrderId': 'x-xcKtGhcuda18b7313e81f4028db743', 'timestamp': 1740232203176, 'datetime': '2025-02-22T13:50:03.176Z', 'lastTradeTimestamp': 1740232203176, 'lastUpdateTimestamp': 1740232203176, 'symbol': 'VINE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.0463373, 'triggerPrice': None, 'amount': 683.0, 'cost': 31.64837, 'average': 0.0463373, 'filled': 683.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-22 21:50:03 - INFO - [VINE] 订单创建成功: {'info': {'orderId': '727535380', 'symbol': 'VINEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu33764142940786848264bb', 'price': '0.0000000', 'avgPrice': '0.0463446', 'origQty': '701', 'executedQty': '701', 'cumQty': '701', 'cumQuote': '32.4875500', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740232203524'}, 'id': '727535380', 'clientOrderId': 'x-xcKtGhcu33764142940786848264bb', 'timestamp': 1740232203524, 'datetime': '2025-02-22T13:50:03.524Z', 'lastTradeTimestamp': 1740232203524, 'lastUpdateTimestamp': 1740232203524, 'symbol': 'VINE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.0463446, 'triggerPrice': None, 'amount': 701.0, 'cost': 32.48755, 'average': 0.0463446, 'filled': 701.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-22 21:51:03 - INFO - [VINE] USDT余额: 可用=65.12688516, 总额=71.70197458
+2025-02-22 21:51:03 - INFO - [VINE] 当前账户余额: 可用=65.12688516 USDT, 总额=71.70197458 USDT
+2025-02-22 21:51:04 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:51:04 - INFO - [VINE] 预测概率: 卖出=0.0765, 观望=0.3612, 买入=0.5624
+2025-02-22 21:51:04 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.7893451，当前持仓量: 701.0
+2025-02-22 21:51:04 - INFO - [VINE] 当前价格: 0.04667, AI信号: 1, 持仓数量: 701.0, 开仓均价: 0.0463445791726, 未实现盈亏: 0.23 USDT (0.70%)
+2025-02-22 21:52:05 - INFO - [VINE] USDT余额: 可用=65.05425228, 总额=71.66564876
+2025-02-22 21:52:05 - INFO - [VINE] 当前账户余额: 可用=65.05425228 USDT, 总额=71.66564876 USDT
+2025-02-22 21:52:06 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:52:06 - INFO - [VINE] 预测概率: 卖出=0.0491, 观望=0.2938, 买入=0.6571
+2025-02-22 21:52:07 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.74492273，当前持仓量: 701.0
+2025-02-22 21:52:07 - INFO - [VINE] 当前价格: 0.04675, AI信号: 1, 持仓数量: 701.0, 开仓均价: 0.0463445791726, 未实现盈亏: 0.28 USDT (0.87%)
+2025-02-22 21:53:07 - INFO - [VINE] USDT余额: 可用=64.71097968, 总额=71.24438982
+2025-02-22 21:53:07 - INFO - [VINE] 当前账户余额: 可用=64.71097968 USDT, 总额=71.24438982 USDT
+2025-02-22 21:53:08 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:53:08 - INFO - [VINE] 预测概率: 卖出=0.6683, 观望=0.2207, 买入=0.1111
+2025-02-22 21:53:09 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.31912832，当前持仓量: 701.0
+2025-02-22 21:53:09 - INFO - [VINE] 当前价格: 0.04622, AI信号: -1, 持仓数量: 701.0, 开仓均价: 0.0463445791726, 未实现盈亏: -0.09 USDT (-0.27%)
+2025-02-22 21:53:10 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.31912832，当前持仓量: 701.0
+2025-02-22 21:53:10 - INFO - [VINE] 订单创建成功: {'info': {'orderId': '727604005', 'symbol': 'VINEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcub346d1b7c382fe673d8333', 'price': '0.0000000', 'avgPrice': '0.0460500', 'origQty': '701', 'executedQty': '701', 'cumQty': '701', 'cumQuote': '32.2810500', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740232390724'}, 'id': '727604005', 'clientOrderId': 'x-xcKtGhcub346d1b7c382fe673d8333', 'timestamp': 1740232390724, 'datetime': '2025-02-22T13:53:10.724Z', 'lastTradeTimestamp': 1740232390724, 'lastUpdateTimestamp': 1740232390724, 'symbol': 'VINE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.04605, 'triggerPrice': None, 'amount': 701.0, 'cost': 32.28105, 'average': 0.04605, 'filled': 701.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-22 21:53:10 - INFO - [VINE] 平仓成功: {'info': {'orderId': '727604005', 'symbol': 'VINEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcub346d1b7c382fe673d8333', 'price': '0.0000000', 'avgPrice': '0.0460500', 'origQty': '701', 'executedQty': '701', 'cumQty': '701', 'cumQuote': '32.2810500', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740232390724'}, 'id': '727604005', 'clientOrderId': 'x-xcKtGhcub346d1b7c382fe673d8333', 'timestamp': 1740232390724, 'datetime': '2025-02-22T13:53:10.724Z', 'lastTradeTimestamp': 1740232390724, 'lastUpdateTimestamp': 1740232390724, 'symbol': 'VINE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.04605, 'triggerPrice': None, 'amount': 701.0, 'cost': 32.28105, 'average': 0.04605, 'filled': 701.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-22 21:53:11 - INFO - [VINE] 订单创建成功: {'info': {'orderId': '727604073', 'symbol': 'VINEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu69cdd166c9cf37571a6a6a', 'price': '0.0000000', 'avgPrice': '0.0460500', 'origQty': '700', 'executedQty': '700', 'cumQty': '700', 'cumQuote': '32.2350000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740232391114'}, 'id': '727604073', 'clientOrderId': 'x-xcKtGhcu69cdd166c9cf37571a6a6a', 'timestamp': 1740232391114, 'datetime': '2025-02-22T13:53:11.114Z', 'lastTradeTimestamp': 1740232391114, 'lastUpdateTimestamp': 1740232391114, 'symbol': 'VINE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.04605, 'triggerPrice': None, 'amount': 700.0, 'cost': 32.235, 'average': 0.04605, 'filled': 700.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-22 21:54:11 - INFO - [VINE] USDT余额: 可用=64.6126553, 总额=71.08644714
+2025-02-22 21:54:11 - INFO - [VINE] 当前账户余额: 可用=64.61265530 USDT, 总额=71.08644714 USDT
+2025-02-22 21:54:12 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:54:12 - INFO - [VINE] 预测概率: 卖出=0.6835, 观望=0.2084, 买入=0.1081
+2025-02-22 21:54:13 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 32.268719，当前持仓量: -700.0
+2025-02-22 21:54:13 - INFO - [VINE] 当前价格: 0.04609, AI信号: -1, 持仓数量: -700.0, 开仓均价: 0.04605, 未实现盈亏: 0.03 USDT (0.09%)
+2025-02-22 21:55:14 - INFO - [VINE] USDT余额: 可用=64.81548501, 总额=71.26716614
+2025-02-22 21:55:14 - INFO - [VINE] 当前账户余额: 可用=64.81548501 USDT, 总额=71.26716614 USDT
+2025-02-22 21:55:15 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:55:15 - INFO - [VINE] 预测概率: 卖出=0.7236, 观望=0.2027, 买入=0.0737
+2025-02-22 21:55:16 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 32.117372，当前持仓量: -700.0
+2025-02-22 21:55:16 - INFO - [VINE] 当前价格: 0.04585, AI信号: -1, 持仓数量: -700.0, 开仓均价: 0.04605, 未实现盈亏: -0.14 USDT (-0.43%)
+2025-02-22 21:56:16 - INFO - [VINE] USDT余额: 可用=65.06254116, 总额=71.48765214
+2025-02-22 21:56:16 - INFO - [VINE] 当前账户余额: 可用=65.06254116 USDT, 总额=71.48765214 USDT
+2025-02-22 21:56:17 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:56:17 - INFO - [VINE] 预测概率: 卖出=0.4522, 观望=0.4690, 买入=0.0788
+2025-02-22 21:56:18 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 31.923514，当前持仓量: -700.0
+2025-02-22 21:56:18 - INFO - [VINE] 当前价格: 0.04558, AI信号: 0, 持仓数量: -700.0, 开仓均价: 0.04605, 未实现盈亏: -0.33 USDT (-1.02%)
+2025-02-22 21:57:18 - INFO - [VINE] USDT余额: 可用=64.82108312, 总额=71.26016614
+2025-02-22 21:57:18 - INFO - [VINE] 当前账户余额: 可用=64.82108312 USDT, 总额=71.26016614 USDT
+2025-02-22 21:57:18 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:57:18 - INFO - [VINE] 预测概率: 卖出=0.7263, 观望=0.1424, 买入=0.1314
+2025-02-22 21:57:19 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 32.122195，当前持仓量: -700.0
+2025-02-22 21:57:19 - INFO - [VINE] 当前价格: 0.04595, AI信号: -1, 持仓数量: -700.0, 开仓均价: 0.04605, 未实现盈亏: -0.07 USDT (-0.22%)
+2025-02-22 21:58:19 - INFO - [VINE] USDT余额: 可用=64.68729727, 总额=71.15112014
+2025-02-22 21:58:19 - INFO - [VINE] 当前账户余额: 可用=64.68729727 USDT, 总额=71.15112014 USDT
+2025-02-22 21:58:20 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:58:20 - INFO - [VINE] 预测概率: 卖出=0.6213, 观望=0.1448, 买入=0.2339
+2025-02-22 21:58:20 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 32.238507，当前持仓量: -700.0
+2025-02-22 21:58:20 - INFO - [VINE] 当前价格: 0.04607, AI信号: -1, 持仓数量: -700.0, 开仓均价: 0.04605, 未实现盈亏: 0.01 USDT (0.04%)
+2025-02-22 21:59:21 - INFO - [VINE] USDT余额: 可用=64.75458296, 总额=71.20474014
+2025-02-22 21:59:21 - INFO - [VINE] 当前账户余额: 可用=64.75458296 USDT, 总额=71.20474014 USDT
+2025-02-22 21:59:21 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 21:59:21 - INFO - [VINE] 预测概率: 卖出=0.7971, 观望=0.0833, 买入=0.1196
+2025-02-22 21:59:22 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 32.178426，当前持仓量: -700.0
+2025-02-22 21:59:22 - INFO - [VINE] 当前价格: 0.0459, AI信号: -1, 持仓数量: -700.0, 开仓均价: 0.04605, 未实现盈亏: -0.10 USDT (-0.33%)
+2025-02-22 22:00:22 - INFO - [VINE] USDT余额: 可用=64.53654713, 总额=71.02301314
+2025-02-22 22:00:22 - INFO - [VINE] 当前账户余额: 可用=64.53654713 USDT, 总额=71.02301314 USDT
+2025-02-22 22:00:22 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:00:22 - INFO - [VINE] 预测概率: 卖出=0.1458, 观望=0.1510, 买入=0.7032
+2025-02-22 22:00:26 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 32.376267，当前持仓量: -700.0
+2025-02-22 22:00:26 - INFO - [VINE] 当前价格: 0.04621, AI信号: 1, 持仓数量: -700.0, 开仓均价: 0.04605, 未实现盈亏: 0.11 USDT (0.35%)
+2025-02-22 22:00:27 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 32.376267，当前持仓量: -700.0
+2025-02-22 22:00:27 - INFO - [VINE] 订单创建成功: {'info': {'orderId': '727737394', 'symbol': 'VINEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu5533d1c1afee6fa9556d5', 'price': '0.0000000', 'avgPrice': '0.0462000', 'origQty': '700', 'executedQty': '700', 'cumQty': '700', 'cumQuote': '32.3400000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740232827477'}, 'id': '727737394', 'clientOrderId': 'x-xcKtGhcu5533d1c1afee6fa9556d5', 'timestamp': 1740232827477, 'datetime': '2025-02-22T14:00:27.477Z', 'lastTradeTimestamp': 1740232827477, 'lastUpdateTimestamp': 1740232827477, 'symbol': 'VINE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.0462, 'triggerPrice': None, 'amount': 700.0, 'cost': 32.34, 'average': 0.0462, 'filled': 700.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-22 22:00:27 - INFO - [VINE] 平仓成功: {'info': {'orderId': '727737394', 'symbol': 'VINEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu5533d1c1afee6fa9556d5', 'price': '0.0000000', 'avgPrice': '0.0462000', 'origQty': '700', 'executedQty': '700', 'cumQty': '700', 'cumQuote': '32.3400000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740232827477'}, 'id': '727737394', 'clientOrderId': 'x-xcKtGhcu5533d1c1afee6fa9556d5', 'timestamp': 1740232827477, 'datetime': '2025-02-22T14:00:27.477Z', 'lastTradeTimestamp': 1740232827477, 'lastUpdateTimestamp': 1740232827477, 'symbol': 'VINE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.0462, 'triggerPrice': None, 'amount': 700.0, 'cost': 32.34, 'average': 0.0462, 'filled': 700.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-22 22:00:27 - INFO - [VINE] 订单创建成功: {'info': {'orderId': '727737469', 'symbol': 'VINEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcubf773852969894a76b07d5', 'price': '0.0000000', 'avgPrice': '0.0462100', 'origQty': '698', 'executedQty': '698', 'cumQty': '698', 'cumQuote': '32.2545800', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740232827968'}, 'id': '727737469', 'clientOrderId': 'x-xcKtGhcubf773852969894a76b07d5', 'timestamp': 1740232827968, 'datetime': '2025-02-22T14:00:27.968Z', 'lastTradeTimestamp': 1740232827968, 'lastUpdateTimestamp': 1740232827968, 'symbol': 'VINE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.04621, 'triggerPrice': None, 'amount': 698.0, 'cost': 32.25458, 'average': 0.04621, 'filled': 698.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-22 22:01:28 - INFO - [VINE] USDT余额: 可用=64.63905647, 总额=71.12781875
+2025-02-22 22:01:28 - INFO - [VINE] 当前账户余额: 可用=64.63905647 USDT, 总额=71.12781875 USDT
+2025-02-22 22:01:30 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:01:30 - INFO - [VINE] 预测概率: 卖出=0.0844, 观望=0.3302, 买入=0.5855
+2025-02-22 22:01:30 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.37307248，当前持仓量: 698.0
+2025-02-22 22:01:30 - INFO - [VINE] 当前价格: 0.04638, AI信号: 1, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.12 USDT (0.37%)
+2025-02-22 22:02:31 - INFO - [VINE] USDT余额: 可用=64.62465905, 总额=71.10981733
+2025-02-22 22:02:31 - INFO - [VINE] 当前账户余额: 可用=64.62465905 USDT, 总额=71.10981733 USDT
+2025-02-22 22:02:32 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:02:32 - INFO - [VINE] 预测概率: 卖出=0.0546, 观望=0.2631, 买入=0.6822
+2025-02-22 22:02:33 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.37178118，当前持仓量: 698.0
+2025-02-22 22:02:33 - INFO - [VINE] 当前价格: 0.04631, AI信号: 1, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.07 USDT (0.22%)
+2025-02-22 22:03:33 - INFO - [VINE] USDT余额: 可用=64.55427327, 总额=71.03689029
+2025-02-22 22:03:33 - INFO - [VINE] 当前账户余额: 可用=64.55427327 USDT, 总额=71.03689029 USDT
+2025-02-22 22:03:34 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:03:35 - INFO - [VINE] 预测概率: 卖出=0.0881, 观望=0.0678, 买入=0.8441
+2025-02-22 22:03:35 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.26854，当前持仓量: 698.0
+2025-02-22 22:03:35 - INFO - [VINE] 当前价格: 0.0462, AI信号: 1, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: -0.01 USDT (-0.02%)
+2025-02-22 22:04:35 - INFO - [VINE] USDT余额: 可用=64.69386637, 总额=71.19634839
+2025-02-22 22:04:35 - INFO - [VINE] 当前账户余额: 可用=64.69386637 USDT, 总额=71.19634839 USDT
+2025-02-22 22:04:36 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:04:36 - INFO - [VINE] 预测概率: 卖出=0.1451, 观望=0.2840, 买入=0.5709
+2025-02-22 22:04:37 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.44113446，当前持仓量: 698.0
+2025-02-22 22:04:37 - INFO - [VINE] 当前价格: 0.04652, AI信号: 1, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.22 USDT (0.67%)
+2025-02-22 22:05:37 - INFO - [VINE] USDT余额: 可用=64.73275027, 总额=71.29597393
+2025-02-22 22:05:37 - INFO - [VINE] 当前账户余额: 可用=64.73275027 USDT, 总额=71.29597393 USDT
+2025-02-22 22:05:38 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:05:38 - INFO - [VINE] 预测概率: 卖出=0.0531, 观望=0.7139, 买入=0.2330
+2025-02-22 22:05:38 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.53968508，当前持仓量: 698.0
+2025-02-22 22:05:38 - INFO - [VINE] 当前价格: 0.04665, AI信号: 0, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.31 USDT (0.95%)
+2025-02-22 22:06:39 - INFO - [VINE] USDT余额: 可用=64.83337266, 总额=71.38604385
+2025-02-22 22:06:39 - INFO - [VINE] 当前账户余额: 可用=64.83337266 USDT, 总额=71.38604385 USDT
+2025-02-22 22:06:39 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:06:39 - INFO - [VINE] 预测概率: 卖出=0.0368, 观望=0.7714, 买入=0.1919
+2025-02-22 22:06:40 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.629755，当前持仓量: 698.0
+2025-02-22 22:06:40 - INFO - [VINE] 当前价格: 0.04672, AI信号: 0, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.36 USDT (1.10%)
+2025-02-22 22:07:40 - INFO - [VINE] USDT余额: 可用=64.798149, 总额=71.35280509
+2025-02-22 22:07:40 - INFO - [VINE] 当前账户余额: 可用=64.79814900 USDT, 总额=71.35280509 USDT
+2025-02-22 22:07:40 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:07:41 - INFO - [VINE] 预测概率: 卖出=0.0554, 观望=0.3642, 买入=0.5804
+2025-02-22 22:07:41 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.59651624，当前持仓量: 698.0
+2025-02-22 22:07:41 - INFO - [VINE] 当前价格: 0.04676, AI信号: 1, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.38 USDT (1.19%)
+2025-02-22 22:08:41 - INFO - [VINE] USDT余额: 可用=64.68391572, 总额=71.22611111
+2025-02-22 22:08:41 - INFO - [VINE] 当前账户余额: 可用=64.68391572 USDT, 总额=71.22611111 USDT
+2025-02-22 22:08:42 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:08:42 - INFO - [VINE] 预测概率: 卖出=0.0991, 观望=0.0459, 买入=0.8550
+2025-02-22 22:08:42 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.46524338，当前持仓量: 698.0
+2025-02-22 22:08:42 - INFO - [VINE] 当前价格: 0.04645, AI信号: 1, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.17 USDT (0.52%)
+2025-02-22 22:09:43 - INFO - [VINE] USDT余额: 可用=64.76829226, 总额=71.29272823
+2025-02-22 22:09:43 - INFO - [VINE] 当前账户余额: 可用=64.76829226 USDT, 总额=71.29272823 USDT
+2025-02-22 22:09:43 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:09:43 - INFO - [VINE] 预测概率: 卖出=0.0806, 观望=0.0723, 买入=0.8471
+2025-02-22 22:09:43 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.53643938，当前持仓量: 698.0
+2025-02-22 22:09:43 - INFO - [VINE] 当前价格: 0.04658, AI信号: 1, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.26 USDT (0.80%)
+2025-02-22 22:10:44 - INFO - [VINE] USDT余额: 可用=64.81174006, 总额=71.35463385
+2025-02-22 22:10:44 - INFO - [VINE] 当前账户余额: 可用=64.81174006 USDT, 总额=71.35463385 USDT
+2025-02-22 22:10:44 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:10:44 - INFO - [VINE] 预测概率: 卖出=0.0856, 观望=0.1854, 买入=0.7290
+2025-02-22 22:10:44 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.598345，当前持仓量: 698.0
+2025-02-22 22:10:44 - INFO - [VINE] 当前价格: 0.04671, AI信号: 1, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.35 USDT (1.08%)
+2025-02-22 22:11:45 - INFO - [VINE] USDT余额: 可用=64.90451927, 总额=71.48391741
+2025-02-22 22:11:45 - INFO - [VINE] 当前账户余额: 可用=64.90451927 USDT, 总额=71.48391741 USDT
+2025-02-22 22:11:45 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:11:45 - INFO - [VINE] 预测概率: 卖出=0.0302, 观望=0.7361, 买入=0.2338
+2025-02-22 22:11:45 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.72762856，当前持仓量: 698.0
+2025-02-22 22:11:45 - INFO - [VINE] 当前价格: 0.04687, AI信号: 0, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.46 USDT (1.43%)
+2025-02-22 22:12:46 - INFO - [VINE] USDT余额: 可用=64.94607186, 总额=71.52040885
+2025-02-22 22:12:46 - INFO - [VINE] 当前账户余额: 可用=64.94607186 USDT, 总额=71.52040885 USDT
+2025-02-22 22:12:47 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:12:47 - INFO - [VINE] 预测概率: 卖出=0.0461, 观望=0.6988, 买入=0.2550
+2025-02-22 22:12:47 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.75714，当前持仓量: 698.0
+2025-02-22 22:12:47 - INFO - [VINE] 当前价格: 0.04692, AI信号: 0, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.50 USDT (1.54%)
+2025-02-22 22:13:48 - INFO - [VINE] USDT余额: 可用=64.92137523, 总额=71.53921297
+2025-02-22 22:13:48 - INFO - [VINE] 当前账户余额: 可用=64.92137523 USDT, 总额=71.53921297 USDT
+2025-02-22 22:13:49 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:13:49 - INFO - [VINE] 预测概率: 卖出=0.0464, 观望=0.2576, 买入=0.6960
+2025-02-22 22:13:50 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.76681428，当前持仓量: 698.0
+2025-02-22 22:13:50 - INFO - [VINE] 当前价格: 0.04692, AI信号: 1, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.50 USDT (1.54%)
+2025-02-22 22:14:50 - INFO - [VINE] USDT余额: 可用=64.81487877, 总额=71.40872885
+2025-02-22 22:14:50 - INFO - [VINE] 当前账户余额: 可用=64.81487877 USDT, 总额=71.40872885 USDT
+2025-02-22 22:14:50 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:14:50 - INFO - [VINE] 预测概率: 卖出=0.1301, 观望=0.0464, 买入=0.8236
+2025-02-22 22:14:51 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.63637204，当前持仓量: 698.0
+2025-02-22 22:14:51 - INFO - [VINE] 当前价格: 0.04679, AI信号: 1, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.40 USDT (1.26%)
+2025-02-22 22:15:51 - INFO - [VINE] USDT余额: 可用=64.95584087, 总额=71.54134885
+2025-02-22 22:15:51 - INFO - [VINE] 当前账户余额: 可用=64.95584087 USDT, 总额=71.54134885 USDT
+2025-02-22 22:15:51 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:15:51 - INFO - [VINE] 预测概率: 卖出=0.0542, 观望=0.2405, 买入=0.7053
+2025-02-22 22:15:52 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.77845692，当前持仓量: 698.0
+2025-02-22 22:15:52 - INFO - [VINE] 当前价格: 0.04696, AI信号: 1, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.52 USDT (1.62%)
+2025-02-22 22:16:52 - INFO - [VINE] USDT余额: 可用=64.80443085, 总额=71.42607415
+2025-02-22 22:16:52 - INFO - [VINE] 当前账户余额: 可用=64.80443085 USDT, 总额=71.42607415 USDT
+2025-02-22 22:16:53 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:16:53 - INFO - [VINE] 预测概率: 卖出=0.1331, 观望=0.0558, 买入=0.8111
+2025-02-22 22:16:53 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.6697853，当前持仓量: 698.0
+2025-02-22 22:16:53 - INFO - [VINE] 当前价格: 0.04676, AI信号: 1, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: 0.38 USDT (1.19%)
+2025-02-22 22:17:53 - INFO - [VINE] USDT余额: 可用=64.51128206, 总额=70.96806051
+2025-02-22 22:17:53 - INFO - [VINE] 当前账户余额: 可用=64.51128206 USDT, 总额=70.96806051 USDT
+2025-02-22 22:17:54 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:17:54 - INFO - [VINE] 预测概率: 卖出=0.5835, 观望=0.3429, 买入=0.0735
+2025-02-22 22:17:54 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.20855388，当前持仓量: 698.0
+2025-02-22 22:17:54 - INFO - [VINE] 当前价格: 0.04608, AI信号: -1, 持仓数量: 698.0, 开仓均价: 0.04621, 未实现盈亏: -0.09 USDT (-0.28%)
+2025-02-22 22:17:54 - INFO - [VINE] 当前持仓方向: 多，持仓金额: 32.20855388，当前持仓量: 698.0
+2025-02-22 22:17:55 - INFO - [VINE] 订单创建成功: {'info': {'orderId': '728037755', 'symbol': 'VINEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu64a173d0776521ca1eb67a', 'price': '0.0000000', 'avgPrice': '0.0461916', 'origQty': '698', 'executedQty': '698', 'cumQty': '698', 'cumQuote': '32.2417600', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740233875100'}, 'id': '728037755', 'clientOrderId': 'x-xcKtGhcu64a173d0776521ca1eb67a', 'timestamp': 1740233875100, 'datetime': '2025-02-22T14:17:55.100Z', 'lastTradeTimestamp': 1740233875100, 'lastUpdateTimestamp': 1740233875100, 'symbol': 'VINE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.0461916, 'triggerPrice': None, 'amount': 698.0, 'cost': 32.24176, 'average': 0.0461916, 'filled': 698.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-22 22:17:55 - INFO - [VINE] 平仓成功: {'info': {'orderId': '728037755', 'symbol': 'VINEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu64a173d0776521ca1eb67a', 'price': '0.0000000', 'avgPrice': '0.0461916', 'origQty': '698', 'executedQty': '698', 'cumQty': '698', 'cumQuote': '32.2417600', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740233875100'}, 'id': '728037755', 'clientOrderId': 'x-xcKtGhcu64a173d0776521ca1eb67a', 'timestamp': 1740233875100, 'datetime': '2025-02-22T14:17:55.100Z', 'lastTradeTimestamp': 1740233875100, 'lastUpdateTimestamp': 1740233875100, 'symbol': 'VINE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.0461916, 'triggerPrice': None, 'amount': 698.0, 'cost': 32.24176, 'average': 0.0461916, 'filled': 698.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-22 22:17:55 - INFO - [VINE] 订单创建成功: {'info': {'orderId': '728037940', 'symbol': 'VINEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu1e4d4017f518c53b57ff00', 'price': '0.0000000', 'avgPrice': '0.0461900', 'origQty': '699', 'executedQty': '699', 'cumQty': '699', 'cumQuote': '32.2868100', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740233875774'}, 'id': '728037940', 'clientOrderId': 'x-xcKtGhcu1e4d4017f518c53b57ff00', 'timestamp': 1740233875774, 'datetime': '2025-02-22T14:17:55.774Z', 'lastTradeTimestamp': 1740233875774, 'lastUpdateTimestamp': 1740233875774, 'symbol': 'VINE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.04619, 'triggerPrice': None, 'amount': 699.0, 'cost': 32.28681, 'average': 0.04619, 'filled': 699.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-22 22:18:56 - INFO - [VINE] USDT余额: 可用=64.48364935, 总额=70.98392362
+2025-02-22 22:18:56 - INFO - [VINE] 当前账户余额: 可用=64.48364935 USDT, 总额=70.98392362 USDT
+2025-02-22 22:18:56 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:18:56 - INFO - [VINE] 预测概率: 卖出=0.5922, 观望=0.3246, 买入=0.0832
+2025-02-22 22:18:57 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 32.26867095，当前持仓量: -699.0
+2025-02-22 22:18:57 - INFO - [VINE] 当前价格: 0.04619, AI信号: -1, 持仓数量: -699.0, 开仓均价: 0.04619, 未实现盈亏: -0.00 USDT (-0.00%)
+2025-02-22 22:19:57 - INFO - [VINE] USDT余额: 可用=64.40428507, 总额=70.90158841
+2025-02-22 22:19:57 - INFO - [VINE] 当前账户余额: 可用=64.40428507 USDT, 总额=70.90158841 USDT
+2025-02-22 22:19:57 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:19:58 - INFO - [VINE] 预测概率: 卖出=0.6837, 观望=0.2240, 买入=0.0923
+2025-02-22 22:19:58 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 32.35953396，当前持仓量: -699.0
+2025-02-22 22:19:58 - INFO - [VINE] 当前价格: 0.04626, AI信号: -1, 持仓数量: -699.0, 开仓均价: 0.04619, 未实现盈亏: 0.05 USDT (0.15%)
+2025-02-22 22:20:58 - INFO - [VINE] USDT余额: 可用=64.41018323, 总额=70.89613621
+2025-02-22 22:20:58 - INFO - [VINE] 当前账户余额: 可用=64.41018323 USDT, 总额=70.89613621 USDT
+2025-02-22 22:20:58 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:20:59 - INFO - [VINE] 预测概率: 卖出=0.7997, 观望=0.1008, 买入=0.0995
+2025-02-22 22:20:59 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 32.35645836，当前持仓量: -699.0
+2025-02-22 22:20:59 - INFO - [VINE] 当前价格: 0.04628, AI信号: -1, 持仓数量: -699.0, 开仓均价: 0.04619, 未实现盈亏: 0.06 USDT (0.19%)
+2025-02-22 22:21:59 - INFO - [VINE] USDT余额: 可用=64.52801546, 总额=70.99413601
+2025-02-22 22:21:59 - INFO - [VINE] 当前账户余额: 可用=64.52801546 USDT, 总额=70.99413601 USDT
+2025-02-22 22:22:00 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:22:00 - INFO - [VINE] 预测概率: 卖出=0.6159, 观望=0.3316, 买入=0.0525
+2025-02-22 22:22:01 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 32.24071095，当前持仓量: -699.0
+2025-02-22 22:22:01 - INFO - [VINE] 当前价格: 0.04616, AI信号: -1, 持仓数量: -699.0, 开仓均价: 0.04619, 未实现盈亏: -0.02 USDT (-0.06%)
+2025-02-22 22:23:01 - INFO - [VINE] USDT余额: 可用=64.45362862, 总额=70.93864939
+2025-02-22 22:23:01 - INFO - [VINE] 当前账户余额: 可用=64.45362862 USDT, 总额=70.93864939 USDT
+2025-02-22 22:23:02 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:23:02 - INFO - [VINE] 预测概率: 卖出=0.8329, 观望=0.0751, 买入=0.0921
+2025-02-22 22:23:03 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 32.32456299，当前持仓量: -699.0
+2025-02-22 22:23:03 - INFO - [VINE] 当前价格: 0.0462, AI信号: -1, 持仓数量: -699.0, 开仓均价: 0.04619, 未实现盈亏: 0.01 USDT (0.02%)
+2025-02-22 22:24:03 - INFO - [VINE] USDT余额: 可用=64.34935512, 总额=70.84522804
+2025-02-22 22:24:03 - INFO - [VINE] 当前账户余额: 可用=64.34935512 USDT, 总额=70.84522804 USDT
+2025-02-22 22:24:03 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:24:03 - INFO - [VINE] 预测概率: 卖出=0.6891, 观望=0.0990, 买入=0.2119
+2025-02-22 22:24:04 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 32.40789777，当前持仓量: -699.0
+2025-02-22 22:24:04 - INFO - [VINE] 当前价格: 0.04635, AI信号: -1, 持仓数量: -699.0, 开仓均价: 0.04619, 未实现盈亏: 0.11 USDT (0.35%)
+2025-02-22 22:25:04 - INFO - [VINE] USDT余额: 可用=64.23196866, 总额=70.77381121
+2025-02-22 22:25:04 - INFO - [VINE] 当前账户余额: 可用=64.23196866 USDT, 总额=70.77381121 USDT
+2025-02-22 22:25:05 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:25:05 - INFO - [VINE] 预测概率: 卖出=0.5820, 观望=0.1197, 买入=0.2983
+2025-02-22 22:25:06 - INFO - [VINE] 当前持仓方向: 空，持仓金额: 32.47940547，当前持仓量: -699.0
+2025-02-22 22:25:06 - INFO - [VINE] 当前价格: 0.04648, AI信号: -1, 持仓数量: -699.0, 开仓均价: 0.04619, 未实现盈亏: 0.20 USDT (0.63%)
+2025-02-22 22:25:30 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-02-22 22:25:30 - INFO - [VINE] 关闭 VINEUSDT 所有持仓
+2025-02-22 22:27:56 - INFO - [root] ==================================================
+2025-02-22 22:27:56 - INFO - [root] 日志系统初始化完成 - 2025-02-22 22:27:56
+2025-02-22 22:27:56 - INFO - [root] ==================================================
+2025-02-22 22:28:02 - ERROR - [VINE] 取消所有订单失败: binanceusdm GET https://fapi.binance.com/fapi/v1/exchangeInfo
+2025-02-22 22:28:02 - WARNING - [VINE] cancel_all_orders 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/exchangeInfo
+2025-02-22 22:28:13 - ERROR - [VINE] 取消所有订单失败: binanceusdm GET https://fapi.binance.com/fapi/v1/exchangeInfo
+2025-02-22 22:28:13 - WARNING - [VINE] cancel_all_orders 调用失败，2/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/exchangeInfo
+2025-02-22 22:28:20 - INFO - [VINE] 没有未成交的订单
+2025-02-22 22:28:20 - INFO - [VINE] 当前已经是单向持仓模式
+2025-02-22 22:28:21 - INFO - [VINE] 设置杠杆倍数 5倍 成功
+2025-02-22 22:28:21 - INFO - [VINE] 当前已经是CROSSED保证金模式
+2025-02-22 22:28:21 - INFO - [VINE] 交易器初始化成功 for VINEUSDT
+2025-02-22 22:28:21 - INFO - [VINE] 获取历史K线数据进行初始训练...
+2025-02-22 22:28:21 - INFO - [VINE] 成功获取1000根5mK线数据
+2025-02-22 22:28:21 - INFO - [VINE] 成功获取1000根5mK线数据
+2025-02-22 22:28:22 - ERROR - [VINE] 准备标签数据失败: 'returns'
+2025-02-22 22:28:22 - ERROR - [VINE] 初始模型训练失败
+2025-02-22 22:28:22 - INFO - [VINE] 初始化 VINEUSDT 交易器和策略成功
+2025-02-22 22:28:22 - INFO - [VINE] 交易线程启动成功
+2025-02-22 22:28:22 - INFO - [root] 启动线程监控
+2025-02-22 22:28:22 - INFO - [root] 交易系统启动成功，正在交易的币对: VINEUSDT
+2025-02-22 22:28:22 - INFO - [VINE] USDT余额: 可用=70.64854476, 总额=70.66290788
+2025-02-22 22:28:22 - INFO - [VINE] 当前账户余额: 可用=70.64854476 USDT, 总额=70.66290788 USDT
+2025-02-22 22:28:22 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:28:22 - ERROR - [VINE] VINEUSDT 交易过程出错: generate_signal() missing 1 required positional argument: 'pred_proba'
+2025-02-22 22:29:32 - INFO - [VINE] USDT余额: 可用=70.64854525, 总额=70.66290788
+2025-02-22 22:29:32 - INFO - [VINE] 当前账户余额: 可用=70.64854525 USDT, 总额=70.66290788 USDT
+2025-02-22 22:29:33 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:29:33 - ERROR - [VINE] VINEUSDT 交易过程出错: generate_signal() missing 1 required positional argument: 'pred_proba'
+2025-02-22 22:30:13 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-02-22 22:30:13 - INFO - [VINE] 关闭 VINEUSDT 所有持仓
+2025-02-22 22:30:44 - INFO - [root] ==================================================
+2025-02-22 22:30:44 - INFO - [root] 日志系统初始化完成 - 2025-02-22 22:30:44
+2025-02-22 22:30:44 - INFO - [root] ==================================================
+2025-02-22 22:30:47 - INFO - [VINE] 没有未成交的订单
+2025-02-22 22:30:47 - INFO - [VINE] 当前已经是单向持仓模式
+2025-02-22 22:30:47 - INFO - [VINE] 设置杠杆倍数 5倍 成功
+2025-02-22 22:30:47 - INFO - [VINE] 当前已经是CROSSED保证金模式
+2025-02-22 22:30:47 - INFO - [VINE] 交易器初始化成功 for VINEUSDT
+2025-02-22 22:30:47 - INFO - [VINE] 获取历史K线数据进行初始训练...
+2025-02-22 22:30:48 - INFO - [VINE] 成功获取1000根5mK线数据
+2025-02-22 22:30:48 - INFO - [VINE] 成功获取1000根5mK线数据
+2025-02-22 22:30:48 - ERROR - [VINE] 准备标签数据失败: 'returns'
+2025-02-22 22:30:48 - ERROR - [VINE] 初始模型训练失败
+2025-02-22 22:30:48 - INFO - [VINE] 初始化 VINEUSDT 交易器和策略成功
+2025-02-22 22:30:48 - INFO - [VINE] 交易线程启动成功
+2025-02-22 22:30:48 - INFO - [root] 启动线程监控
+2025-02-22 22:30:48 - INFO - [root] 交易系统启动成功，正在交易的币对: VINEUSDT
+2025-02-22 22:30:48 - INFO - [VINE] USDT余额: 可用=70.6485449, 总额=70.66290788
+2025-02-22 22:30:48 - INFO - [VINE] 当前账户余额: 可用=70.64854490 USDT, 总额=70.66290788 USDT
+2025-02-22 22:30:49 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:30:49 - ERROR - [VINE] VINEUSDT 交易过程出错: generate_signal() missing 1 required positional argument: 'pred_proba'
+2025-02-22 22:31:59 - INFO - [VINE] USDT余额: 可用=70.64854496, 总额=70.66290788
+2025-02-22 22:31:59 - INFO - [VINE] 当前账户余额: 可用=70.64854496 USDT, 总额=70.66290788 USDT
+2025-02-22 22:31:59 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:31:59 - ERROR - [VINE] VINEUSDT 交易过程出错: generate_signal() missing 1 required positional argument: 'pred_proba'
+2025-02-22 22:32:01 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-02-22 22:32:01 - INFO - [VINE] 关闭 VINEUSDT 所有持仓
+2025-02-22 22:33:58 - INFO - [root] ==================================================
+2025-02-22 22:33:58 - INFO - [root] 日志系统初始化完成 - 2025-02-22 22:33:58
+2025-02-22 22:33:58 - INFO - [root] ==================================================
+2025-02-22 22:34:01 - INFO - [VINE] 没有未成交的订单
+2025-02-22 22:34:01 - INFO - [VINE] 当前已经是单向持仓模式
+2025-02-22 22:34:01 - INFO - [VINE] 设置杠杆倍数 5倍 成功
+2025-02-22 22:34:02 - INFO - [VINE] 当前已经是CROSSED保证金模式
+2025-02-22 22:34:02 - INFO - [VINE] 交易器初始化成功 for VINEUSDT
+2025-02-22 22:34:02 - INFO - [VINE] 获取历史K线数据进行初始训练...
+2025-02-22 22:34:02 - INFO - [VINE] 成功获取1000根5mK线数据
+2025-02-22 22:34:02 - INFO - [VINE] 成功获取1000根5mK线数据
+2025-02-22 22:34:02 - ERROR - [VINE] 准备标签数据失败: 'returns'
+2025-02-22 22:34:02 - ERROR - [VINE] 初始模型训练失败
+2025-02-22 22:34:02 - INFO - [VINE] 初始化 VINEUSDT 交易器和策略成功
+2025-02-22 22:34:02 - INFO - [VINE] 交易线程启动成功
+2025-02-22 22:34:02 - INFO - [root] 启动线程监控
+2025-02-22 22:34:02 - INFO - [root] 交易系统启动成功，正在交易的币对: VINEUSDT
+2025-02-22 22:34:02 - INFO - [VINE] USDT余额: 可用=70.64854483, 总额=70.66290788
+2025-02-22 22:34:02 - INFO - [VINE] 当前账户余额: 可用=70.64854483 USDT, 总额=70.66290788 USDT
+2025-02-22 22:34:03 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:34:03 - ERROR - [VINE] VINEUSDT 交易过程出错: generate_signal() missing 1 required positional argument: 'pred_proba'
+2025-02-22 22:35:13 - INFO - [VINE] USDT余额: 可用=70.64854477, 总额=70.66290788
+2025-02-22 22:35:13 - INFO - [VINE] 当前账户余额: 可用=70.64854477 USDT, 总额=70.66290788 USDT
+2025-02-22 22:35:14 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:35:14 - ERROR - [VINE] VINEUSDT 交易过程出错: generate_signal() missing 1 required positional argument: 'pred_proba'
+2025-02-22 22:36:25 - INFO - [VINE] USDT余额: 可用=70.64854509, 总额=70.66290788
+2025-02-22 22:36:25 - INFO - [VINE] 当前账户余额: 可用=70.64854509 USDT, 总额=70.66290788 USDT
+2025-02-22 22:36:25 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:36:25 - ERROR - [VINE] VINEUSDT 交易过程出错: generate_signal() missing 1 required positional argument: 'pred_proba'
+2025-02-22 22:37:35 - INFO - [VINE] USDT余额: 可用=70.64854506, 总额=70.66290788
+2025-02-22 22:37:35 - INFO - [VINE] 当前账户余额: 可用=70.64854506 USDT, 总额=70.66290788 USDT
+2025-02-22 22:37:36 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:37:36 - ERROR - [VINE] VINEUSDT 交易过程出错: generate_signal() missing 1 required positional argument: 'pred_proba'
+2025-02-22 22:38:46 - INFO - [VINE] USDT余额: 可用=70.64854483, 总额=70.66290788
+2025-02-22 22:38:46 - INFO - [VINE] 当前账户余额: 可用=70.64854483 USDT, 总额=70.66290788 USDT
+2025-02-22 22:38:46 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:38:46 - ERROR - [VINE] VINEUSDT 交易过程出错: generate_signal() missing 1 required positional argument: 'pred_proba'
+2025-02-22 22:39:56 - INFO - [VINE] USDT余额: 可用=70.64854454, 总额=70.66290788
+2025-02-22 22:39:56 - INFO - [VINE] 当前账户余额: 可用=70.64854454 USDT, 总额=70.66290788 USDT
+2025-02-22 22:39:57 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:39:57 - ERROR - [VINE] VINEUSDT 交易过程出错: generate_signal() missing 1 required positional argument: 'pred_proba'
+2025-02-22 22:41:07 - INFO - [VINE] USDT余额: 可用=70.64854485, 总额=70.66290788
+2025-02-22 22:41:07 - INFO - [VINE] 当前账户余额: 可用=70.64854485 USDT, 总额=70.66290788 USDT
+2025-02-22 22:41:07 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:41:07 - ERROR - [VINE] VINEUSDT 交易过程出错: generate_signal() missing 1 required positional argument: 'pred_proba'
+2025-02-22 22:42:17 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-02-22 22:42:17 - INFO - [VINE] 关闭 VINEUSDT 所有持仓
+2025-02-22 22:49:49 - INFO - [root] ==================================================
+2025-02-22 22:49:49 - INFO - [root] 日志系统初始化完成 - 2025-02-22 22:49:49
+2025-02-22 22:49:49 - INFO - [root] ==================================================
+2025-02-22 22:49:53 - INFO - [VINE] 没有未成交的订单
+2025-02-22 22:49:53 - INFO - [VINE] 当前已经是单向持仓模式
+2025-02-22 22:49:53 - INFO - [VINE] 设置杠杆倍数 5倍 成功
+2025-02-22 22:49:53 - INFO - [VINE] 当前已经是CROSSED保证金模式
+2025-02-22 22:49:53 - INFO - [VINE] 交易器初始化成功 for VINEUSDT
+2025-02-22 22:49:53 - INFO - [VINE] 获取历史K线数据进行初始训练...
+2025-02-22 22:49:54 - INFO - [VINE] 成功获取1000根5mK线数据
+2025-02-22 22:49:54 - INFO - [VINE] 成功获取1000根5mK线数据
+2025-02-22 22:49:54 - ERROR - [VINE] 初始化训练失败: 'MidTermRFStrategy' object has no attribute 'train_model'
+2025-02-22 22:49:54 - INFO - [VINE] 初始化 VINEUSDT 交易器和策略成功
+2025-02-22 22:49:54 - INFO - [VINE] 交易线程启动成功
+2025-02-22 22:49:54 - INFO - [root] 启动线程监控
+2025-02-22 22:49:54 - INFO - [root] 交易系统启动成功，正在交易的币对: VINEUSDT
+2025-02-22 22:49:54 - INFO - [VINE] USDT余额: 可用=70.64854493, 总额=70.66290788
+2025-02-22 22:49:54 - INFO - [VINE] 当前账户余额: 可用=70.64854493 USDT, 总额=70.66290788 USDT
+2025-02-22 22:49:55 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:49:55 - ERROR - [VINE] VINEUSDT 交易过程出错: 'MidTermRFStrategy' object has no attribute 'generate_signal'
+2025-02-22 22:51:05 - INFO - [VINE] USDT余额: 可用=70.64854489, 总额=70.66290788
+2025-02-22 22:51:05 - INFO - [VINE] 当前账户余额: 可用=70.64854489 USDT, 总额=70.66290788 USDT
+2025-02-22 22:51:05 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:51:05 - ERROR - [VINE] VINEUSDT 交易过程出错: 'MidTermRFStrategy' object has no attribute 'generate_signal'
+2025-02-22 22:52:16 - INFO - [VINE] USDT余额: 可用=70.64854465, 总额=70.66290788
+2025-02-22 22:52:16 - INFO - [VINE] 当前账户余额: 可用=70.64854465 USDT, 总额=70.66290788 USDT
+2025-02-22 22:52:16 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:52:16 - ERROR - [VINE] VINEUSDT 交易过程出错: 'MidTermRFStrategy' object has no attribute 'generate_signal'
+2025-02-22 22:53:26 - INFO - [VINE] USDT余额: 可用=70.64854516, 总额=70.66290788
+2025-02-22 22:53:26 - INFO - [VINE] 当前账户余额: 可用=70.64854516 USDT, 总额=70.66290788 USDT
+2025-02-22 22:53:27 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:53:27 - ERROR - [VINE] VINEUSDT 交易过程出错: 'MidTermRFStrategy' object has no attribute 'generate_signal'
+2025-02-22 22:54:38 - INFO - [VINE] USDT余额: 可用=70.64854493, 总额=70.66290788
+2025-02-22 22:54:38 - INFO - [VINE] 当前账户余额: 可用=70.64854493 USDT, 总额=70.66290788 USDT
+2025-02-22 22:54:38 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:54:38 - ERROR - [VINE] VINEUSDT 交易过程出错: 'MidTermRFStrategy' object has no attribute 'generate_signal'
+2025-02-22 22:55:48 - INFO - [VINE] USDT余额: 可用=70.648545, 总额=70.66290788
+2025-02-22 22:55:48 - INFO - [VINE] 当前账户余额: 可用=70.64854500 USDT, 总额=70.66290788 USDT
+2025-02-22 22:55:49 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:55:49 - ERROR - [VINE] VINEUSDT 交易过程出错: 'MidTermRFStrategy' object has no attribute 'generate_signal'
+2025-02-22 22:56:59 - INFO - [VINE] USDT余额: 可用=70.6485451, 总额=70.66290788
+2025-02-22 22:56:59 - INFO - [VINE] 当前账户余额: 可用=70.64854510 USDT, 总额=70.66290788 USDT
+2025-02-22 22:57:00 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:57:00 - ERROR - [VINE] VINEUSDT 交易过程出错: 'MidTermRFStrategy' object has no attribute 'generate_signal'
+2025-02-22 22:58:10 - INFO - [VINE] USDT余额: 可用=70.64854471, 总额=70.66290788
+2025-02-22 22:58:10 - INFO - [VINE] 当前账户余额: 可用=70.64854471 USDT, 总额=70.66290788 USDT
+2025-02-22 22:58:10 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:58:10 - ERROR - [VINE] VINEUSDT 交易过程出错: 'MidTermRFStrategy' object has no attribute 'generate_signal'
+2025-02-22 22:59:21 - INFO - [VINE] USDT余额: 可用=70.6485451, 总额=70.66290788
+2025-02-22 22:59:21 - INFO - [VINE] 当前账户余额: 可用=70.64854510 USDT, 总额=70.66290788 USDT
+2025-02-22 22:59:21 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 22:59:21 - ERROR - [VINE] VINEUSDT 交易过程出错: 'MidTermRFStrategy' object has no attribute 'generate_signal'
+2025-02-22 23:00:31 - INFO - [VINE] USDT余额: 可用=70.64854457, 总额=70.66290788
+2025-02-22 23:00:31 - INFO - [VINE] 当前账户余额: 可用=70.64854457 USDT, 总额=70.66290788 USDT
+2025-02-22 23:00:32 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 23:00:32 - ERROR - [VINE] VINEUSDT 交易过程出错: 'MidTermRFStrategy' object has no attribute 'generate_signal'
+2025-02-22 23:00:33 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-02-22 23:00:33 - INFO - [VINE] 关闭 VINEUSDT 所有持仓
+2025-02-22 23:00:36 - INFO - [root] ==================================================
+2025-02-22 23:00:36 - INFO - [root] 日志系统初始化完成 - 2025-02-22 23:00:36
+2025-02-22 23:00:36 - INFO - [root] ==================================================
+2025-02-22 23:00:39 - INFO - [VINE] 没有未成交的订单
+2025-02-22 23:00:39 - INFO - [VINE] 当前已经是单向持仓模式
+2025-02-22 23:00:40 - INFO - [VINE] 设置杠杆倍数 5倍 成功
+2025-02-22 23:00:40 - INFO - [VINE] 当前已经是CROSSED保证金模式
+2025-02-22 23:00:40 - INFO - [VINE] 交易器初始化成功 for VINEUSDT
+2025-02-22 23:00:40 - INFO - [VINE] 获取历史K线数据进行初始训练...
+2025-02-22 23:00:40 - INFO - [VINE] 成功获取1000根5mK线数据
+2025-02-22 23:00:40 - INFO - [VINE] 成功获取1000根5mK线数据
+2025-02-22 23:00:40 - ERROR - [VINE] 初始化训练失败: 'MidTermRFStrategy' object has no attribute 'train_model'
+2025-02-22 23:00:40 - INFO - [VINE] 初始化 VINEUSDT 交易器和策略成功
+2025-02-22 23:00:40 - INFO - [VINE] 交易线程启动成功
+2025-02-22 23:00:40 - INFO - [root] 启动线程监控
+2025-02-22 23:00:40 - INFO - [root] 交易系统启动成功，正在交易的币对: VINEUSDT
+2025-02-22 23:00:40 - INFO - [VINE] USDT余额: 可用=70.64854435, 总额=70.66290788
+2025-02-22 23:00:40 - INFO - [VINE] 当前账户余额: 可用=70.64854435 USDT, 总额=70.66290788 USDT
+2025-02-22 23:00:41 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 23:00:41 - ERROR - [VINE] VINEUSDT 交易过程出错: 'MidTermRFStrategy' object has no attribute 'generate_signal'
+2025-02-22 23:01:51 - INFO - [VINE] USDT余额: 可用=70.64854512, 总额=70.66290788
+2025-02-22 23:01:51 - INFO - [VINE] 当前账户余额: 可用=70.64854512 USDT, 总额=70.66290788 USDT
+2025-02-22 23:01:51 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 23:01:51 - ERROR - [VINE] VINEUSDT 交易过程出错: 'MidTermRFStrategy' object has no attribute 'generate_signal'
+2025-02-22 23:03:01 - INFO - [VINE] USDT余额: 可用=70.64854501, 总额=70.66290788
+2025-02-22 23:03:01 - INFO - [VINE] 当前账户余额: 可用=70.64854501 USDT, 总额=70.66290788 USDT
+2025-02-22 23:03:02 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 23:03:02 - ERROR - [VINE] VINEUSDT 交易过程出错: 'MidTermRFStrategy' object has no attribute 'generate_signal'
+2025-02-22 23:03:02 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-02-22 23:03:02 - INFO - [VINE] 关闭 VINEUSDT 所有持仓
+2025-02-22 23:03:05 - INFO - [root] ==================================================
+2025-02-22 23:03:05 - INFO - [root] 日志系统初始化完成 - 2025-02-22 23:03:05
+2025-02-22 23:03:05 - INFO - [root] ==================================================
+2025-02-22 23:03:07 - INFO - [VINE] 没有未成交的订单
+2025-02-22 23:03:07 - INFO - [VINE] 当前已经是单向持仓模式
+2025-02-22 23:03:07 - INFO - [VINE] 设置杠杆倍数 5倍 成功
+2025-02-22 23:03:07 - INFO - [VINE] 当前已经是CROSSED保证金模式
+2025-02-22 23:03:07 - INFO - [VINE] 交易器初始化成功 for VINEUSDT
+2025-02-22 23:03:07 - INFO - [VINE] 获取历史K线数据进行初始训练...
+2025-02-22 23:03:07 - INFO - [VINE] 成功获取500根1mK线数据
+2025-02-22 23:03:07 - INFO - [VINE] 成功获取500根1mK线数据
+2025-02-22 23:03:08 - INFO - [VINE] 模型评估指标:
+2025-02-22 23:03:08 - INFO - [VINE] 训练集准确率: 0.8688
+2025-02-22 23:03:08 - INFO - [VINE] 加权精确率: 0.8702
+2025-02-22 23:03:08 - INFO - [VINE] 加权召回率: 0.8688
+2025-02-22 23:03:08 - INFO - [VINE] 加权F1分数: 0.8688
+2025-02-22 23:03:08 - INFO - [VINE] 混淆矩阵:
+2025-02-22 23:03:08 - INFO - [VINE] 卖出 观望 买入
+2025-02-22 23:03:08 - INFO - [VINE] [141   3  12] # 实际卖出
+2025-02-22 23:03:08 - INFO - [VINE] [14 97  7] # 实际观望
+2025-02-22 23:03:08 - INFO - [VINE] [ 14  11 166] # 实际买入
+2025-02-22 23:03:08 - INFO - [VINE] Top 5 重要特征:
+2025-02-22 23:03:08 - INFO - [VINE] BB_width_36: 0.0617
+2025-02-22 23:03:08 - INFO - [VINE] volume_ratio_6: 0.0614
+2025-02-22 23:03:08 - INFO - [VINE] BB_width_12: 0.0585
+2025-02-22 23:03:08 - INFO - [VINE] BB_position_36: 0.0545
+2025-02-22 23:03:08 - INFO - [VINE] BB_width_24: 0.0464
+2025-02-22 23:03:08 - INFO - [VINE] 初始模型训练完成
+2025-02-22 23:03:08 - INFO - [VINE] 获取历史K线数据进行初始训练...
+2025-02-22 23:03:08 - INFO - [VINE] 成功获取1000根5mK线数据
+2025-02-22 23:03:08 - INFO - [VINE] 成功获取1000根5mK线数据
+2025-02-22 23:03:08 - INFO - [VINE] 模型评估指标:
+2025-02-22 23:03:08 - INFO - [VINE] 训练集准确率: 0.7130
+2025-02-22 23:03:08 - INFO - [VINE] 加权精确率: 0.7260
+2025-02-22 23:03:08 - INFO - [VINE] 加权召回率: 0.7130
+2025-02-22 23:03:08 - INFO - [VINE] 加权F1分数: 0.7151
+2025-02-22 23:03:08 - INFO - [VINE] 混淆矩阵:
+2025-02-22 23:03:08 - INFO - [VINE] 卖出 观望 买入
+2025-02-22 23:03:08 - INFO - [VINE] [222  37  50] # 实际卖出
+2025-02-22 23:03:08 - INFO - [VINE] [ 60 281  70] # 实际观望
+2025-02-22 23:03:08 - INFO - [VINE] [ 31  29 185] # 实际买入
+2025-02-22 23:03:08 - INFO - [VINE] Top 5 重要特征:
+2025-02-22 23:03:08 - INFO - [VINE] BB_width_24: 0.0928
+2025-02-22 23:03:08 - INFO - [VINE] BB_width_36: 0.0579
+2025-02-22 23:03:08 - INFO - [VINE] BB_width_12: 0.0578
+2025-02-22 23:03:08 - INFO - [VINE] volume_ma_12: 0.0487
+2025-02-22 23:03:08 - INFO - [VINE] BB_position_36: 0.0455
+2025-02-22 23:03:08 - INFO - [VINE] 初始模型训练完成
+2025-02-22 23:03:08 - INFO - [VINE] 初始化 VINEUSDT 交易器和策略成功
+2025-02-22 23:03:08 - INFO - [VINE] 交易线程启动成功
+2025-02-22 23:03:08 - INFO - [root] 启动线程监控
+2025-02-22 23:03:08 - INFO - [root] 交易系统启动成功，正在交易的币对: VINEUSDT
+2025-02-22 23:03:08 - INFO - [VINE] USDT余额: 可用=70.64854502, 总额=70.66290788
+2025-02-22 23:03:08 - INFO - [VINE] 当前账户余额: 可用=70.64854502 USDT, 总额=70.66290788 USDT
+2025-02-22 23:03:09 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 23:03:09 - INFO - [VINE] 预测概率: 卖出=0.3386, 观望=0.4932, 买入=0.1683
+2025-02-22 23:03:09 - INFO - [VINE] 当前价格: 0.04472, AI信号: 0
+2025-02-22 23:04:10 - INFO - [VINE] USDT余额: 可用=70.64854509, 总额=70.66290788
+2025-02-22 23:04:10 - INFO - [VINE] 当前账户余额: 可用=70.64854509 USDT, 总额=70.66290788 USDT
+2025-02-22 23:04:10 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 23:04:10 - INFO - [VINE] 预测概率: 卖出=0.3664, 观望=0.4535, 买入=0.1801
+2025-02-22 23:04:10 - INFO - [VINE] 当前价格: 0.0447, AI信号: 0
+2025-02-22 23:05:10 - INFO - [VINE] USDT余额: 可用=70.6485452, 总额=70.66290788
+2025-02-22 23:05:10 - INFO - [VINE] 当前账户余额: 可用=70.64854520 USDT, 总额=70.66290788 USDT
+2025-02-22 23:05:11 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 23:05:11 - INFO - [VINE] 预测概率: 卖出=0.3507, 观望=0.4600, 买入=0.1892
+2025-02-22 23:05:11 - INFO - [VINE] 当前价格: 0.04433, AI信号: 0
+2025-02-22 23:06:11 - INFO - [VINE] USDT余额: 可用=70.64854511, 总额=70.66290788
+2025-02-22 23:06:11 - INFO - [VINE] 当前账户余额: 可用=70.64854511 USDT, 总额=70.66290788 USDT
+2025-02-22 23:06:12 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 23:06:12 - INFO - [VINE] 预测概率: 卖出=0.3414, 观望=0.4391, 买入=0.2195
+2025-02-22 23:06:12 - INFO - [VINE] 信号置信度(0.4391)低于阈值(0.45)
+2025-02-22 23:06:12 - INFO - [VINE] 当前价格: 0.04417, AI信号: 0
+2025-02-22 23:06:38 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-02-22 23:06:38 - INFO - [VINE] 关闭 VINEUSDT 所有持仓
+2025-02-22 23:06:41 - INFO - [root] ==================================================
+2025-02-22 23:06:41 - INFO - [root] 日志系统初始化完成 - 2025-02-22 23:06:41
+2025-02-22 23:06:41 - INFO - [root] ==================================================
+2025-02-22 23:06:42 - INFO - [VINE] 没有未成交的订单
+2025-02-22 23:06:42 - INFO - [VINE] 当前已经是单向持仓模式
+2025-02-22 23:06:42 - INFO - [VINE] 设置杠杆倍数 5倍 成功
+2025-02-22 23:06:42 - INFO - [VINE] 当前已经是CROSSED保证金模式
+2025-02-22 23:06:42 - INFO - [VINE] 交易器初始化成功 for VINEUSDT
+2025-02-22 23:06:42 - INFO - [VINE] 获取历史K线数据进行初始训练...
+2025-02-22 23:06:43 - INFO - [VINE] 成功获取500根1mK线数据
+2025-02-22 23:06:43 - INFO - [VINE] 成功获取500根1mK线数据
+2025-02-22 23:06:43 - ERROR - [VINE] 特征准备失败: 'open'
+2025-02-22 23:06:43 - ERROR - [VINE] 模型训练失败: 'builtin_function_or_method' object has no attribute 'intersection'
+2025-02-22 23:06:43 - ERROR - [VINE] 初始模型训练失败
+2025-02-22 23:06:43 - INFO - [VINE] 获取历史K线数据进行初始训练...
+2025-02-22 23:06:43 - INFO - [VINE] 成功获取1000根5mK线数据
+2025-02-22 23:06:43 - INFO - [VINE] 成功获取1000根5mK线数据
+2025-02-22 23:06:43 - ERROR - [VINE] 特征准备失败: 'open'
+2025-02-22 23:06:43 - ERROR - [VINE] 模型训练失败: 'builtin_function_or_method' object has no attribute 'intersection'
+2025-02-22 23:06:43 - ERROR - [VINE] 初始模型训练失败
+2025-02-22 23:06:43 - INFO - [VINE] 初始化 VINEUSDT 交易器和策略成功
+2025-02-22 23:06:43 - INFO - [VINE] 交易线程启动成功
+2025-02-22 23:06:43 - INFO - [root] 启动线程监控
+2025-02-22 23:06:43 - INFO - [root] 交易系统启动成功，正在交易的币对: VINEUSDT
+2025-02-22 23:06:43 - INFO - [VINE] USDT余额: 可用=70.64854463, 总额=70.66290788
+2025-02-22 23:06:43 - INFO - [VINE] 当前账户余额: 可用=70.64854463 USDT, 总额=70.66290788 USDT
+2025-02-22 23:06:44 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 23:06:44 - ERROR - [VINE] 特征准备失败: 'open'
+2025-02-22 23:06:44 - ERROR - [VINE] 生成信号失败: This StandardScaler instance is not fitted yet. Call 'fit' with appropriate arguments before using this estimator.
+2025-02-22 23:06:44 - INFO - [VINE] 当前价格: 0.04411, AI信号: 0
+2025-02-22 23:07:44 - INFO - [VINE] USDT余额: 可用=70.64854438, 总额=70.66290788
+2025-02-22 23:07:44 - INFO - [VINE] 当前账户余额: 可用=70.64854438 USDT, 总额=70.66290788 USDT
+2025-02-22 23:07:45 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 23:07:45 - ERROR - [VINE] 特征准备失败: 'open'
+2025-02-22 23:07:45 - ERROR - [VINE] 生成信号失败: This StandardScaler instance is not fitted yet. Call 'fit' with appropriate arguments before using this estimator.
+2025-02-22 23:07:45 - INFO - [VINE] 当前价格: 0.04451, AI信号: 0
+2025-02-22 23:08:45 - INFO - [VINE] USDT余额: 可用=70.6485448, 总额=70.66290788
+2025-02-22 23:08:45 - INFO - [VINE] 当前账户余额: 可用=70.64854480 USDT, 总额=70.66290788 USDT
+2025-02-22 23:08:45 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 23:08:45 - ERROR - [VINE] 特征准备失败: 'open'
+2025-02-22 23:08:45 - ERROR - [VINE] 生成信号失败: This StandardScaler instance is not fitted yet. Call 'fit' with appropriate arguments before using this estimator.
+2025-02-22 23:08:46 - INFO - [VINE] 当前价格: 0.04442, AI信号: 0
+2025-02-22 23:09:46 - INFO - [VINE] USDT余额: 可用=70.64854509, 总额=70.66290788
+2025-02-22 23:09:46 - INFO - [VINE] 当前账户余额: 可用=70.64854509 USDT, 总额=70.66290788 USDT
+2025-02-22 23:09:46 - INFO - [VINE] 成功获取1000根1mK线数据
+2025-02-22 23:09:46 - ERROR - [VINE] 特征准备失败: 'open'
+2025-02-22 23:09:46 - ERROR - [VINE] 生成信号失败: This StandardScaler instance is not fitted yet. Call 'fit' with appropriate arguments before using this estimator.
+2025-02-22 23:09:47 - INFO - [VINE] 当前价格: 0.04454, AI信号: 0

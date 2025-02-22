@@ -1,13 +1,11 @@
 import numpy as np
 import pandas as pd
-from strategies.ml_strategy import MLStrategy
 import talib
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
-import time
-import config
+from strategies.base_strategy import BaseStrategy
 
-class RandomForestStrategy(MLStrategy):
+class RandomForestStrategy(BaseStrategy):
     """RandomForestMaster - 随机森林交易策略
     
     一个基于随机森林的期货交易策略模型，使用集成学习方法，

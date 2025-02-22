@@ -1,12 +1,14 @@
 import logging
 import threading
 import time
+from strategies import mid_term_rf_strategy
 from trader import Trader
 from strategies.ml_strategy_random_forest import RandomForestStrategy
-from strategies.ml_strategy import MLStrategy #随机森林策略
 from strategies.ml_strategy_deep_learning import DeepLearningStrategy
 from strategies.trend_strategy import TrendStrategy
 from strategies.short_term_rf_strategy import ShortTermRFStrategy
+from strategies.mid_term_rf_strategy import MidTermRFStrategy
+
 import config
 
 class TradingManager:
@@ -28,7 +30,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = ShortTermRFStrategy(trader)
+                strategy = MidTermRFStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")

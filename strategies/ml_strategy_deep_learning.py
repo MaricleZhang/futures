@@ -4,10 +4,10 @@ import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 import pandas as pd
-from strategies.ml_strategy import MLStrategy
 import talib
 from sklearn.preprocessing import StandardScaler
 import time
+from strategies.base_strategy import BaseStrategy
 
 class DeepLearningModel(nn.Module):
     def __init__(self, input_size):
@@ -42,7 +42,7 @@ class DeepLearningModel(nn.Module):
         x = self.dropout(x)
         return self.output(x)
 
-class DeepLearningStrategy(MLStrategy):
+class DeepLearningStrategy(BaseStrategy):
     """DeepTradeMaster - 深度学习交易策略
     
     一个基于深度神经网络的期货交易策略模型，使用多层感知机(MLP)结构，

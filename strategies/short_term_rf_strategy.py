@@ -1,14 +1,14 @@
 import numpy as np
 import pandas as pd
-from strategies.ml_strategy import MLStrategy
 import talib
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 import time
 import config
+from strategies.base_strategy import BaseStrategy
 
-class ShortTermRFStrategy(MLStrategy):
+class ShortTermRFStrategy(BaseStrategy):
     """ShortTermRFStrategy - 短线随机森林交易策略
     
     专门针对短线交易优化的随机森林策略模型，使用1分钟K线数据，

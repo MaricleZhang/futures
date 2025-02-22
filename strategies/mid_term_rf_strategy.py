@@ -1,14 +1,14 @@
 import numpy as np
 import pandas as pd
-from strategies.ml_strategy import MLStrategy
 import talib
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 import time
 import config
+from strategies.short_term_rf_strategy import ShortTermRFStrategy
 
-class MidTermRFStrategy(MLStrategy):
+class MidTermRFStrategy(ShortTermRFStrategy):
     """MidTermRFStrategy - 中线随机森林交易策略
     
     针对中线交易优化的随机森林策略模型，使用5分钟K线数据，
@@ -196,12 +196,17 @@ class MidTermRFStrategy(MLStrategy):
             for w, r in zip(weights, future_returns):
                 weighted_returns += w * r
             
+            # 将加权收益保存到DataFrame中
+            df['returns'] = weighted_returns
+            
             # 生成标签
             labels = pd.Series(0, index=df.index)
             labels[weighted_returns > self.profit_target_pct] = 1  # 上涨信号
             labels[weighted_returns < -self.stop_loss_pct] = -1    # 下跌信号
             
-            return labels[~labels.isna()]
+            # 删除包含 NaN 的行
+            valid_mask = ~(labels.isna())
+            return labels[valid_mask]
             
         except Exception as e:
             self.logger.error(f"标签生成失败: {str(e)}")

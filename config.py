@@ -11,13 +11,13 @@ PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
 # 交易设置
-SYMBOLS = ['BERAUSDT']  # 支持多个交易对
+SYMBOLS = ['VINEUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
-    'BERAUSDT': {
+    'VINEUSDT': {
         'leverage': 5,
         'min_notional': 20,
         'check_interval': 60,  # 交易检查间隔(秒)
-        'trade_amount_percent': 100,  # 每次交易使用的资金百分比
+        'trade_amount_percent': 50,  # 每次交易使用的资金百分比
     },
     # 'SOLUSDT': {
     #     'leverage': 5,
@@ -48,7 +48,7 @@ TIME_IN_FORCE = 'GTC'  # 订单有效期: GTC(永久有效) GTX(立即成交或�
 # 风控设置
 MAX_LEVERAGE = 10  # 最大允许杠杆
 DEFAULT_STOP_LOSS_PERCENT = 50  # 默认止损百分比
-DEFAULT_TAKE_PROFIT_PERCENT = 10000  # 默认止盈百分比
+DEFAULT_TAKE_PROFIT_PERCENT = 500  # 默认止盈百分比
 
 # K线设置
 DEFAULT_TIMEFRAME = '1m'  # 默认K线周期

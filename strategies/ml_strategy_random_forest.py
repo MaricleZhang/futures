@@ -29,18 +29,24 @@ class RandomForestStrategy(MLStrategy):
         self.logger = self.get_logger()
         
         # 随机森林特定参数
-        self.n_estimators = 100  # 增加树的数量
-        self.max_depth = 5      # 略微增加深度
-        self.min_samples_split = 30  # 增加分裂所需样本数
-        self.min_samples_leaf = 15   # 增加叶节点最小样本数
-        self.confidence_threshold = 0.42  # 置信度阈值
-        self.prob_diff_threshold = 0.11   # 降低概率差阈值
+        self.n_estimators = 200  # 增加树的数量以提高模型稳定性
+        self.max_depth = 8      # 增加深度以捕捉更复杂的模式
+        self.min_samples_split = 20  # 减少分裂所需样本数以提高灵敏度
+        self.min_samples_leaf = 10   # 减少叶节点最小样本数
+        self.confidence_threshold = 0.35  # 降低置信度阈值以增加交易频率
+        self.prob_diff_threshold = 0.08   # 降低概率差阈值
         
         # K线设置
-        self.kline_interval = '1m'
-        self.training_lookback = 1000
-        self.retraining_interval = 300  # 5分钟重新训练一次
-        self.last_training_time = 0
+        self.kline_interval = '1m'  # 使用1分钟K线
+        self.training_lookback = 500  # 减少回看周期，关注更近期的数据
+        self.retraining_interval = 60  # 1分钟重新训练一次
+        
+        # 风险控制参数
+        self.max_position_hold_time = 30  # 最大持仓时间(分钟)
+        self.profit_target_pct = 0.003    # 目标利润率
+        self.stop_loss_pct = 0.002        # 止损率
+        self.max_trades_per_hour = 12     # 每小时最大交易次数
+        self.min_vol_percentile = 30      # 最小成交量百分位
         
         # 初始化StandardScaler
         self.scaler = StandardScaler()
@@ -111,66 +117,47 @@ class RandomForestStrategy(MLStrategy):
             features['close'] = df['close']
             features['volume'] = df['volume']
             
-            # 价格变化
-            features['price_change_1m'] = df['close'].pct_change()
-            features['price_change_3m'] = df['close'].pct_change(3)
-            features['price_change_5m'] = df['close'].pct_change(5)
+            # 价格动量指标 - 短周期
+            features['momentum_30s'] = df['close'] - df['close'].shift(1)
+            features['momentum_1m'] = df['close'] - df['close'].shift(2)
+            features['momentum_2m'] = df['close'] - df['close'].shift(4)
             
-            # 成交量变化
-            features['volume_change_1m'] = df['volume'].pct_change()
-            features['volume_change_3m'] = df['volume'].pct_change(3)
-            features['volume_change_5m'] = df['volume'].pct_change(5)
+            # 价格变化率和加速度 - 短周期
+            features['price_change_30s'] = df['close'].pct_change(1)
+            features['price_change_1m'] = df['close'].pct_change(2)
+            features['price_change_2m'] = df['close'].pct_change(4)
+            features['price_acceleration'] = features['price_change_30s'] - features['price_change_30s'].shift(1)
             
-            # 移动平均
-            features['SMA_5'] = df['close'].rolling(window=5).mean()
-            features['SMA_10'] = df['close'].rolling(window=10).mean()
-            features['SMA_20'] = df['close'].rolling(window=20).mean()
+            # 波动率指标 - 短周期
+            features['volatility_1m'] = df['close'].rolling(window=2).std()
+            features['volatility_2m'] = df['close'].rolling(window=4).std()
+            features['volatility_ratio'] = features['volatility_1m'] / features['volatility_2m']
             
-            # 成交量移动平均
-            volume_ma = df['volume'].rolling(window=20).mean()
-            features['volume_ma_ratio'] = df['volume'] / volume_ma
+            # 成交量分析 - 短周期
+            features['volume_ma_3'] = df['volume'].rolling(window=3).mean()
+            features['volume_ma_5'] = df['volume'].rolling(window=5).mean()
+            features['volume_ratio_3'] = df['volume'] / features['volume_ma_3']
+            features['volume_ratio_5'] = df['volume'] / features['volume_ma_5']
+            features['volume_trend'] = features['volume'].pct_change()
             
-            # 布林带
-            features['BB_middle'] = df['close'].rolling(window=20).mean()
-            features['BB_upper'] = features['BB_middle'] + df['close'].rolling(window=20).std() * 2
-            features['BB_lower'] = features['BB_middle'] - df['close'].rolling(window=20).std() * 2
+            # 价格压力指标
+            features['high_low_range'] = (df['high'] - df['low']) / df['close']
+            features['close_position'] = (df['close'] - df['low']) / (df['high'] - df['low'])
             
-            # 短期布林带
-            features['BB_middle_short'] = df['close'].rolling(window=10).mean()
-            features['BB_upper_short'] = features['BB_middle_short'] + df['close'].rolling(window=10).std() * 2
-            features['BB_lower_short'] = features['BB_middle_short'] - df['close'].rolling(window=10).std() * 2
+            # 趋势强度指标 - 短周期
+            features['trend_strength_1m'] = features['price_change_1m'].abs() * features['volume_ratio_3']
+            features['trend_strength_2m'] = features['price_change_2m'].abs() * features['volume_ratio_5']
             
-            # RSI
-            delta = df['close'].diff()
-            gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
-            loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-            features['RSI'] = 100 - (100 / (1 + gain / loss))
+            # 布林带 - 短周期
+            for window in [5, 10, 20]:
+                bb_middle = df['close'].rolling(window=window).mean()
+                bb_std = df['close'].rolling(window=window).std()
+                features[f'BB_width_{window}'] = (bb_std * 2) / bb_middle
+                features[f'BB_position_{window}'] = (df['close'] - (bb_middle - bb_std * 2)) / (bb_std * 4)
             
-            # MACD
-            exp1 = df['close'].ewm(span=12, adjust=False).mean()
-            exp2 = df['close'].ewm(span=26, adjust=False).mean()
-            features['MACD'] = exp1 - exp2
-            features['Signal_Line'] = features['MACD'].ewm(span=9, adjust=False).mean()
-            
-            # ATR
-            high_low = df['high'] - df['low']
-            high_close = (df['high'] - df['close'].shift()).abs()
-            low_close = (df['low'] - df['close'].shift()).abs()
-            ranges = pd.concat([high_low, high_close, low_close], axis=1)
-            true_range = ranges.max(axis=1)
-            features['ATR'] = true_range.rolling(window=14).mean()
-            
-            # ADX
-            plus_dm = df['high'].diff()
-            minus_dm = df['low'].diff()
-            plus_dm[plus_dm < 0] = 0
-            minus_dm[minus_dm > 0] = 0
-            
-            tr = true_range
-            plus_di = 100 * (plus_dm.rolling(window=14).mean() / tr.rolling(window=14).mean())
-            minus_di = 100 * (minus_dm.rolling(window=14).mean() / tr.rolling(window=14).mean())
-            dx = 100 * ((plus_di - minus_di).abs() / (plus_di + minus_di).abs())
-            features['ADX'] = dx.rolling(window=14).mean()
+            # 价格突破指标
+            features['breakout_1m'] = df['close'] > df['high'].rolling(window=2).max().shift(1)
+            features['breakdown_1m'] = df['close'] < df['low'].rolling(window=2).min().shift(1)
             
             # 删除任何包含NaN的行
             valid_mask = ~(features.isna().any(axis=1))
@@ -193,18 +180,18 @@ class RandomForestStrategy(MLStrategy):
             if not isinstance(klines, list) or len(klines) < 20:
                 self.logger.error("K线数据为空或长度不足")
                 return None
-
+                
             # 创建基础DataFrame
             df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
             
             # 转换数据类型
             for col in ['open', 'high', 'low', 'close', 'volume']:
                 df[col] = pd.to_numeric(df[col], errors='coerce')
-
-            # 计算未来收益率
+            
+            # 计算多个时间窗口的未来收益
             future_returns = []
-            lookback_windows = [1, 3, 5, 10]  # 不同的时间窗口
-            weights = [0.4, 0.3, 0.2, 0.1]    # 对应的权重
+            lookback_windows = [1, 2, 3, 5]  # 减少预测窗口，专注短期
+            weights = [0.4, 0.3, 0.2, 0.1]   # 更重视近期收益
             
             for window in lookback_windows:
                 future_close = df['close'].shift(-window)
@@ -216,34 +203,80 @@ class RandomForestStrategy(MLStrategy):
             for w, r in zip(weights, future_returns):
                 weighted_returns += w * r
             
-            # 计算趋势特征
-            df['SMA_fast'] = df['close'].rolling(window=5).mean()
-            df['SMA_slow'] = df['close'].rolling(window=20).mean()
+            # 计算技术指标
+            # RSI
+            delta = df['close'].diff()
+            gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+            loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+            rs = gain / loss
+            rsi = 100 - (100 / (1 + rs))
+            
+            # MACD
+            exp12 = df['close'].ewm(span=12, adjust=False).mean()
+            exp26 = df['close'].ewm(span=26, adjust=False).mean()
+            macd = exp12 - exp26
+            signal = macd.ewm(span=9, adjust=False).mean()
+            macd_hist = macd - signal
+            
+            # 布林带
+            bb_middle = df['close'].rolling(window=20).mean()
+            bb_std = df['close'].rolling(window=20).std()
+            bb_upper = bb_middle + bb_std * 2
+            bb_lower = bb_middle - bb_std * 2
+            bb_width = (bb_upper - bb_lower) / bb_middle
+            bb_position = (df['close'] - bb_lower) / (bb_upper - bb_lower)
             
             # 计算趋势强度
-            trend_strength = (df['SMA_fast'] - df['SMA_slow']) / df['SMA_slow']
+            trend_strength = (
+                0.4 * macd_hist / df['close'] +  # MACD趋势
+                0.3 * (rsi - 50) / 50 +  # RSI趋势
+                0.3 * (2 * bb_position - 1)  # 布林带位置
+            )
             
-            # 动态阈值：根据波动率调整
+            # 计算波动率
             volatility = df['close'].pct_change().rolling(window=20).std()
-            threshold_factor = 1.5
-            buy_threshold = threshold_factor * volatility
-            sell_threshold = -threshold_factor * volatility
+            atr = talib.ATR(df['high'].values, df['low'].values, df['close'].values, timeperiod=14)
+            atr_pct = pd.Series(atr, index=df.index) / df['close']
+            
+            # 动态阈值计算
+            threshold_base = 0.8  # 降低基准阈值以增加信号频率
+            threshold_volatility = threshold_base * (0.7 * volatility + 0.3 * atr_pct)
+            
+            # 趋势调整
+            trend_adjustment = abs(trend_strength).rolling(window=3).mean()  # 减少趋势平滑窗口
+            buy_threshold = threshold_volatility * (1 + trend_adjustment)
+            sell_threshold = -threshold_volatility * (1 + trend_adjustment)
             
             # 生成标签
-            labels = pd.Series(1, index=df.index)  # 默认全部为观望(1)
+            labels = pd.Series(1, index=df.index)  # 默认为观望(1)
             
-            valid_mask = ~(weighted_returns.isna() | trend_strength.isna() | buy_threshold.isna())
+            # 删除所有技术指标计算产生的NaN值
+            valid_mask = ~(weighted_returns.isna() | trend_strength.isna() | buy_threshold.isna() | 
+                         rsi.isna() | bb_position.isna() | macd_hist.isna())
             
-            # 计算调整后的收益率
-            trend_factor = 0.3  # 趋势影响权重
-            adjusted_returns = weighted_returns[valid_mask] + trend_factor * trend_strength[valid_mask]
+            # 调整后的收益率
+            trend_factor = 0.4  # 趋势影响权重
+            adjusted_returns = weighted_returns + trend_factor * trend_strength
             
-            # 生成标签
-            labels[valid_mask & (adjusted_returns > buy_threshold[valid_mask])] = 2  # 买入
-            labels[valid_mask & (adjusted_returns < sell_threshold[valid_mask])] = 0  # 卖出
+            # 生成信号条件
+            buy_condition = (
+                (adjusted_returns > buy_threshold) &  # 收益率超过阈值
+                (rsi < 70) &  # 非超买
+                (bb_position < 0.85)  # 非布林带顶部
+            )
             
-            # 删除NaN值
-            labels = labels.dropna()
+            sell_condition = (
+                (adjusted_returns < sell_threshold) &  # 收益率低于阈值
+                (rsi > 30) &  # 非超卖
+                (bb_position > 0.15)  # 非布林带底部
+            )
+            
+            # 应用条件并生成标签
+            labels[buy_condition & valid_mask] = 2  # 买入
+            labels[sell_condition & valid_mask] = 0  # 卖出
+            
+            # 删除无效数据
+            labels = labels[valid_mask]
             
             # 统计标签分布
             label_counts = labels.value_counts()
@@ -257,354 +290,57 @@ class RandomForestStrategy(MLStrategy):
             signal_ratio = (action_signals / total_signals) * 100
             self.logger.info(f"买卖信号比例: {signal_ratio:.2f}%")
             
-            return labels.values
+            return labels
             
         except Exception as e:
             self.logger.error(f"生成标签失败: {str(e)}")
             return None
 
-    def update_trend_state(self, klines):
-        """更新趋势状态"""
-        try:
-            if not isinstance(klines, list) or len(klines) < 20:
-                self.logger.error("K线数据为空或长度不足")
-                return False
-                
-            # 创建基础DataFrame
-            df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
-            
-            # 转换数据类型
-            df['close'] = pd.to_numeric(df['close'], errors='coerce')
-            
-            # 计算快速和慢速移动平均
-            fast_ma = df['close'].rolling(window=5).mean()
-            slow_ma = df['close'].rolling(window=20).mean()
-            
-            # 计算趋势强度
-            trend_strength = (fast_ma - slow_ma) / slow_ma
-            
-            # 获取最新的趋势强度
-            latest_trend = trend_strength.iloc[-1]
-            
-            # 更新趋势状态和置信度
-            if latest_trend > 0.001:  # 上涨趋势
-                self.trend_state = 1
-                self.trend_confidence = min(abs(latest_trend) * 10, 1.0)
-            elif latest_trend < -0.001:  # 下跌趋势
-                self.trend_state = -1
-                self.trend_confidence = min(abs(latest_trend) * 10, 1.0)
-            else:  # 无明显趋势
-                self.trend_state = 0
-                self.trend_confidence = 0.0
-                
-            self.logger.info(f"趋势状态: {['下跌', '无趋势', '上涨'][self.trend_state + 1]}, "
-                           f"置信度: {self.trend_confidence:.4f}")
-            
-            return True
-            
-        except Exception as e:
-            self.logger.error(f"趋势状态更新失败: {str(e)}")
-            return False
-
-    def generate_signals(self, klines):
-        """生成交易信号"""
-        try:
-            # 检查是否需要重新训练
-            current_time = time.time()
-            if current_time - self.last_training_time > self.retraining_interval:
-                self.train_model(klines)
-                self.last_training_time = current_time
-
-            # 准备特征
-            if not isinstance(klines, list) or len(klines) < 20:
-                self.logger.error("K线数据为空或长度不足")
-                return 0
-                
-            # 创建基础DataFrame
-            df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
-            
-            # 转换数据类型
-            for col in ['open', 'high', 'low', 'close', 'volume']:
-                df[col] = pd.to_numeric(df[col], errors='coerce')
-            
-            # 准备特征
-            features = pd.DataFrame(index=df.index)
-            
-            # 基础价格特征
-            features['close'] = df['close']
-            features['volume'] = df['volume']
-            
-            # 价格变化
-            features['price_change_1m'] = df['close'].pct_change()
-            features['price_change_3m'] = df['close'].pct_change(3)
-            features['price_change_5m'] = df['close'].pct_change(5)
-            
-            # 成交量变化
-            features['volume_change_1m'] = df['volume'].pct_change()
-            features['volume_change_3m'] = df['volume'].pct_change(3)
-            features['volume_change_5m'] = df['volume'].pct_change(5)
-            
-            # 移动平均
-            features['SMA_5'] = df['close'].rolling(window=5).mean()
-            features['SMA_10'] = df['close'].rolling(window=10).mean()
-            features['SMA_20'] = df['close'].rolling(window=20).mean()
-            
-            # 成交量移动平均
-            volume_ma = df['volume'].rolling(window=20).mean()
-            features['volume_ma_ratio'] = df['volume'] / volume_ma
-            
-            # 布林带
-            features['BB_middle'] = df['close'].rolling(window=20).mean()
-            features['BB_upper'] = features['BB_middle'] + df['close'].rolling(window=20).std() * 2
-            features['BB_lower'] = features['BB_middle'] - df['close'].rolling(window=20).std() * 2
-            
-            # 短期布林带
-            features['BB_middle_short'] = df['close'].rolling(window=10).mean()
-            features['BB_upper_short'] = features['BB_middle_short'] + df['close'].rolling(window=10).std() * 2
-            features['BB_lower_short'] = features['BB_middle_short'] - df['close'].rolling(window=10).std() * 2
-            
-            # RSI
-            delta = df['close'].diff()
-            gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
-            loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-            features['RSI'] = 100 - (100 / (1 + gain / loss))
-            
-            # MACD
-            exp1 = df['close'].ewm(span=12, adjust=False).mean()
-            exp2 = df['close'].ewm(span=26, adjust=False).mean()
-            features['MACD'] = exp1 - exp2
-            features['Signal_Line'] = features['MACD'].ewm(span=9, adjust=False).mean()
-            
-            # ATR
-            high_low = df['high'] - df['low']
-            high_close = (df['high'] - df['close'].shift()).abs()
-            low_close = (df['low'] - df['close'].shift()).abs()
-            ranges = pd.concat([high_low, high_close, low_close], axis=1)
-            true_range = ranges.max(axis=1)
-            features['ATR'] = true_range.rolling(window=14).mean()
-            
-            # ADX
-            plus_dm = df['high'].diff()
-            minus_dm = df['low'].diff()
-            plus_dm[plus_dm < 0] = 0
-            minus_dm[minus_dm > 0] = 0
-            
-            tr = true_range
-            plus_di = 100 * (plus_dm.rolling(window=14).mean() / tr.rolling(window=14).mean())
-            minus_di = 100 * (minus_dm.rolling(window=14).mean() / tr.rolling(window=14).mean())
-            dx = 100 * ((plus_di - minus_di).abs() / (plus_di + minus_di).abs())
-            features['ADX'] = dx.rolling(window=14).mean()
-            
-            # 删除包含NaN的行
-            features = features.dropna()
-            
-            # 选择特征列
-            feature_columns = [col for col in features.columns 
-                             if col not in ['timestamp', 'open', 'high', 'low', 'close', 'volume']]
-            
-            # 更新趋势状态
-            self.update_trend_state(klines)
-            
-            # 选择最新的数据点
-            latest_features = features[feature_columns].iloc[-1:]
-            
-            # 确保scaler已经被训练
-            if not hasattr(self, 'scaler') or self.scaler is None:
-                self.logger.error("Scaler未初始化，重新训练模型")
-                self.train_model(klines)
-                return 0
-
-            try:
-                X_scaled = self.scaler.transform(latest_features)
-            except Exception as e:
-                self.logger.error(f"特征标准化失败: {str(e)}")
-                self.train_model(klines)
-                return 0
-
-            # 预测概率
-            probabilities = self.model.predict_proba(X_scaled)[0]
-            
-            # 记录预测概率
-            self.logger.info(f"预测概率: 卖出={probabilities[0]:.4f}, "
-                           f"观望={probabilities[1]:.4f}, "
-                           f"买入={probabilities[2]:.4f}")
-            
-            # 获取最高概率及其对应的类别
-            max_prob = max(probabilities)
-            predicted_class = np.argmax(probabilities)
-            
-            # 记录预测结果和置信度
-            self.logger.info(f"最终预测: {['卖出', '观望', '买入'][predicted_class]} "
-                           f"(置信度: {max_prob:.4f})")
-            
-            # 生成交易信号
-            if max_prob >= self.confidence_threshold:
-                if predicted_class == 0:  # 卖出信号
-                    # if probabilities[0] - probabilities[2] > self.prob_diff_threshold:
-                        return -1
-                elif predicted_class == 2:  # 买入信号
-                    if probabilities[2] - probabilities[0] > self.prob_diff_threshold:
-                        return 1
-            
-            return 0  # 持仓不变
-            
-        except Exception as e:
-            self.logger.error(f"生成信号失败: {str(e)}")
-            return 0
-
     def train_model(self, klines):
         """训练随机森林模型"""
         try:
-            # 创建基础DataFrame
-            df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
-            
-            # 转换数据类型
-            for col in ['open', 'high', 'low', 'close', 'volume']:
-                df[col] = pd.to_numeric(df[col], errors='coerce')
-            
-            # 准备特征
-            features = pd.DataFrame(index=df.index)
-            
-            # 基础价格特征
-            features['close'] = df['close']
-            features['volume'] = df['volume']
-            
-            # 价格变化
-            features['price_change_1m'] = df['close'].pct_change()
-            features['price_change_3m'] = df['close'].pct_change(3)
-            features['price_change_5m'] = df['close'].pct_change(5)
-            
-            # 成交量变化
-            features['volume_change_1m'] = df['volume'].pct_change()
-            features['volume_change_3m'] = df['volume'].pct_change(3)
-            features['volume_change_5m'] = df['volume'].pct_change(5)
-            
-            # 移动平均
-            features['SMA_5'] = df['close'].rolling(window=5).mean()
-            features['SMA_10'] = df['close'].rolling(window=10).mean()
-            features['SMA_20'] = df['close'].rolling(window=20).mean()
-            
-            # 成交量移动平均
-            volume_ma = df['volume'].rolling(window=20).mean()
-            features['volume_ma_ratio'] = df['volume'] / volume_ma
-            
-            # 布林带
-            features['BB_middle'] = df['close'].rolling(window=20).mean()
-            features['BB_upper'] = features['BB_middle'] + df['close'].rolling(window=20).std() * 2
-            features['BB_lower'] = features['BB_middle'] - df['close'].rolling(window=20).std() * 2
-            
-            # 短期布林带
-            features['BB_middle_short'] = df['close'].rolling(window=10).mean()
-            features['BB_upper_short'] = features['BB_middle_short'] + df['close'].rolling(window=10).std() * 2
-            features['BB_lower_short'] = features['BB_middle_short'] - df['close'].rolling(window=10).std() * 2
-            
-            # RSI
-            delta = df['close'].diff()
-            gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
-            loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-            features['RSI'] = 100 - (100 / (1 + gain / loss))
-            
-            # MACD
-            exp1 = df['close'].ewm(span=12, adjust=False).mean()
-            exp2 = df['close'].ewm(span=26, adjust=False).mean()
-            features['MACD'] = exp1 - exp2
-            features['Signal_Line'] = features['MACD'].ewm(span=9, adjust=False).mean()
-            
-            # ATR
-            high_low = df['high'] - df['low']
-            high_close = (df['high'] - df['close'].shift()).abs()
-            low_close = (df['low'] - df['close'].shift()).abs()
-            ranges = pd.concat([high_low, high_close, low_close], axis=1)
-            true_range = ranges.max(axis=1)
-            features['ATR'] = true_range.rolling(window=14).mean()
-            
-            # ADX
-            plus_dm = df['high'].diff()
-            minus_dm = df['low'].diff()
-            plus_dm[plus_dm < 0] = 0
-            minus_dm[minus_dm > 0] = 0
-            
-            tr = true_range
-            plus_di = 100 * (plus_dm.rolling(window=14).mean() / tr.rolling(window=14).mean())
-            minus_di = 100 * (minus_dm.rolling(window=14).mean() / tr.rolling(window=14).mean())
-            dx = 100 * ((plus_di - minus_di).abs() / (plus_di + minus_di).abs())
-            features['ADX'] = dx.rolling(window=14).mean()
-            
-            # 计算未来收益率
-            future_returns = []
-            lookback_windows = [1, 3, 5, 10]  # 不同的时间窗口
-            weights = [0.4, 0.3, 0.2, 0.1]    # 对应的权重
-            
-            for window in lookback_windows:
-                future_close = df['close'].shift(-window)
-                future_return = (future_close - df['close']) / df['close']
-                future_returns.append(future_return)
-            
-            # 计算加权收益率
-            weighted_returns = pd.Series(0.0, index=df.index)
-            for w, r in zip(weights, future_returns):
-                weighted_returns += w * r
-            
-            # 计算趋势特征
-            trend_strength = (features['SMA_5'] - features['SMA_20']) / features['SMA_20']
-            
-            # 动态阈值：根据波动率调整
-            volatility = df['close'].pct_change().rolling(window=20).std()
-            threshold_factor = 1.5
-            buy_threshold = threshold_factor * volatility
-            sell_threshold = -threshold_factor * volatility
-            
+            # 准备特征数据
+            features = self.prepare_features(klines)
+            if features is None:
+                return False
+                
             # 生成标签
-            labels = pd.Series(1, index=df.index)  # 默认全部为观望(1)
+            labels = self.generate_labels(klines)
+            if labels is None:
+                return False
             
-            # 计算调整后的收益率
-            trend_factor = 0.3  # 趋势影响权重
-            adjusted_returns = weighted_returns + trend_factor * trend_strength
-            
-            # 生成标签
-            labels[adjusted_returns > buy_threshold] = 2  # 买入
-            labels[adjusted_returns < sell_threshold] = 0  # 卖出
+            # 确保特征和标签使用相同的索引
+            common_index = features.index.intersection(labels.index)
+            features = features.loc[common_index]
+            labels = labels.loc[common_index]
             
             # 删除任何包含NaN的行
             valid_mask = ~(features.isna().any(axis=1) | labels.isna())
             features = features[valid_mask]
             labels = labels[valid_mask]
             
-            # 选择特征列
-            feature_columns = [col for col in features.columns 
-                             if col not in ['timestamp', 'open', 'high', 'low', 'close', 'volume']]
-            features = features[feature_columns]
-            
-            # 确保特征和标签长度匹配
+            # 确保数据长度匹配
             if len(features) != len(labels):
-                self.logger.error(f"特征和标签长度不匹配: X={len(features)}, y={len(labels)}")
+                self.logger.error(f"特征和标签长度不匹配: 特征={len(features)}, 标签={len(labels)}")
                 return False
                 
-            # 记录标签分布
-            label_counts = labels.value_counts()
-            self.logger.info(f"标签分布: 卖出={label_counts.get(0, 0)}, "
-                           f"观望={label_counts.get(1, 0)}, "
-                           f"买入={label_counts.get(2, 0)}")
-            
-            # 计算买卖信号比例
-            total_signals = len(labels)
-            action_signals = sum(1 for l in labels if l != 1)
-            signal_ratio = (action_signals / total_signals) * 100
-            self.logger.info(f"买卖信号比例: {signal_ratio:.2f}%")
-            
             # 标准化特征
             self.scaler = StandardScaler()
             X = self.scaler.fit_transform(features)
-            y = labels.values
+            y = labels
             
-            # 初始化并训练模型
+            # 计算样本权重以处理类别不平衡
+            unique_labels, label_counts = np.unique(y, return_counts=True)
+            class_weights = dict(zip(unique_labels, len(y) / (len(unique_labels) * label_counts)))
+            
+            # 设置随机森林参数
             self.model = RandomForestClassifier(
                 n_estimators=self.n_estimators,
                 max_depth=self.max_depth,
                 min_samples_split=self.min_samples_split,
                 min_samples_leaf=self.min_samples_leaf,
-                class_weight='balanced',
-                bootstrap=True,
+                class_weight=class_weights,
+                random_state=42,
                 n_jobs=-1
             )
             
@@ -631,3 +367,148 @@ class RandomForestStrategy(MLStrategy):
         except Exception as e:
             self.logger.error(f"模型训练失败: {str(e)}")
             return False
+
+    def update_trend_state(self, klines):
+        """更新趋势状态"""
+        try:
+            if not isinstance(klines, list) or len(klines) < 20:
+                self.logger.error("K线数据为空或长度不足")
+                return False
+                
+            # 创建基础DataFrame
+            df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+            
+            # 转换数据类型
+            df['close'] = pd.to_numeric(df['close'], errors='coerce')
+            
+            # 计算多个时间周期的移动平均线
+            ma_5 = df['close'].rolling(window=5).mean()
+            ma_10 = df['close'].rolling(window=10).mean()
+            ma_20 = df['close'].rolling(window=20).mean()
+            
+            # 计算EMA
+            ema_5 = df['close'].ewm(span=5, adjust=False).mean()
+            ema_10 = df['close'].ewm(span=10, adjust=False).mean()
+            
+            # 计算RSI
+            delta = df['close'].diff()
+            gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+            loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+            rs = gain / loss
+            rsi = 100 - (100 / (1 + rs))
+            
+            # 计算MACD
+            exp12 = df['close'].ewm(span=12, adjust=False).mean()
+            exp26 = df['close'].ewm(span=26, adjust=False).mean()
+            macd = exp12 - exp26
+            signal = macd.ewm(span=9, adjust=False).mean()
+            macd_hist = macd - signal
+            
+            # 获取最新值
+            latest_ma_trend = (
+                0.5 * (ma_5.iloc[-1] - ma_10.iloc[-1]) / ma_10.iloc[-1] +
+                0.3 * (ma_10.iloc[-1] - ma_20.iloc[-1]) / ma_20.iloc[-1] +
+                0.2 * (ema_5.iloc[-1] - ema_10.iloc[-1]) / ema_10.iloc[-1]
+            )
+            
+            latest_rsi = rsi.iloc[-1]
+            latest_macd_hist = macd_hist.iloc[-1]
+            prev_macd_hist = macd_hist.iloc[-2]
+            
+            # 计算短期价格动量
+            price_momentum = df['close'].pct_change(3).iloc[-1]
+            
+            # 计算综合趋势得分 (-1 到 1)
+            trend_score = (
+                0.4 * np.sign(latest_ma_trend) * min(abs(latest_ma_trend * 10), 1) +  # 均线趋势
+                0.3 * ((latest_rsi - 50) / 50) +  # RSI趋势
+                0.2 * np.sign(latest_macd_hist) * min(abs(latest_macd_hist * 20), 1) +  # MACD趋势
+                0.1 * np.sign(price_momentum) * min(abs(price_momentum * 10), 1)  # 短期动量
+            )
+            
+            # 更新趋势状态和置信度
+            trend_threshold = 0.15  # 降低趋势判断阈值
+            
+            if trend_score > trend_threshold:
+                self.trend_state = 1  # 上涨趋势
+                self.trend_confidence = min(abs(trend_score), 1.0)
+            elif trend_score < -trend_threshold:
+                self.trend_state = -1  # 下跌趋势
+                self.trend_confidence = min(abs(trend_score), 1.0)
+            else:
+                self.trend_state = 0  # 无明显趋势
+                self.trend_confidence = 0.0
+                
+            self.logger.info(f"趋势状态: {['下跌', '无趋势', '上涨'][self.trend_state + 1]}, "
+                           f"置信度: {self.trend_confidence:.4f}")
+            
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"更新趋势状态失败: {str(e)}")
+            return False
+
+    def generate_signal(self, klines):
+        """生成交易信号"""
+        try:
+            # 准备特征数据
+            features = self.prepare_features(klines)
+            if features is None:
+                return 0
+                
+            # 更新趋势状态
+            self.update_trend_state(klines)
+            
+            # 使用模型预测
+            features_scaled = self.scaler.transform(features)
+            probabilities = self.model.predict_proba(features_scaled)[-1]
+            
+            # 获取每个类别的概率
+            sell_prob, hold_prob, buy_prob = probabilities
+            
+            # 调整观望阈值 - 更激进的设置
+            base_threshold = 0.35  # 大幅降低观望的基准阈值
+            trend_adjustment = 0.15 * self.trend_confidence  # 增加趋势影响
+            
+            # 当趋势较强时降低观望阈值
+            if self.trend_confidence > 0.25:  # 降低趋势判断阈值
+                hold_threshold = base_threshold - trend_adjustment
+            else:
+                hold_threshold = base_threshold
+            
+            # 获取最高概率的预测
+            max_prob = max(probabilities)
+            prediction = np.argmax(probabilities)
+            
+            # 输出预测概率
+            self.logger.info(f"预测概率: 卖出={sell_prob:.4f}, 观望={hold_prob:.4f}, 买入={buy_prob:.4f}")
+            
+            # 检查成交量条件
+            df = pd.DataFrame(klines[-20:], columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+            current_volume = float(df['volume'].iloc[-1])
+            volume_percentile = pd.to_numeric(df['volume']).rank(pct=True).iloc[-1] * 100
+            
+            # 成交量过低时不交易
+            if volume_percentile < self.min_vol_percentile:
+                self.logger.info(f"成交量百分位({volume_percentile:.2f}%)低于阈值({self.min_vol_percentile}%), 保持观望")
+                return 1
+            
+            # 根据趋势调整信号
+            if prediction != 1:  # 如果不是观望信号
+                # 在强趋势下增强信号
+                if self.trend_confidence > 0.2:
+                    if self.trend_state == 1 and prediction == 2:  # 上涨趋势且预测买入
+                        max_prob *= (1 + self.trend_confidence * 1.5)  # 增加趋势影响
+                    elif self.trend_state == -1 and prediction == 0:  # 下跌趋势且预测卖出
+                        max_prob *= (1 + self.trend_confidence * 1.5)
+                
+                # 检查是否满足最小置信度要求
+                if max_prob < self.confidence_threshold:
+                    self.logger.info(f"信号置信度({max_prob:.4f})低于阈值({self.confidence_threshold}), 保持观望")
+                    return 1
+            
+            return prediction
+            
+        except Exception as e:
+            self.logger.error(f"生成信号失败: {str(e)}")
+            return 0

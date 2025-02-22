@@ -5,9 +5,8 @@ from trader import Trader
 from strategies.ml_strategy_random_forest import RandomForestStrategy
 from strategies.ml_strategy import MLStrategy #随机森林策略
 from strategies.ml_strategy_deep_learning import DeepLearningStrategy
-from strategies.hybrid_strategy import HybridStrategy
 from strategies.trend_strategy import TrendStrategy
-
+from strategies.short_term_rf_strategy import ShortTermRFStrategy
 import config
 
 class TradingManager:
@@ -29,7 +28,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = RandomForestStrategy(trader)
+                strategy = ShortTermRFStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")
@@ -59,13 +58,15 @@ class TradingManager:
                     continue
                 
                 # 生成交易信号
-                signal = strategy.generate_signals(klines)
+                signal = strategy.generate_signal(klines)
                 current_price = trader.get_market_price(symbol)
                 position = trader.get_position(symbol)
                 position_amount = 0
                 
                 if position and 'info' in position:
                     position_amount = float(position['info'].get('positionAmt', 0))
+                    if position['info'].get('positionSide', 'BOTH') == 'SHORT':  # 如果是空头仓位
+                        position_amount = -abs(position_amount)  # 确保为负数
                     entry_price = float(position['info'].get('entryPrice', 0))
                     
                     # 计算未实现盈亏

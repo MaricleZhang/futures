@@ -195,12 +195,78 @@ class MLStrategy(BaseStrategy):
             return pd.DataFrame()
         
     def prepare_labels(self, df):
-        """准备训练标签"""
-        # 使用未来的收益率作为标签
-        future_returns = df['returns'].shift(-1)
-        labels = (future_returns > 0).astype(int)
-        return labels
+        """准备训练标签
         
+        使用多个时间窗口的加权收益率和趋势强度来生成买入(2)、观望(1)和卖出(0)信号。
+        目标是实现1:3:1的标签分布。
+        
+        Args:
+            df: 包含价格和技术指标的DataFrame
+            
+        Returns:
+            numpy.ndarray: 标签数组，值为0(卖出)、1(观望)或2(买入)
+        """
+        try:
+            if len(df) < 20:  # 确保有足够的数据
+                self.logger.error("数据长度不足以生成标签")
+                return None
+                
+            # 计算多个时间窗口的未来收益率
+            future_returns = []
+            lookback_windows = [1, 3, 5, 10, 15]  # 增加更长的时间窗口
+            weights = [0.35, 0.25, 0.2, 0.15, 0.05]    # 调整权重分布
+            
+            for window in lookback_windows:
+                future_return = df['returns'].shift(-window)
+                future_returns.append(future_return)
+                
+            # 计算加权收益率
+            weighted_returns = pd.Series(0, index=df.index)
+            for w, r in zip(weights, future_returns):
+                weighted_returns += w * r
+                
+            # 计算趋势强度
+            fast_ma = df['close'].rolling(window=5).mean()
+            slow_ma = df['close'].rolling(window=20).mean()
+            trend_strength = (fast_ma - slow_ma) / slow_ma
+            
+            # 计算波动率
+            returns = df['close'].pct_change()
+            volatility = returns.rolling(window=20).std()
+            
+            # 增加趋势持续性指标
+            trend_consistency = ((df['close'] > fast_ma) & (fast_ma > slow_ma)).astype(int) * 2 - 1
+            trend_duration = trend_consistency.rolling(window=10).mean()
+            
+            # 综合考虑收益率、趋势强度和趋势持续性
+            adjusted_returns = weighted_returns + 0.5 * trend_strength + 0.2 * trend_duration
+            
+            # 动态阈值：基于波动率调整分位数范围
+            volatility_percentile = volatility.rank(pct=True)
+            base_threshold = 0.2  # 基础阈值
+            threshold_adjustment = 0.1 * (1 - volatility_percentile)  # 波动率越大，阈值范围越小
+            
+            buy_threshold = adjusted_returns.quantile(0.8 - threshold_adjustment)
+            sell_threshold = adjusted_returns.quantile(0.2 + threshold_adjustment)
+            
+            # 生成标签
+            labels = pd.Series(1, index=df.index)  # 默认为观望(1)
+            labels[adjusted_returns > buy_threshold] = 2  # 买入
+            labels[adjusted_returns < sell_threshold] = 0  # 卖出
+            
+            # 统计标签分布
+            label_counts = labels.value_counts()
+            total = len(labels)
+            self.logger.info(f"标签分布: 卖出={label_counts.get(0, 0)} ({label_counts.get(0, 0)/total:.1%}), "
+                           f"观望={label_counts.get(1, 0)} ({label_counts.get(1, 0)/total:.1%}), "
+                           f"买入={label_counts.get(2, 0)} ({label_counts.get(2, 0)/total:.1%})")
+            
+            return labels.values
+            
+        except Exception as e:
+            self.logger.error(f"生成标签时出错: {str(e)}")
+            return None
+
     def train_model(self, klines):
         """训练模型"""
         try:
@@ -217,7 +283,7 @@ class MLStrategy(BaseStrategy):
             # 准备标签数据
             try:
                 labels = self.prepare_labels(pd.DataFrame({'returns': features['returns']}))
-                if labels.empty:
+                if labels is None:
                     self.logger.error("标签准备失败，无法训练模型")
                     return False
             except Exception as e:
@@ -226,7 +292,7 @@ class MLStrategy(BaseStrategy):
             
             # 去除NaN值
             try:
-                valid_idx = ~labels.isna()
+                valid_idx = ~np.isnan(labels)
                 features = features[valid_idx]
                 labels = labels[valid_idx]
                 
@@ -440,23 +506,43 @@ class MLStrategy(BaseStrategy):
     def generate_signal(self, features, pred_proba):
         """生成交易信号"""
         try:
-            # 获取最新的市场波动性
+            # 获取最新的市场特征
             market_volatility = features['volatility'].iloc[-1]
+            trend_strength = features['trend_strength'].iloc[-1]
+            rsi = features['RSI'].iloc[-1]
             
-            # 获取预测置信度
+            # 获取当前持仓信息
+            position = self.trader.get_position()
+            position_size = float(position['info'].get('positionAmt', 0)) if position else 0
+            
+            # 计算预测置信度
             prediction_confidence = abs(pred_proba - 0.5) * 2
             
             # 调整预测阈值
-            try:
-                self.adjust_threshold(market_volatility, prediction_confidence)
-            except Exception as e:
-                self.logger.error(f"阈值调整失败: {str(e)}")
-                # 使用默认阈值继续
+            self.adjust_threshold(market_volatility, prediction_confidence)
             
-            # 使用动态阈值生成信号
-            if pred_proba > self.dynamic_threshold:
+            # 趋势确认
+            trend_confirmed = (trend_strength > 0.01) if pred_proba > 0.5 else (trend_strength < -0.01)
+            
+            # RSI过滤
+            rsi_confirm_long = rsi < 70  # 非超买
+            rsi_confirm_short = rsi > 30  # 非超卖
+            
+            # 根据当前持仓调整信号阈值
+            if position_size > 0:  # 持有多仓
+                sell_threshold = self.dynamic_threshold - 0.05  # 降低平仓阈值
+                buy_threshold = self.dynamic_threshold + 0.1   # 提高加仓阈值
+            elif position_size < 0:  # 持有空仓
+                sell_threshold = self.dynamic_threshold + 0.1  # 提高加仓阈值
+                buy_threshold = self.dynamic_threshold - 0.05  # 降低平仓阈值
+            else:  # 无持仓
+                sell_threshold = self.dynamic_threshold
+                buy_threshold = self.dynamic_threshold
+            
+            # 生成信号
+            if pred_proba > buy_threshold and trend_confirmed and rsi_confirm_long:
                 return 1  # 买入信号
-            elif pred_proba < (1 - self.dynamic_threshold):
+            elif pred_proba < (1 - sell_threshold) and trend_confirmed and rsi_confirm_short:
                 return -1  # 卖出信号
             return 0  # 持仓不变
             

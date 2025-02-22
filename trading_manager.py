@@ -6,6 +6,7 @@ from strategies.ml_strategy_random_forest import RandomForestStrategy
 from strategies.ml_strategy import MLStrategy #随机森林策略
 from strategies.ml_strategy_deep_learning import DeepLearningStrategy
 from strategies.hybrid_strategy import HybridStrategy
+from strategies.trend_strategy import TrendStrategy
 
 import config
 
@@ -28,7 +29,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = RandomForestStrategy(trader)  # 使用混合策略
+                strategy = RandomForestStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")
@@ -61,60 +62,44 @@ class TradingManager:
                 signal = strategy.generate_signals(klines)
                 current_price = trader.get_market_price(symbol)
                 position = trader.get_position(symbol)
+                position_amount = 0
                 
-                if position and float(position['info'].get('positionAmt', 0)) != 0:
-                    position_size = float(position['info'].get('positionAmt', 0))
+                if position and 'info' in position:
+                    position_amount = float(position['info'].get('positionAmt', 0))
                     entry_price = float(position['info'].get('entryPrice', 0))
                     
                     # 计算未实现盈亏
-                    if position_size > 0:  # 多仓
-                        unrealized_pnl = position_size * (current_price - entry_price)
+                    if position_amount > 0:  # 多仓
+                        unrealized_pnl = position_amount * (current_price - entry_price)
                     else:  # 空仓
-                        unrealized_pnl = position_size * (entry_price - current_price)
+                        unrealized_pnl = position_amount * (entry_price - current_price)
                         
-                    position_value = abs(position_size * entry_price)
+                    position_value = abs(position_amount * entry_price)
                     profit_rate = (unrealized_pnl / position_value) * 100 if position_value > 0 else 0
                     
                     logger.info(f"当前价格: {current_price}, AI信号: {signal}, "
-                               f"未实现盈亏: {unrealized_pnl:.2f} USDT, 盈亏率: {profit_rate:.2f}%")
+                              f"持仓数量: {position_amount}, 开仓均价: {entry_price}, "
+                              f"未实现盈亏: {unrealized_pnl:.2f} USDT ({profit_rate:.2f}%)")
                 else:
                     logger.info(f"当前价格: {current_price}, AI信号: {signal}")
                     
                 # 计算交易数量
-                trade_amount = (available_balance * config.AI_TRADE_AMOUNT_PERCENT / 100) / current_price
-                max_position_size = symbol_config['max_position_size']
-                trade_amount = min(trade_amount, max_position_size)
+                trade_amount = (available_balance * symbol_config['trade_amount_percent'] / 100) / current_price
                 
                 # 根据信号执行交易
-                if signal == 1:  # 开多信号
-                    if position:
-                        pos_amt = float(position['info'].get('positionAmt', 0))
-                        if pos_amt < 0:  # 有空仓，先平仓
-                            logger.info("有空仓，先平仓...")
-                            trader.close_position(symbol)
-                            trader.open_long(symbol, trade_amount)
-                        elif pos_amt > 0:  # 已有多仓，不再开仓
-                            logger.info("已有多仓，保持当前仓位")
-                        else:  # 没有持仓，可以开多
-                            logger.info("开多信号，准备开仓...")
-                    else:  # 没有持仓，可以开多
-                        logger.info("开多信号，准备开仓...")
+                if signal == 1:  # 买入信号
+                    if position_amount < 0:  # 有空仓，先平空
+                        trader.close_position(symbol)
+                    if position_amount <= 0:  # 没有多仓时开多
                         trader.open_long(symbol, trade_amount)
-                elif signal == -1:  # 开空信号
-                    if position:
-                        pos_amt = float(position['info'].get('positionAmt', 0))
-                        if pos_amt > 0:  # 有多仓，先平仓
-                            logger.info("有多仓，先平仓...")
-                            trader.close_position(symbol)
-                            logger.info("开空信号，准备开仓...")
-                            trader.open_short(symbol, trade_amount)
-                        elif pos_amt < 0:  # 已有空仓，不再开仓
-                            logger.info("已有空仓，保持当前仓位")
-                    else:  # 没有持仓，可以开空
-                        logger.info("开空信号，准备开仓...")
+                elif signal == -1:  # 卖出信号
+                    if position_amount > 0:  # 有多仓，先平多
+                        trader.close_position(symbol)
+                    if position_amount >= 0:  # 没有空仓时开空
                         trader.open_short(symbol, trade_amount)
-                elif signal == 0:  # 观望信号或持仓信号
-                    logger.info("观望信号或持仓信号，保持当前仓位")
+                # else:  # 观望信号
+                    # if abs(position_amount) > 0:  # 有持仓就平掉
+                        # trader.close_position(symbol)
             except Exception as e:
                 logger.error(f"{symbol} 交易过程出错: {str(e)}")
                 time.sleep(10)  # 错误后等待较短时间

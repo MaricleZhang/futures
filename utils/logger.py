@@ -29,22 +29,22 @@ class ColoredFormatter(logging.Formatter):
     
     NUMBER_COLOR = Fore.CYAN  # 数字使用青色
     
-    def colorize_numbers(self, text):
-        """为文本中的数字添加颜色"""
-        import re
+    # def colorize_numbers(self, text):
+    #     """为文本中的数字添加颜色"""
+    #     import re
         
-        # 匹配不同格式的数字
-        patterns = [
-            r'(\d+\.\d+)',  # 匹配小数
-            r'(?<!\.)\b(\d+)\b(?!\.)',  # 匹配整数
-            r'(\d+\.\d+%)',  # 匹配百分比
-            r'(0\.\d+)',  # 匹配小于1的小数
-        ]
+    #     # 匹配不同格式的数字
+    #     patterns = [
+    #         r'(\d+\.\d+)',  # 匹配小数
+    #         r'(?<!\.)\b(\d+)\b(?!\.)',  # 匹配整数
+    #         r'(\d+\.\d+%)',  # 匹配百分比
+    #         r'(0\.\d+)',  # 匹配小于1的小数
+    #     ]
         
-        for pattern in patterns:
-            text = re.sub(pattern, f'{self.NUMBER_COLOR}\\1{Style.RESET_ALL}', text)
+    #     for pattern in patterns:
+    #         text = re.sub(pattern, f'{self.NUMBER_COLOR}\\1{Style.RESET_ALL}', text)
         
-        return text
+    #     return text
 
     def format(self, record):
         # 如果name中包含USDT，则移除
@@ -56,7 +56,7 @@ class ColoredFormatter(logging.Formatter):
         if levelname in self.COLORS:
             record.levelname = f"{self.COLORS[levelname]}{levelname}{Style.RESET_ALL}"
             # 为消息中的数字添加颜色
-            record.msg = self.colorize_numbers(str(record.msg))
+            # record.msg = self.colorize_numbers(str(record.msg))
             
         return super().format(record)
 

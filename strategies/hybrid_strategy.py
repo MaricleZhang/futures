@@ -120,8 +120,8 @@ class HybridStrategy(MLStrategy):
         self.logger = self.get_logger()
         
         # 模型参数
-        self.rf_weight = 0.7  # 随机森林权重增加到0.7
-        self.dl_weight = 0.3  # 深度学习权重降低到0.3
+        self.rf_weight = 1  # 随机森林权重增加到1.0
+        self.dl_weight = 0  # 深度学习权重降低到0
         
         # 随机森林参数
         self.n_estimators = 50

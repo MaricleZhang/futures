@@ -6,9 +6,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 import time
 import config
-from strategies.short_term_rf_strategy import ShortTermRFStrategy
+from strategies.base_rf_strategy import BaseRFStrategy
 
-class MidTermRFStrategy(ShortTermRFStrategy):
+class MidTermRFStrategy(BaseRFStrategy):
     """MidTermRFStrategy - 中线随机森林交易策略
     
     针对中线交易优化的随机森林策略模型，使用5分钟K线数据，
@@ -27,10 +27,8 @@ class MidTermRFStrategy(ShortTermRFStrategy):
     def __init__(self, trader):
         """初始化中线随机森林策略"""
         super().__init__(trader)
-        self.logger = self.get_logger()
         
         # 随机森林参数
-        self.n_estimators = 200     # 树的数量
         self.max_depth = 10         # 树的最大深度
         self.min_samples_split = 30 # 分裂所需最小样本数
         self.min_samples_leaf = 15  # 叶节点最小样本数
@@ -41,34 +39,22 @@ class MidTermRFStrategy(ShortTermRFStrategy):
         self.kline_interval = '5m'  # 5分钟K线
         self.training_lookback = 1000  # 训练数据回看周期
         self.retraining_interval = 300  # 5分钟重新训练
-        self.last_training_time = 0
         
         # 风险控制参数
         self.max_position_hold_time = 120  # 最大持仓时间(分钟)
         self.profit_target_pct = 0.008     # 目标利润率
         self.stop_loss_pct = 0.005         # 止损率
-        self.max_trades_per_hour = 4       # 每小时最大交易次数
+        self.max_trades_per_hour = 6       # 每小时最大交易次数
         self.min_vol_percentile = 40       # 最小成交量百分位
         
-        # 交易状态
-        self.trade_count_hour = 0         # 当前小时交易次数
-        self.last_trade_hour = None       # 上次交易的小时
-        self.position_entry_time = None   # 开仓时间
-        self.position_entry_price = None  # 开仓价格
-        
-        # 模型相关
-        self.scaler = StandardScaler()
-        self.model = None
-        self.feature_importance = None
+        # 初始化模型并开始训练
         self.initialize_model()
-        
-        # 初始化训练
         self._initial_training()
     
     def initialize_model(self):
         """初始化随机森林模型"""
         self.model = RandomForestClassifier(
-            n_estimators=self.n_estimators,
+            n_estimators=200,
             max_depth=self.max_depth,
             min_samples_split=self.min_samples_split,
             min_samples_leaf=self.min_samples_leaf,

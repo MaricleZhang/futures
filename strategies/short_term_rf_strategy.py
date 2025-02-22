@@ -6,9 +6,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 import time
 import config
-from strategies.base_strategy import BaseStrategy
+from strategies.base_rf_strategy import BaseRFStrategy
 
-class ShortTermRFStrategy(BaseStrategy):
+class ShortTermRFStrategy(BaseRFStrategy):
     """ShortTermRFStrategy - 短线随机森林交易策略
     
     专门针对短线交易优化的随机森林策略模型，使用1分钟K线数据，
@@ -27,10 +27,8 @@ class ShortTermRFStrategy(BaseStrategy):
     def __init__(self, trader):
         """初始化短线随机森林策略"""
         super().__init__(trader)
-        self.logger = self.get_logger()
         
         # 随机森林参数
-        self.n_estimators = 200     # 树的数量
         self.max_depth = 8          # 树的最大深度
         self.min_samples_split = 20 # 分裂所需最小样本数
         self.min_samples_leaf = 10  # 叶节点最小样本数
@@ -41,7 +39,6 @@ class ShortTermRFStrategy(BaseStrategy):
         self.kline_interval = '1m'  # 1分钟K线
         self.training_lookback = 500  # 训练数据回看周期
         self.retraining_interval = 60  # 1分钟重新训练
-        self.last_training_time = 0
         
         # 风险控制参数
         self.max_position_hold_time = 30  # 最大持仓时间(分钟)
@@ -50,25 +47,14 @@ class ShortTermRFStrategy(BaseStrategy):
         self.max_trades_per_hour = 12     # 每小时最大交易次数
         self.min_vol_percentile = 30      # 最小成交量百分位
         
-        # 交易状态
-        self.trade_count_hour = 0         # 当前小时交易次数
-        self.last_trade_hour = None       # 上次交易的小时
-        self.position_entry_time = None   # 开仓时间
-        self.position_entry_price = None  # 开仓价格
-        
-        # 模型相关
-        self.scaler = StandardScaler()
-        self.model = None
-        self.feature_importance = None
+        # 初始化模型并开始训练
         self.initialize_model()
-        
-        # 初始化训练
         self._initial_training()
     
     def initialize_model(self):
         """初始化随机森林模型"""
         self.model = RandomForestClassifier(
-            n_estimators=self.n_estimators,
+            n_estimators=200,
             max_depth=self.max_depth,
             min_samples_split=self.min_samples_split,
             min_samples_leaf=self.min_samples_leaf,
@@ -85,6 +71,7 @@ class ShortTermRFStrategy(BaseStrategy):
         try:
             self.logger.info("获取历史K线数据进行初始训练...")
             historical_data = self.trader.get_klines(
+                symbol=self.trader.symbol,
                 interval=self.kline_interval,
                 limit=self.training_lookback
             )
@@ -370,58 +357,3 @@ class ShortTermRFStrategy(BaseStrategy):
         
         return True
     
-    def generate_signal(self, klines):
-        """生成交易信号
-        返回值：
-        -1: 卖出信号
-        0: 观望信号
-        1: 买入信号
-        """
-        try:
-            # 检查交易限制
-            if not self.check_trade_limits():
-                return 0  # 返回观望信号
-            
-            # 准备特征
-            features = self.prepare_features(klines)
-            if features is None:
-                return 0
-            
-            # 标准化特征
-            features_scaled = self.scaler.transform(features)
-            
-            # 模型预测
-            probabilities = self.model.predict_proba(features_scaled)[-1]
-            sell_prob, hold_prob, buy_prob = probabilities  # 概率对应 -1, 0, 1
-            
-            # 输出预测概率
-            self.logger.info(f"预测概率: 卖出={sell_prob:.4f}, 观望={hold_prob:.4f}, 买入={buy_prob:.4f}")
-            
-            # 检查成交量条件
-            df = pd.DataFrame(klines[-20:], columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
-            volume_percentile = pd.to_numeric(df['volume']).rank(pct=True).iloc[-1] * 100
-            
-            # if volume_percentile < self.min_vol_percentile:
-            #     self.logger.info(f"成交量百分位({volume_percentile:.2f}%)低于阈值({self.min_vol_percentile}%)")
-            #     return 0
-            
-            # 获取预测
-            prediction = np.argmax(probabilities)
-            max_prob = max(probabilities)
-            
-            # 检查置信度
-            if prediction != 0 and max_prob < self.confidence_threshold:  # 0是观望
-                self.logger.info(f"信号置信度({max_prob:.4f})低于阈值({self.confidence_threshold})")
-                return 0
-            
-            # 更新交易计数
-            if prediction != 0:  # 不是观望信号时增加计数
-                self.trade_count_hour += 1
-            
-            # 将预测值从[0,1,2]映射到[-1,0,1]
-            signal_mapping = {0: -1, 1: 0, 2: 1}
-            return signal_mapping[prediction]
-            
-        except Exception as e:
-            self.logger.error(f"生成信号失败: {str(e)}")
-            return 0  # 发生错误时返回观望信号

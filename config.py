@@ -11,13 +11,19 @@ PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
 # 交易设置
-SYMBOLS = ['VINEUSDT']  # 支持多个交易对
+SYMBOLS = ['BERAUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
-    'VINEUSDT': {
+    # 'BTCUSDT': {
+    #     'leverage': 5,
+    #     'min_notional': 20,
+    #     'check_interval': 60,  # 交易检查间隔(秒)
+    #     'trade_amount_percent': 50,  # 每次交易使用的资金百分比
+    # },
+    'BERAUSDT': {
         'leverage': 5,
         'min_notional': 20,
+        'trade_amount_percent': 50,
         'check_interval': 60,  # 交易检查间隔(秒)
-        'trade_amount_percent': 50,  # 每次交易使用的资金百分比
     },
     # 'SOLUSDT': {
     #     'leverage': 5,

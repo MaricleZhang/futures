@@ -8,7 +8,7 @@ from strategies.ml_strategy_deep_learning import DeepLearningStrategy
 from strategies.trend_strategy import TrendStrategy
 from strategies.short_term_rf_strategy import ShortTermRFStrategy
 from strategies.mid_term_rf_strategy import MidTermRFStrategy
-
+from strategies.long_term_rf_strategy import LongTermRFStrategy
 import config
 
 class TradingManager:
@@ -30,7 +30,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = MidTermRFStrategy(trader)
+                strategy = ShortTermRFStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")
@@ -53,11 +53,7 @@ class TradingManager:
                 logger.info(f"当前账户余额: 可用={available_balance:.8f} USDT, 总额={total_balance:.8f} USDT")
                 
                 # 获取K线数据用于AI分析
-                klines = trader.get_klines(symbol=symbol, limit=config.AI_KLINES_LIMIT)
-                if len(klines) < config.MIN_KLINES_FOR_AI:
-                    logger.info("K线数据不足，等待更多数据...")
-                    time.sleep(60)
-                    continue
+                klines = trader.get_klines(symbol=symbol, interval=strategy.kline_interval, limit=strategy.training_lookback)
                 
                 # 生成交易信号
                 signal = strategy.generate_signal(klines)

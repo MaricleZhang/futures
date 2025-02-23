@@ -143,10 +143,26 @@ class ShortTermRFStrategy(BaseRFStrategy):
             features['macd_hist'] = macd - signal
             features['macd_trend'] = features['macd_hist'].rolling(window=3).mean()
             
-            # 价格动量指标 - 短周期
-            features['momentum_1m'] = df['close'] - df['close'].shift(1)
-            features['momentum_2m'] = df['close'] - df['close'].shift(2)
-            features['momentum_3m'] = df['close'] - df['close'].shift(3)
+            # === 价格动量指标 ===
+            # 使用更长的时间窗口来减少噪音影响
+            features['momentum_5m'] = df['close'] - df['close'].shift(5)    # 5分钟动量
+            features['momentum_15m'] = df['close'] - df['close'].shift(15)  # 15分钟动量
+            features['momentum_30m'] = df['close'] - df['close'].shift(30)  # 30分钟动量
+            
+            # 计算动量的变化率而不是绝对值
+            features['momentum_5m_pct'] = features['momentum_5m'] / df['close'].shift(5)
+            features['momentum_15m_pct'] = features['momentum_15m'] / df['close'].shift(15)
+            features['momentum_30m_pct'] = features['momentum_30m'] / df['close'].shift(30)
+            
+            # 动量的移动平均来平滑噪音
+            features['momentum_5m_ma'] = features['momentum_5m_pct'].rolling(window=5).mean()
+            features['momentum_15m_ma'] = features['momentum_15m_pct'].rolling(window=5).mean()
+            features['momentum_30m_ma'] = features['momentum_30m_pct'].rolling(window=5).mean()
+            
+            # 价格变化率的波动率
+            features['momentum_vol_5m'] = features['momentum_5m_pct'].rolling(window=5).std()
+            features['momentum_vol_15m'] = features['momentum_15m_pct'].rolling(window=5).std()
+            features['momentum_vol_30m'] = features['momentum_30m_pct'].rolling(window=5).std()
             
             # 价格变化率和加速度
             features['price_change_1m'] = df['close'].pct_change(1)

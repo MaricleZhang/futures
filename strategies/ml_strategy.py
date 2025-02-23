@@ -143,9 +143,29 @@ class MLStrategy(BaseStrategy):
             
             # 成交量指标
             try:
+                # 现有的成交量指标
                 df['volume_ma'] = df['volume'].rolling(window=self.volume_ma_window).mean()
                 df['volume_ratio'] = df['volume'] / df['volume_ma']
                 df['volume_trend'] = df['volume'].pct_change(5)
+                
+                # 添加OBV (On Balance Volume)
+                df['OBV'] = talib.OBV(df['close'], df['volume'])
+                df['OBV_ma'] = df['OBV'].rolling(window=20).mean()
+                df['OBV_ratio'] = df['OBV'] / df['OBV_ma']
+                
+                # 添加MFI (Money Flow Index)
+                df['MFI'] = talib.MFI(df['high'], df['low'], df['close'], df['volume'], timeperiod=14)
+                
+                # 添加VWAP (Volume Weighted Average Price)
+                df['VWAP'] = (df['close'] * df['volume']).rolling(window=20).sum() / df['volume'].rolling(window=20).sum()
+                df['VWAP_ratio'] = df['close'] / df['VWAP']
+                
+                # 添加成交量波动率
+                df['volume_volatility'] = df['volume'].rolling(window=20).std() / df['volume_ma']
+                
+                # 添加相对成交量强度
+                df['volume_rsi'] = talib.RSI(df['volume'], timeperiod=14)
+                
             except Exception as e:
                 self.logger.error(f"计算成交量指标失败: {str(e)}")
                 return pd.DataFrame()
@@ -168,7 +188,10 @@ class MLStrategy(BaseStrategy):
                 'trend_strength', 'volume_ratio', 'ATR',
                 'BB_width', 'BB_position',
                 'market_sentiment', 'volume_momentum',
-                'volume_trend', 'price_momentum'
+                'volume_trend', 'price_momentum',
+                # 新增的成交量特征
+                'OBV_ratio', 'MFI', 'VWAP_ratio',
+                'volume_volatility', 'volume_rsi'
             ]
             
             try:

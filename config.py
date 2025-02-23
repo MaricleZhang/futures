@@ -22,7 +22,7 @@ SYMBOL_CONFIGS = {
     'BERAUSDT': {
         'leverage': 5,
         'min_notional': 20,
-        'trade_amount_percent': 50,
+        'trade_amount_percent': 100,
         'check_interval': 60,  # 交易检查间隔(秒)
     },
     # 'SOLUSDT': {

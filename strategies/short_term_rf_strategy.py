@@ -32,13 +32,25 @@ class ShortTermRFStrategy(BaseRFStrategy):
         self.max_depth = 8          # 树的最大深度
         self.min_samples_split = 20 # 分裂所需最小样本数
         self.min_samples_leaf = 10  # 叶节点最小样本数
-        self.confidence_threshold = 0.4  # 信号置信度阈值
-        self.prob_diff_threshold = 0.08   # 概率差异阈值
+        self.confidence_threshold = 0.5  # 信号置信度阈值
+        self.prob_diff_threshold = 0.15   # 概率差异阈值
+        
+        # 信号确认机制
+        self.signal_confirmation_window = 3  # 需要连续3个周期相同信号
+        self.signal_history = []  # 存储历史信号
+        self.trend_threshold = 0.6  # 趋势确认阈值
         
         # K线设置
         self.kline_interval = '1m'  # 1分钟K线
         self.training_lookback = 500  # 训练数据回看周期
         self.retraining_interval = 60  # 1分钟重新训练
+        
+        # 多周期设置
+        self.timeframes = {
+            '1m': {'weight': 0.4, 'data': None},
+            '5m': {'weight': 0.3, 'data': None},
+            '15m': {'weight': 0.3, 'data': None}
+        }
         
         # 风险控制参数
         self.max_position_hold_time = 30  # 最大持仓时间(分钟)
@@ -101,6 +113,35 @@ class ShortTermRFStrategy(BaseRFStrategy):
             
             # 创建特征DataFrame
             features = pd.DataFrame(index=df.index)
+            
+            # === 趋势确认指标 ===
+            # 1. 指数移动平均线
+            features['ema_5'] = df['close'].ewm(span=5, adjust=False).mean()
+            features['ema_10'] = df['close'].ewm(span=10, adjust=False).mean()
+            features['ema_20'] = df['close'].ewm(span=20, adjust=False).mean()
+            
+            # EMA趋势方向
+            features['ema_trend'] = np.where(
+                (features['ema_5'] > features['ema_10']) & (features['ema_10'] > features['ema_20']), 1,
+                np.where((features['ema_5'] < features['ema_10']) & (features['ema_10'] < features['ema_20']), -1, 0)
+            )
+            
+            # 2. ADX指标 - 趋势强度
+            high = df['high'].values
+            low = df['low'].values
+            close = df['close'].values
+            
+            features['adx'] = pd.Series(talib.ADX(high, low, close, timeperiod=14), index=df.index)
+            features['plus_di'] = pd.Series(talib.PLUS_DI(high, low, close, timeperiod=14), index=df.index)
+            features['minus_di'] = pd.Series(talib.MINUS_DI(high, low, close, timeperiod=14), index=df.index)
+            
+            # 3. MACD趋势
+            exp12 = df['close'].ewm(span=12, adjust=False).mean()
+            exp26 = df['close'].ewm(span=26, adjust=False).mean()
+            macd = exp12 - exp26
+            signal = macd.ewm(span=9, adjust=False).mean()
+            features['macd_hist'] = macd - signal
+            features['macd_trend'] = features['macd_hist'].rolling(window=3).mean()
             
             # 价格动量指标 - 短周期
             features['momentum_1m'] = df['close'] - df['close'].shift(1)
@@ -246,7 +287,158 @@ class ShortTermRFStrategy(BaseRFStrategy):
         except Exception as e:
             self.logger.error(f"标签生成失败: {str(e)}")
             return None
-    
+      
+    def analyze_trend(self, features):
+        """分析市场趋势"""
+        try:
+            # 计算趋势得分 (-1 到 1)
+            trend_score = 0
+            
+            # 1. EMA趋势权重 40%
+            ema_trend = features['ema_trend'].iloc[-1]
+            ema_score = 0.4 * ema_trend
+            trend_score += ema_score
+            
+            # 2. ADX趋势强度权重 30%
+            adx = features['adx'].iloc[-1]
+            plus_di = features['plus_di'].iloc[-1]
+            minus_di = features['minus_di'].iloc[-1]
+            
+            adx_score = 0
+            if adx > 25:  # 强趋势
+                if plus_di > minus_di:
+                    adx_score = 0.3  # 上涨趋势
+                else:
+                    adx_score = -0.3  # 下跌趋势
+            trend_score += adx_score
+                    
+            # 3. MACD趋势权重 30%
+            macd_trend = features['macd_trend'].iloc[-1]
+            macd_score = 0.3 * (1 if macd_trend > 0 else -1 if macd_trend < 0 else 0)
+            trend_score += macd_score
+            
+            return trend_score
+            
+        except Exception as e:
+            self.logger.error(f"趋势分析失败: {str(e)}")
+            return 0
+
+    def confirm_signal(self, current_signal):
+        """确认交易信号"""
+        try:
+            # 更新信号历史
+            self.signal_history.append(current_signal)
+            if len(self.signal_history) > self.signal_confirmation_window:
+                self.signal_history.pop(0)
+            
+            # 检查是否有足够的历史数据
+            if len(self.signal_history) < self.signal_confirmation_window:
+                return 0
+            
+            # 检查信号一致性
+            if all(signal == 1 for signal in self.signal_history):
+                return 1
+            elif all(signal == -1 for signal in self.signal_history):
+                return -1
+            
+            return 0
+            
+        except Exception as e:
+            self.logger.error(f"信号确认失败: {str(e)}")
+            return 0
+
+    def get_multi_timeframe_signal(self):
+        """获取多周期信号"""
+        try:
+            signals = {}
+            
+            # 获取不同时间周期的K线数据
+            for timeframe in self.timeframes.keys():
+                klines = self.trader.get_klines(
+                    symbol=self.trader.symbol,
+                    interval=timeframe,
+                    limit=self.training_lookback
+                )
+                
+                if klines and len(klines) > 0:
+                    features = self.prepare_features(klines)
+                    if features is not None:
+                        # 获取当前时间周期的趋势得分
+                        trend_score = self.analyze_trend(features)
+                        signals[timeframe] = trend_score
+
+                
+            # 如果没有足够的数据，返回0
+            if not signals:
+                return 0
+            
+            # 计算加权信号
+            weighted_signal = 0
+            for timeframe, score in signals.items():
+                weighted_signal += score * self.timeframes[timeframe]['weight']
+            
+            # 打印加权信号和阈值
+            self.logger.info(f"多周期信号分析 - 加权信号: {weighted_signal:.4f}, 趋势阈值: {self.trend_threshold}")
+            
+            # 根据加权信号确定最终方向
+            if abs(weighted_signal) < self.trend_threshold:
+                return 0  # 趋势不够强，返回观望信号
+            else:
+                return 1 if weighted_signal > 0 else -1  # 根据信号方向返回
+            
+        except Exception as e:
+            self.logger.error(f"多周期信号分析失败: {str(e)}")
+            return 0
+
+    def generate_signal(self, features):
+        """预测交易信号"""
+        try:
+            # 确保 features 是 DataFrame 类型
+            if isinstance(features, list):
+                features = self.prepare_features(features)
+                if features is None:
+                    return 0
+            
+            # 1. 获取模型预测概率
+            X = self.scaler.transform(features.iloc[[-1]])
+            probabilities = self.model.predict_proba(X)[0]
+            
+            # 2. 分析当前趋势
+            trend_score = self.analyze_trend(features)
+            self.logger.info(f"当前趋势分析得分: {trend_score:.4f}, 趋势阈值: {self.trend_threshold}")
+            
+            # 3. 获取多周期信号
+            multi_timeframe_signal = self.get_multi_timeframe_signal()
+            
+            # 4. 根据预测概率生成初始信号
+            if probabilities[2] > self.confidence_threshold and probabilities[2] - probabilities[0] > self.prob_diff_threshold:
+                initial_signal = 1
+            elif probabilities[0] > self.confidence_threshold and probabilities[0] - probabilities[2] > self.prob_diff_threshold:
+                initial_signal = -1
+            else:
+                initial_signal = 0
+            
+            # 5. 确认信号
+            confirmed_signal = self.confirm_signal(initial_signal)
+            
+            # 6. 综合分析
+            # 只有当趋势方向、多周期信号和确认信号一致时才产生最终信号
+            if confirmed_signal == 1 and trend_score > self.trend_threshold and multi_timeframe_signal == 1:
+                final_signal = 1
+            elif confirmed_signal == -1 and trend_score < -self.trend_threshold and multi_timeframe_signal == -1:
+                final_signal = -1
+            else:
+                final_signal = 0
+            
+            # 记录预测概率
+            self.logger.info(f"预测概率: 卖出={probabilities[0]:.4f}, 观望={probabilities[1]:.4f}, 买入={probabilities[2]:.4f}")
+            
+            return final_signal
+            
+        except Exception as e:
+            self.logger.error(f"预测失败: {str(e)}")
+            return 0
+
     def train_model(self, klines):
         """训练模型"""
         try:
@@ -320,7 +512,7 @@ class ShortTermRFStrategy(BaseRFStrategy):
         except Exception as e:
             self.logger.error(f"模型训练失败: {str(e)}")
             return False
-    
+
     def should_retrain(self):
         """检查是否需要重新训练"""
         current_time = time.time()
@@ -328,7 +520,7 @@ class ShortTermRFStrategy(BaseRFStrategy):
             self.last_training_time = current_time
             return True
         return False
-    
+
     def check_trade_limits(self):
         """检查交易限制"""
         current_hour = pd.Timestamp.now().hour
@@ -344,7 +536,7 @@ class ShortTermRFStrategy(BaseRFStrategy):
         #     return False
         
         return True
-    
+
     def check_position_time(self):
         """检查持仓时间"""
         if self.position_entry_time is None:
@@ -356,4 +548,4 @@ class ShortTermRFStrategy(BaseRFStrategy):
             return False
         
         return True
-    
+   

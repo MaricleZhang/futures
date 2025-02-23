@@ -50,7 +50,7 @@ class LongTermRFStrategy(BaseRFStrategy):
         # 初始化模型并开始训练
         self.initialize_model()
         self._initial_training()
-    
+
     def prepare_features(self, klines):
         """准备特征数据"""
         try:
@@ -127,7 +127,7 @@ class LongTermRFStrategy(BaseRFStrategy):
         except Exception as e:
             self.logger.error(f"特征准备失败: {str(e)}")
             return None
-    
+
     def generate_labels(self, klines):
         """生成训练标签"""
         try:

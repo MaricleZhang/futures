@@ -136,10 +136,6 @@ class Trader:
                     
                 position_amt = float(position['info'].get('positionAmt', 0))
                 if abs(position_amt) > 0:
-                    # 使用positionAmt判断方向
-                    direction = "多" if position_amt > 0 else "空"
-                    position_size = float(position['info'].get('positionAmt', 0)) if position else 0
-                    self.logger.info(f"当前持仓方向: {direction}，持仓金额: {abs(float(position['info'].get('notional', 0)))}，当前持仓量: {position_size}")
                     return position
             return None
         except Exception as e:

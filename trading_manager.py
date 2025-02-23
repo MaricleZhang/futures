@@ -61,26 +61,10 @@ class TradingManager:
                 position = trader.get_position(symbol)
                 position_amount = 0
                 
+                self.logger_info(symbol, position, current_price, signal)
+                
                 if position and 'info' in position:
                     position_amount = float(position['info'].get('positionAmt', 0))
-                    if position['info'].get('positionSide', 'BOTH') == 'SHORT':  # 如果是空头仓位
-                        position_amount = -abs(position_amount)  # 确保为负数
-                    entry_price = float(position['info'].get('entryPrice', 0))
-                    
-                    # 计算未实现盈亏
-                    if position_amount > 0:  # 多仓
-                        unrealized_pnl = position_amount * (current_price - entry_price)
-                    else:  # 空仓
-                        unrealized_pnl = position_amount * (entry_price - current_price)
-                        
-                    position_value = abs(position_amount * entry_price)
-                    profit_rate = (unrealized_pnl / position_value) * 100 if position_value > 0 else 0
-                    
-                    logger.info(f"当前价格: {current_price}, AI信号: {signal}, "
-                              f"持仓数量: {position_amount}, 开仓均价: {entry_price}, "
-                              f"未实现盈亏: {unrealized_pnl:.2f} USDT ({profit_rate:.2f}%)")
-                else:
-                    logger.info(f"当前价格: {current_price}, AI信号: {signal}")
                     
                 # 计算交易数量
                 trade_amount = (available_balance * symbol_config['trade_amount_percent'] / 100) / current_price
@@ -143,3 +127,42 @@ class TradingManager:
                 self.symbol_loggers[symbol].info(f"关闭 {symbol} 所有持仓")
             except Exception as e:
                 self.symbol_loggers[symbol].error(f"关闭 {symbol} 持仓失败: {str(e)}")
+
+    def logger_info(self, symbol, position, current_price, signal):
+        """记录交易信息到日志
+        
+        Args:
+            symbol: 交易对名称
+            position: 当前持仓信息
+            current_price: 当前价格
+            signal: AI信号
+        """
+        try:
+            logger = self.symbol_loggers.get(symbol)
+            if not logger:
+                return
+                
+            if position and 'info' in position:
+                position_amount = float(position['info'].get('positionAmt', 0))
+                position_amount = abs(position_amount)
+                entry_price = float(position['info'].get('entryPrice', 0))
+                
+                # 计算未实现盈亏
+                if position['info'].get('positionSide', 'BOTH') == 'LONG':  # 如果是多头仓位
+                    unrealized_pnl = position_amount * (current_price - entry_price)
+                else:  # 空仓
+                    unrealized_pnl = position_amount * (entry_price - current_price)
+                    
+                position_value = abs(position_amount * entry_price)
+                profit_rate = (unrealized_pnl / position_value) * 100 if position_value > 0 else 0
+                direction = "多" if position['info'].get('positionSide', 'BOTH') == 'LONG' else "空"
+
+                logger.info(f"当前持仓方向: {direction}，持仓金额: {abs(float(position['info'].get('notional', 0))):.4f}")
+                logger.info(f"当前价格: {current_price}, AI信号: {signal}, "
+                          f"持仓数量: {position_amount}, 开仓均价: {entry_price}, "
+                          f"未实现盈亏: {unrealized_pnl:.2f} USDT ({profit_rate:.2f}%)")
+            else:
+                logger.info(f"当前价格: {current_price}, AI信号: {signal}")
+        except Exception as e:
+            if logger:
+                logger.error(f"记录日志信息失败: {str(e)}")

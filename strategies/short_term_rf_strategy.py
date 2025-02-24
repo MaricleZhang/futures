@@ -36,9 +36,9 @@ class ShortTermRFStrategy(BaseRFStrategy):
         self.prob_diff_threshold = 0.15   # 概率差异阈值
         
         # 信号确认机制
-        self.signal_confirmation_window = 3  # 需要连续3个周期相同信号
+        self.signal_confirmation_window = 2  # 需要连续3个周期相同信号
         self.signal_history = []  # 存储历史信号
-        self.trend_threshold = 0.6  # 趋势确认阈值
+        self.trend_threshold = 0.4  # 趋势确认阈值
         
         # K线设置
         self.kline_interval = '1m'  # 1分钟K线

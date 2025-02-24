@@ -4,11 +4,12 @@ import time
 from strategies import mid_term_rf_strategy
 from trader import Trader
 from strategies.ml_strategy_random_forest import RandomForestStrategy
-from strategies.ml_strategy_deep_learning import DeepLearningStrategy
+from strategies.deep_learning_strategy import DeepLearningStrategy
 from strategies.trend_strategy import TrendStrategy
 from strategies.short_term_rf_strategy import ShortTermRFStrategy
 from strategies.mid_term_rf_strategy import MidTermRFStrategy
 from strategies.long_term_rf_strategy import LongTermRFStrategy
+
 import config
 
 class TradingManager:
@@ -30,7 +31,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = ShortTermRFStrategy(trader)
+                strategy = DeepLearningStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")
@@ -80,6 +81,7 @@ class TradingManager:
                         trader.close_position(symbol)
                     if position_amount >= 0:  # 没有空仓时开空
                         trader.open_short(symbol, trade_amount)
+
                 # else:  # 观望信号
                     # if abs(position_amount) > 0:  # 有持仓就平掉
                         # trader.close_position(symbol)
@@ -147,15 +149,23 @@ class TradingManager:
                 position_amount = abs(position_amount)
                 entry_price = float(position['info'].get('entryPrice', 0))
                 
+                # 获取持仓方向
+                position_side = position['info'].get('positionSide', 'BOTH')
+                if position_side == 'BOTH':
+                    # 在双向持仓模式下，通过持仓数量判断方向
+                    direction = "多" if float(position['info'].get('positionAmt', 0)) > 0 else "空"
+                else:
+                    # 在单向持仓模式下，直接使用positionSide
+                    direction = "多" if position_side == 'LONG' else "空"
+                    
                 # 计算未实现盈亏
-                if position['info'].get('positionSide', 'BOTH') == 'LONG':  # 如果是多头仓位
+                if direction == "多":  # 如果是多头仓位
                     unrealized_pnl = position_amount * (current_price - entry_price)
                 else:  # 空仓
                     unrealized_pnl = position_amount * (entry_price - current_price)
                     
                 position_value = abs(position_amount * entry_price)
                 profit_rate = (unrealized_pnl / position_value) * 100 if position_value > 0 else 0
-                direction = "多" if position['info'].get('positionSide', 'BOTH') == 'LONG' else "空"
 
                 logger.info(f"当前持仓方向: {direction}，持仓金额: {abs(float(position['info'].get('notional', 0))):.4f}")
                 logger.info(f"当前价格: {current_price}, AI信号: {signal}, "

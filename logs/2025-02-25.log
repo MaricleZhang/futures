@@ -1,0 +1,337 @@
+2025-02-25 01:22:50 - INFO - [root] ==================================================
+2025-02-25 01:22:50 - INFO - [root] 日志系统初始化完成 - 2025-02-25 01:22:50
+2025-02-25 01:22:50 - INFO - [root] ==================================================
+2025-02-25 01:22:51 - INFO - [BERA] 没有未成交的订单
+2025-02-25 01:22:51 - INFO - [BERA] 当前已经是单向持仓模式
+2025-02-25 01:22:52 - INFO - [BERA] 设置杠杆倍数 5倍 成功
+2025-02-25 01:22:52 - INFO - [BERA] 当前已经是CROSSED保证金模式
+2025-02-25 01:22:52 - INFO - [BERA] 交易器初始化成功 for BERAUSDT
+2025-02-25 01:22:52 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:22:52 - INFO - [BERA] 特征维度: 26, 预测周期: 10根K线
+2025-02-25 01:22:52 - INFO - [BERA] 特征列: timestamp, open, high, low, close, volume, returns, log_returns, rsi, macd, macd_signal, slowk, slowd, atr, volatility, ma_5, ma_5_slope, ma_10, ma_10_slope, ma_20, ma_20_slope, volume_ma, volume_std, volume_ratio, mom, cci
+2025-02-25 01:22:52 - INFO - [BERA] Epoch [10/100] Train Loss: 0.4638 Val Loss: 0.5675 Accuracy: 76.56%
+2025-02-25 01:22:53 - INFO - [BERA] Epoch [20/100] Train Loss: 0.4060 Val Loss: 0.5499 Accuracy: 78.65%
+2025-02-25 01:22:53 - INFO - [BERA] Epoch [30/100] Train Loss: 0.3866 Val Loss: 0.5451 Accuracy: 78.12%
+2025-02-25 01:22:53 - INFO - [BERA] 早停触发，在epoch 34/100
+2025-02-25 01:22:53 - INFO - [BERA] 初始训练完成，训练损失: 0.3797 准确率: 79.69%
+2025-02-25 01:22:53 - INFO - [BERA] 初始化 BERAUSDT 交易器和策略成功
+2025-02-25 01:22:53 - INFO - [BERA] 交易线程启动成功
+2025-02-25 01:22:53 - INFO - [root] 启动线程监控
+2025-02-25 01:22:53 - INFO - [root] 交易系统启动成功，正在交易的币对: BERAUSDT
+2025-02-25 01:22:53 - INFO - [BERA] USDT余额: 可用=122.83990923, 总额=122.86471224
+2025-02-25 01:22:53 - INFO - [BERA] 当前账户余额: 可用=122.83990923 USDT, 总额=122.86471224 USDT
+2025-02-25 01:22:54 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:22:54 - INFO - [BERA] 预测: 0 概率分布: 空[0.93] 多[0.07] 当前价格: 7.17
+2025-02-25 01:22:54 - INFO - [BERA] 当前价格: 7.172, AI信号: -1
+2025-02-25 01:23:54 - INFO - [BERA] USDT余额: 可用=122.83990976, 总额=122.86471224
+2025-02-25 01:23:54 - INFO - [BERA] 当前账户余额: 可用=122.83990976 USDT, 总额=122.86471224 USDT
+2025-02-25 01:23:55 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:23:55 - INFO - [BERA] 预测: 1 概率分布: 空[0.22] 多[0.78] 当前价格: 7.18
+2025-02-25 01:23:55 - INFO - [BERA] 当前价格: 7.179, AI信号: 1
+2025-02-25 01:24:55 - INFO - [BERA] USDT余额: 可用=122.8399097, 总额=122.86471224
+2025-02-25 01:24:55 - INFO - [BERA] 当前账户余额: 可用=122.83990970 USDT, 总额=122.86471224 USDT
+2025-02-25 01:24:55 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:24:55 - INFO - [BERA] 预测: 1 概率分布: 空[0.42] 多[0.58] 当前价格: 7.13
+2025-02-25 01:24:56 - INFO - [BERA] 当前价格: 7.144, AI信号: 1
+2025-02-25 01:25:25 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-02-25 01:25:25 - INFO - [BERA] 关闭 BERAUSDT 所有持仓
+2025-02-25 01:25:34 - INFO - [root] ==================================================
+2025-02-25 01:25:34 - INFO - [root] 日志系统初始化完成 - 2025-02-25 01:25:34
+2025-02-25 01:25:34 - INFO - [root] ==================================================
+2025-02-25 01:25:36 - INFO - [BERA] 没有未成交的订单
+2025-02-25 01:25:36 - INFO - [BERA] 当前已经是单向持仓模式
+2025-02-25 01:25:36 - INFO - [BERA] 设置杠杆倍数 5倍 成功
+2025-02-25 01:25:37 - INFO - [BERA] 当前已经是CROSSED保证金模式
+2025-02-25 01:25:37 - INFO - [BERA] 交易器初始化成功 for BERAUSDT
+2025-02-25 01:25:37 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:25:37 - INFO - [BERA] 特征维度: 26, 预测周期: 15根K线
+2025-02-25 01:25:37 - INFO - [BERA] 特征列: timestamp, open, high, low, close, volume, returns, log_returns, rsi, macd, macd_signal, slowk, slowd, atr, volatility, ma_5, ma_5_slope, ma_10, ma_10_slope, ma_20, ma_20_slope, volume_ma, volume_std, volume_ratio, mom, cci
+2025-02-25 01:25:37 - INFO - [BERA] Epoch [10/100] Train Loss: 0.4463 Val Loss: 0.5741 Accuracy: 75.39%
+2025-02-25 01:25:38 - INFO - [BERA] Epoch [20/100] Train Loss: 0.4116 Val Loss: 0.5622 Accuracy: 77.49%
+2025-02-25 01:25:38 - INFO - [BERA] Epoch [30/100] Train Loss: 0.3823 Val Loss: 0.5368 Accuracy: 80.10%
+2025-02-25 01:25:38 - INFO - [BERA] Epoch [40/100] Train Loss: 0.3790 Val Loss: 0.5369 Accuracy: 80.10%
+2025-02-25 01:25:38 - INFO - [BERA] 早停触发，在epoch 41/100
+2025-02-25 01:25:38 - INFO - [BERA] 初始训练完成，训练损失: 0.3788 准确率: 80.10%
+2025-02-25 01:25:38 - INFO - [BERA] 初始化 BERAUSDT 交易器和策略成功
+2025-02-25 01:25:38 - INFO - [BERA] 交易线程启动成功
+2025-02-25 01:25:38 - INFO - [root] 启动线程监控
+2025-02-25 01:25:38 - INFO - [root] 交易系统启动成功，正在交易的币对: BERAUSDT
+2025-02-25 01:25:38 - INFO - [BERA] USDT余额: 可用=122.83991004, 总额=122.86471224
+2025-02-25 01:25:38 - INFO - [BERA] 当前账户余额: 可用=122.83991004 USDT, 总额=122.86471224 USDT
+2025-02-25 01:25:39 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:25:39 - INFO - [BERA] 预测: 1 概率分布: 空[0.01] 多[0.99] 当前价格: 7.13
+2025-02-25 01:25:39 - INFO - [BERA] 当前价格: 7.125, AI信号: 1
+2025-02-25 01:25:40 - INFO - [BERA] 订单创建成功: {'info': {'orderId': '416098987', 'symbol': 'BERAUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcud294ad71e52661cf105424', 'price': '0.000000', 'avgPrice': '7.1300000', 'origQty': '17.2', 'executedQty': '17.2', 'cumQty': '17.2', 'cumQuote': '122.6360000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740417940114'}, 'id': '416098987', 'clientOrderId': 'x-xcKtGhcud294ad71e52661cf105424', 'timestamp': 1740417940114, 'datetime': '2025-02-24T17:25:40.114Z', 'lastTradeTimestamp': 1740417940114, 'lastUpdateTimestamp': 1740417940114, 'symbol': 'BERA/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 7.13, 'triggerPrice': None, 'amount': 17.2, 'cost': 122.636, 'average': 7.13, 'filled': 17.2, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-25 01:26:40 - INFO - [BERA] USDT余额: 可用=98.09664134, 总额=122.63139424
+2025-02-25 01:26:40 - INFO - [BERA] 当前账户余额: 可用=98.09664134 USDT, 总额=122.63139424 USDT
+2025-02-25 01:26:40 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:26:40 - INFO - [BERA] 预测: 1 概率分布: 空[0.01] 多[0.99] 当前价格: 7.12
+2025-02-25 01:26:40 - INFO - [BERA] 当前持仓方向: 空，持仓金额: 122.4640
+2025-02-25 01:26:40 - INFO - [BERA] 当前价格: 7.122, AI信号: 1, 持仓数量: 17.2, 开仓均价: 7.13, 未实现盈亏: 0.14 USDT (0.11%)
+2025-02-25 01:27:40 - INFO - [BERA] USDT余额: 可用=98.12415565, 总额=122.66579424
+2025-02-25 01:27:40 - INFO - [BERA] 当前账户余额: 可用=98.12415565 USDT, 总额=122.66579424 USDT
+2025-02-25 01:27:41 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:27:41 - INFO - [BERA] 预测: 1 概率分布: 空[0.01] 多[0.99] 当前价格: 7.12
+2025-02-25 01:27:41 - INFO - [BERA] 当前持仓方向: 空，持仓金额: 122.4296
+2025-02-25 01:27:41 - INFO - [BERA] 当前价格: 7.12, AI信号: 1, 持仓数量: 17.2, 开仓均价: 7.13, 未实现盈亏: 0.17 USDT (0.14%)
+2025-02-25 01:28:41 - INFO - [BERA] USDT余额: 可用=98.92547615, 总额=123.64619424
+2025-02-25 01:28:41 - INFO - [BERA] 当前账户余额: 可用=98.92547615 USDT, 总额=123.64619424 USDT
+2025-02-25 01:28:41 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:28:41 - INFO - [BERA] 预测: 1 概率分布: 空[0.09] 多[0.91] 当前价格: 7.18
+2025-02-25 01:28:42 - INFO - [BERA] 当前持仓方向: 空，持仓金额: 123.5304
+2025-02-25 01:28:42 - INFO - [BERA] 当前价格: 7.184, AI信号: 1, 持仓数量: 17.2, 开仓均价: 7.13, 未实现盈亏: -0.93 USDT (-0.76%)
+2025-02-25 01:29:42 - INFO - [BERA] USDT余额: 可用=99.40256552, 总额=124.24270589
+2025-02-25 01:29:42 - INFO - [BERA] 当前账户余额: 可用=99.40256552 USDT, 总额=124.24270589 USDT
+2025-02-25 01:29:42 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:29:42 - INFO - [BERA] 预测: 0 概率分布: 空[0.77] 多[0.23] 当前价格: 7.20
+2025-02-25 01:29:42 - INFO - [BERA] 当前持仓方向: 空，持仓金额: 124.0753
+2025-02-25 01:29:42 - INFO - [BERA] 当前价格: 7.213, AI信号: -1, 持仓数量: 17.2, 开仓均价: 7.13, 未实现盈亏: -1.43 USDT (-1.16%)
+2025-02-25 01:29:43 - INFO - [BERA] 订单创建成功: {'info': {'orderId': '416176704', 'symbol': 'BERAUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcuce63e8ceabef0b208913c0', 'price': '0.000000', 'avgPrice': '7.2297035', 'origQty': '17.2', 'executedQty': '17.2', 'cumQty': '17.2', 'cumQuote': '124.3509000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740418183293'}, 'id': '416176704', 'clientOrderId': 'x-xcKtGhcuce63e8ceabef0b208913c0', 'timestamp': 1740418183293, 'datetime': '2025-02-24T17:29:43.293Z', 'lastTradeTimestamp': 1740418183293, 'lastUpdateTimestamp': 1740418183293, 'symbol': 'BERA/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 7.2297035, 'triggerPrice': None, 'amount': 17.2, 'cost': 124.3509, 'average': 7.2297035, 'filled': 17.2, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-25 01:29:43 - INFO - [BERA] 平仓成功: {'info': {'orderId': '416176704', 'symbol': 'BERAUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcuce63e8ceabef0b208913c0', 'price': '0.000000', 'avgPrice': '7.2297035', 'origQty': '17.2', 'executedQty': '17.2', 'cumQty': '17.2', 'cumQuote': '124.3509000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740418183293'}, 'id': '416176704', 'clientOrderId': 'x-xcKtGhcuce63e8ceabef0b208913c0', 'timestamp': 1740418183293, 'datetime': '2025-02-24T17:29:43.293Z', 'lastTradeTimestamp': 1740418183293, 'lastUpdateTimestamp': 1740418183293, 'symbol': 'BERA/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 7.2297035, 'triggerPrice': None, 'amount': 17.2, 'cost': 124.3509, 'average': 7.2297035, 'filled': 17.2, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-25 01:29:43 - INFO - [BERA] 订单创建成功: {'info': {'orderId': '416177082', 'symbol': 'BERAUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu7c2e3ff8796e024b8ed07d', 'price': '0.000000', 'avgPrice': '7.2270000', 'origQty': '13.7', 'executedQty': '13.7', 'cumQty': '13.7', 'cumQuote': '99.0099000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740418183600'}, 'id': '416177082', 'clientOrderId': 'x-xcKtGhcu7c2e3ff8796e024b8ed07d', 'timestamp': 1740418183600, 'datetime': '2025-02-24T17:29:43.600Z', 'lastTradeTimestamp': 1740418183600, 'lastUpdateTimestamp': 1740418183600, 'symbol': 'BERA/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 7.227, 'triggerPrice': None, 'amount': 13.7, 'cost': 99.0099, 'average': 7.227, 'filled': 13.7, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-25 01:30:43 - INFO - [BERA] USDT余额: 可用=104.74389551, 总额=124.54361384
+2025-02-25 01:30:43 - INFO - [BERA] 当前账户余额: 可用=104.74389551 USDT, 总额=124.54361384 USDT
+2025-02-25 01:30:43 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:30:43 - INFO - [BERA] 预测: 0 概率分布: 空[0.95] 多[0.05] 当前价格: 7.22
+2025-02-25 01:30:44 - INFO - [BERA] 当前持仓方向: 空，持仓金额: 98.8729
+2025-02-25 01:30:44 - INFO - [BERA] 当前价格: 7.197, AI信号: -1, 持仓数量: 13.7, 开仓均价: 7.227, 未实现盈亏: 0.41 USDT (0.42%)
+2025-02-25 01:31:44 - INFO - [BERA] USDT余额: 可用=105.2445676, 总额=124.99238748
+2025-02-25 01:31:44 - INFO - [BERA] 当前账户余额: 可用=105.24456760 USDT, 总额=124.99238748 USDT
+2025-02-25 01:31:44 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:31:44 - INFO - [BERA] 预测: 1 概率分布: 空[0.15] 多[0.85] 当前价格: 7.18
+2025-02-25 01:31:44 - INFO - [BERA] 当前持仓方向: 空，持仓金额: 98.4241
+2025-02-25 01:31:44 - INFO - [BERA] 当前价格: 7.18, AI信号: 1, 持仓数量: 13.7, 开仓均价: 7.227, 未实现盈亏: 0.64 USDT (0.65%)
+2025-02-25 01:31:45 - INFO - [BERA] 订单创建成功: {'info': {'orderId': '416231591', 'symbol': 'BERAUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu5f2a1cfe1a35eeaf88540c', 'price': '0.000000', 'avgPrice': '7.1880000', 'origQty': '13.7', 'executedQty': '13.7', 'cumQty': '13.7', 'cumQuote': '98.4756000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740418305453'}, 'id': '416231591', 'clientOrderId': 'x-xcKtGhcu5f2a1cfe1a35eeaf88540c', 'timestamp': 1740418305453, 'datetime': '2025-02-24T17:31:45.453Z', 'lastTradeTimestamp': 1740418305453, 'lastUpdateTimestamp': 1740418305453, 'symbol': 'BERA/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 7.188, 'triggerPrice': None, 'amount': 13.7, 'cost': 98.4756, 'average': 7.188, 'filled': 13.7, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-25 01:31:45 - INFO - [BERA] 平仓成功: {'info': {'orderId': '416231591', 'symbol': 'BERAUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu5f2a1cfe1a35eeaf88540c', 'price': '0.000000', 'avgPrice': '7.1880000', 'origQty': '13.7', 'executedQty': '13.7', 'cumQty': '13.7', 'cumQuote': '98.4756000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740418305453'}, 'id': '416231591', 'clientOrderId': 'x-xcKtGhcu5f2a1cfe1a35eeaf88540c', 'timestamp': 1740418305453, 'datetime': '2025-02-24T17:31:45.453Z', 'lastTradeTimestamp': 1740418305453, 'lastUpdateTimestamp': 1740418305453, 'symbol': 'BERA/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 7.188, 'triggerPrice': None, 'amount': 13.7, 'cost': 98.4756, 'average': 7.188, 'filled': 13.7, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-25 01:31:45 - INFO - [BERA] 订单创建成功: {'info': {'orderId': '416231612', 'symbol': 'BERAUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu6b195f4572966a07211fc1', 'price': '0.000000', 'avgPrice': '7.1880000', 'origQty': '14.6', 'executedQty': '14.6', 'cumQty': '14.6', 'cumQuote': '104.9448000', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740418305837'}, 'id': '416231612', 'clientOrderId': 'x-xcKtGhcu6b195f4572966a07211fc1', 'timestamp': 1740418305837, 'datetime': '2025-02-24T17:31:45.837Z', 'lastTradeTimestamp': 1740418305837, 'lastUpdateTimestamp': 1740418305837, 'symbol': 'BERA/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 7.188, 'triggerPrice': None, 'amount': 14.6, 'cost': 104.9448, 'average': 7.188, 'filled': 14.6, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-25 01:32:45 - INFO - [BERA] USDT余额: 可用=103.77833588, 总额=124.85380364
+2025-02-25 01:32:45 - INFO - [BERA] 当前账户余额: 可用=103.77833588 USDT, 总额=124.85380364 USDT
+2025-02-25 01:32:46 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:32:46 - INFO - [BERA] 预测: 1 概率分布: 空[0.27] 多[0.73] 当前价格: 7.19
+2025-02-25 01:32:46 - INFO - [BERA] 当前持仓方向: 空，持仓金额: 104.9010
+2025-02-25 01:32:46 - INFO - [BERA] 当前价格: 7.189, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.01 USDT (-0.01%)
+2025-02-25 01:33:46 - INFO - [BERA] USDT余额: 可用=103.80520371, 总额=124.86543137
+2025-02-25 01:33:46 - INFO - [BERA] 当前账户余额: 可用=103.80520371 USDT, 总额=124.86543137 USDT
+2025-02-25 01:33:46 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:33:46 - INFO - [BERA] 预测: 1 概率分布: 空[0.21] 多[0.79] 当前价格: 7.19
+2025-02-25 01:33:47 - INFO - [BERA] 当前持仓方向: 空，持仓金额: 104.9795
+2025-02-25 01:33:47 - INFO - [BERA] 当前价格: 7.187, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: 0.01 USDT (0.01%)
+2025-02-25 01:34:47 - INFO - [BERA] USDT余额: 可用=103.6597588, 总额=124.64384688
+2025-02-25 01:34:47 - INFO - [BERA] 当前账户余额: 可用=103.65975880 USDT, 总额=124.64384688 USDT
+2025-02-25 01:34:47 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:34:47 - INFO - [BERA] 预测: 1 概率分布: 空[0.01] 多[0.99] 当前价格: 7.17
+2025-02-25 01:34:47 - INFO - [BERA] 当前持仓方向: 空，持仓金额: 104.7494
+2025-02-25 01:34:47 - INFO - [BERA] 当前价格: 7.173, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: 0.22 USDT (0.21%)
+2025-02-25 01:34:51 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-02-25 01:34:51 - INFO - [BERA] 关闭 BERAUSDT 所有持仓
+2025-02-25 01:34:59 - INFO - [root] ==================================================
+2025-02-25 01:34:59 - INFO - [root] 日志系统初始化完成 - 2025-02-25 01:34:59
+2025-02-25 01:34:59 - INFO - [root] ==================================================
+2025-02-25 01:35:00 - INFO - [BERA] 没有未成交的订单
+2025-02-25 01:35:00 - INFO - [BERA] 当前已经是单向持仓模式
+2025-02-25 01:35:00 - INFO - [BERA] 设置杠杆倍数 5倍 成功
+2025-02-25 01:35:01 - INFO - [BERA] 当前已经是CROSSED保证金模式
+2025-02-25 01:35:01 - INFO - [BERA] 交易器初始化成功 for BERAUSDT
+2025-02-25 01:35:01 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:35:01 - INFO - [BERA] 特征维度: 26, 预测周期: 15根K线
+2025-02-25 01:35:01 - INFO - [BERA] 特征列: timestamp, open, high, low, close, volume, returns, log_returns, rsi, macd, macd_signal, slowk, slowd, atr, volatility, ma_5, ma_5_slope, ma_10, ma_10_slope, ma_20, ma_20_slope, volume_ma, volume_std, volume_ratio, mom, cci
+2025-02-25 01:35:02 - INFO - [BERA] Epoch [10/100] Train Loss: 0.4495 Val Loss: 0.5789 Accuracy: 76.44%
+2025-02-25 01:35:02 - INFO - [BERA] Epoch [20/100] Train Loss: 0.4002 Val Loss: 0.5714 Accuracy: 74.35%
+2025-02-25 01:35:02 - INFO - [BERA] 早停触发，在epoch 23/100
+2025-02-25 01:35:02 - INFO - [BERA] 初始训练完成，训练损失: 0.3904 准确率: 74.87%
+2025-02-25 01:35:02 - INFO - [BERA] 初始化 BERAUSDT 交易器和策略成功
+2025-02-25 01:35:02 - INFO - [BERA] 交易线程启动成功
+2025-02-25 01:35:02 - INFO - [root] 启动线程监控
+2025-02-25 01:35:02 - INFO - [root] 交易系统启动成功，正在交易的币对: BERAUSDT
+2025-02-25 01:35:03 - INFO - [BERA] USDT余额: 可用=103.70535608, 总额=124.70780364
+2025-02-25 01:35:03 - INFO - [BERA] 当前账户余额: 可用=103.70535608 USDT, 总额=124.70780364 USDT
+2025-02-25 01:35:03 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:35:03 - INFO - [BERA] 预测: 1 概率分布: 空[0.10] 多[0.90] 当前价格: 7.18
+2025-02-25 01:35:03 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.8134
+2025-02-25 01:35:03 - INFO - [BERA] 当前价格: 7.18, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.12 USDT (-0.11%)
+2025-02-25 01:36:03 - INFO - [BERA] USDT余额: 可用=103.3624373, 总额=124.26079793
+2025-02-25 01:36:03 - INFO - [BERA] 当前账户余额: 可用=103.36243730 USDT, 总额=124.26079793 USDT
+2025-02-25 01:36:04 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:36:04 - INFO - [BERA] 预测: 1 概率分布: 空[0.35] 多[0.65] 当前价格: 7.15
+2025-02-25 01:36:04 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.3608
+2025-02-25 01:36:04 - INFO - [BERA] 当前价格: 7.147, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.60 USDT (-0.57%)
+2025-02-25 01:37:04 - INFO - [BERA] USDT余额: 可用=103.48641098, 总额=124.41580364
+2025-02-25 01:37:04 - INFO - [BERA] 当前账户余额: 可用=103.48641098 USDT, 总额=124.41580364 USDT
+2025-02-25 01:37:04 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:37:04 - INFO - [BERA] 预测: 1 概率分布: 空[0.02] 多[0.98] 当前价格: 7.15
+2025-02-25 01:37:05 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.5506
+2025-02-25 01:37:05 - INFO - [BERA] 当前价格: 7.156, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.47 USDT (-0.45%)
+2025-02-25 01:38:05 - INFO - [BERA] USDT余额: 可用=103.41588034, 总额=124.33054329
+2025-02-25 01:38:05 - INFO - [BERA] 当前账户余额: 可用=103.41588034 USDT, 总额=124.33054329 USDT
+2025-02-25 01:38:05 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:38:05 - INFO - [BERA] 预测: 1 概率分布: 空[0.10] 多[0.90] 当前价格: 7.16
+2025-02-25 01:38:06 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.4361
+2025-02-25 01:38:06 - INFO - [BERA] 当前价格: 7.156, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.47 USDT (-0.45%)
+2025-02-25 01:39:06 - INFO - [BERA] USDT余额: 可用=103.38131656, 总额=124.28440364
+2025-02-25 01:39:06 - INFO - [BERA] 当前账户余额: 可用=103.38131656 USDT, 总额=124.28440364 USDT
+2025-02-25 01:39:06 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:39:06 - INFO - [BERA] 预测: 1 概率分布: 空[0.22] 多[0.78] 当前价格: 7.15
+2025-02-25 01:39:06 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.3900
+2025-02-25 01:39:06 - INFO - [BERA] 当前价格: 7.151, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.54 USDT (-0.51%)
+2025-02-25 01:40:06 - INFO - [BERA] USDT余额: 可用=103.61485838, 总额=124.57640364
+2025-02-25 01:40:06 - INFO - [BERA] 当前账户余额: 可用=103.61485838 USDT, 总额=124.57640364 USDT
+2025-02-25 01:40:07 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:40:07 - INFO - [BERA] 预测: 1 概率分布: 空[0.20] 多[0.80] 当前价格: 7.17
+2025-02-25 01:40:07 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.6966
+2025-02-25 01:40:07 - INFO - [BERA] 当前价格: 7.167, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.31 USDT (-0.29%)
+2025-02-25 01:41:07 - INFO - [BERA] USDT余额: 可用=103.53311961, 总额=124.47420364
+2025-02-25 01:41:07 - INFO - [BERA] 当前账户余额: 可用=103.53311961 USDT, 总额=124.47420364 USDT
+2025-02-25 01:41:07 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:41:07 - INFO - [BERA] 预测: 1 概率分布: 空[0.04] 多[0.96] 当前价格: 7.16
+2025-02-25 01:41:08 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.5806
+2025-02-25 01:41:08 - INFO - [BERA] 当前价格: 7.162, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.38 USDT (-0.36%)
+2025-02-25 01:42:08 - INFO - [BERA] USDT余额: 可用=103.70827482, 总额=124.69320364
+2025-02-25 01:42:08 - INFO - [BERA] 当前账户余额: 可用=103.70827482 USDT, 总额=124.69320364 USDT
+2025-02-25 01:42:08 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:42:08 - INFO - [BERA] 预测: 1 概率分布: 空[0.05] 多[0.95] 当前价格: 7.18
+2025-02-25 01:42:09 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.8134
+2025-02-25 01:42:09 - INFO - [BERA] 当前价格: 7.177, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.16 USDT (-0.15%)
+2025-02-25 01:43:09 - INFO - [BERA] USDT余额: 可用=103.9067862, 总额=124.94140364
+2025-02-25 01:43:09 - INFO - [BERA] 当前账户余额: 可用=103.90678620 USDT, 总额=124.94140364 USDT
+2025-02-25 01:43:09 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:43:09 - INFO - [BERA] 预测: 1 概率分布: 空[0.03] 多[0.97] 当前价格: 7.19
+2025-02-25 01:43:09 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 105.0470
+2025-02-25 01:43:09 - INFO - [BERA] 当前价格: 7.191, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: 0.04 USDT (0.04%)
+2025-02-25 01:44:09 - INFO - [BERA] USDT余额: 可用=103.96075602, 总额=125.03648073
+2025-02-25 01:44:09 - INFO - [BERA] 当前账户余额: 可用=103.96075602 USDT, 总额=125.03648073 USDT
+2025-02-25 01:44:10 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:44:10 - INFO - [BERA] 预测: 1 概率分布: 空[0.40] 多[0.60] 当前价格: 7.20
+2025-02-25 01:44:10 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 105.1425
+2025-02-25 01:44:10 - INFO - [BERA] 当前价格: 7.201, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: 0.19 USDT (0.18%)
+2025-02-25 01:45:10 - INFO - [BERA] USDT余额: 可用=104.10527015, 总额=125.18973883
+2025-02-25 01:45:10 - INFO - [BERA] 当前账户余额: 可用=104.10527015 USDT, 总额=125.18973883 USDT
+2025-02-25 01:45:10 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:45:10 - INFO - [BERA] 预测: 1 概率分布: 空[0.38] 多[0.62] 当前价格: 7.21
+2025-02-25 01:45:11 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 105.3065
+2025-02-25 01:45:11 - INFO - [BERA] 当前价格: 7.212, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: 0.35 USDT (0.33%)
+2025-02-25 01:45:34 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-02-25 01:45:34 - INFO - [BERA] 关闭 BERAUSDT 所有持仓
+2025-02-25 01:47:17 - INFO - [root] ==================================================
+2025-02-25 01:47:17 - INFO - [root] 日志系统初始化完成 - 2025-02-25 01:47:17
+2025-02-25 01:47:17 - INFO - [root] ==================================================
+2025-02-25 01:47:23 - ERROR - [BERA] 取消所有订单失败: binanceusdm GET https://fapi.binance.com/fapi/v1/exchangeInfo
+2025-02-25 01:47:23 - WARNING - [BERA] cancel_all_orders 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v1/exchangeInfo
+2025-02-25 01:47:29 - INFO - [BERA] 没有未成交的订单
+2025-02-25 01:47:29 - INFO - [BERA] 当前已经是单向持仓模式
+2025-02-25 01:47:29 - INFO - [BERA] 设置杠杆倍数 5倍 成功
+2025-02-25 01:47:29 - INFO - [BERA] 当前已经是CROSSED保证金模式
+2025-02-25 01:47:29 - INFO - [BERA] 交易器初始化成功 for BERAUSDT
+2025-02-25 01:47:30 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:47:30 - ERROR - [BERA] 特征准备出错: aroon_up() missing 1 required positional argument: 'low'
+2025-02-25 01:47:30 - ERROR - [BERA] 初始训练失败: object of type 'NoneType' has no len()
+2025-02-25 01:47:30 - INFO - [BERA] 初始化 BERAUSDT 交易器和策略成功
+2025-02-25 01:47:30 - INFO - [BERA] 交易线程启动成功
+2025-02-25 01:47:30 - INFO - [root] 启动线程监控
+2025-02-25 01:47:30 - INFO - [root] 交易系统启动成功，正在交易的币对: BERAUSDT
+2025-02-25 01:47:30 - INFO - [BERA] USDT余额: 可用=103.90678354, 总额=125.01440364
+2025-02-25 01:47:30 - INFO - [BERA] 当前账户余额: 可用=103.90678354 USDT, 总额=125.01440364 USDT
+2025-02-25 01:47:30 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:47:30 - ERROR - [BERA] 特征准备出错: aroon_up() missing 1 required positional argument: 'low'
+2025-02-25 01:47:30 - ERROR - [BERA] 生成信号出错: object of type 'NoneType' has no len()
+2025-02-25 01:47:31 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 105.0616
+2025-02-25 01:47:31 - INFO - [BERA] 当前价格: 7.186, AI信号: None, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.03 USDT (-0.03%)
+2025-02-25 01:48:31 - INFO - [BERA] USDT余额: 可用=104.37386888, 总额=125.52540364
+2025-02-25 01:48:31 - INFO - [BERA] 当前账户余额: 可用=104.37386888 USDT, 总额=125.52540364 USDT
+2025-02-25 01:48:31 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:48:31 - ERROR - [BERA] 特征准备出错: aroon_up() missing 1 required positional argument: 'low'
+2025-02-25 01:48:31 - ERROR - [BERA] 生成信号出错: object of type 'NoneType' has no len()
+2025-02-25 01:48:32 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 105.6602
+2025-02-25 01:48:32 - INFO - [BERA] 当前价格: 7.226, AI信号: None, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: 0.55 USDT (0.53%)
+2025-02-25 01:49:23 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-02-25 01:49:23 - INFO - [BERA] 关闭 BERAUSDT 所有持仓
+2025-02-25 01:49:34 - INFO - [root] ==================================================
+2025-02-25 01:49:34 - INFO - [root] 日志系统初始化完成 - 2025-02-25 01:49:34
+2025-02-25 01:49:34 - INFO - [root] ==================================================
+2025-02-25 01:49:35 - INFO - [BERA] 没有未成交的订单
+2025-02-25 01:49:35 - INFO - [BERA] 当前已经是单向持仓模式
+2025-02-25 01:49:35 - INFO - [BERA] 设置杠杆倍数 5倍 成功
+2025-02-25 01:49:35 - INFO - [BERA] 当前已经是CROSSED保证金模式
+2025-02-25 01:49:35 - INFO - [BERA] 交易器初始化成功 for BERAUSDT
+2025-02-25 01:49:36 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:49:36 - INFO - [BERA] 特征维度: 48, 预测周期: 15根K线
+2025-02-25 01:49:36 - INFO - [BERA] 特征列: timestamp, open, high, low, close, volume, returns, log_returns, adx, plus_di, minus_di, aroon_up, aroon_down, aroon_osc, cci, price_slope, volume_slope, price_consistency, volume_consistency, rsi, macd, macd_signal, atr, bbands_width, volume_sma, volume_ratio, sma_5, ema_5, distance_sma_5, distance_ema_5, sma_10, ema_10, distance_sma_10, distance_ema_10, sma_20, ema_20, distance_sma_20, distance_ema_20, sma_30, ema_30, distance_sma_30, distance_ema_30, bb_high, bb_low, bb_mid, bb_width, kc_high, kc_low
+2025-02-25 01:49:36 - INFO - [BERA] Epoch [10/100] Train Loss: 0.4282 Val Loss: 0.4579 Accuracy: 86.67%
+2025-02-25 01:49:37 - INFO - [BERA] Epoch [20/100] Train Loss: 0.3891 Val Loss: 0.4442 Accuracy: 87.18%
+2025-02-25 01:49:37 - INFO - [BERA] 早停触发，在epoch 28/100
+2025-02-25 01:49:37 - INFO - [BERA] 初始训练完成，训练损失: 0.3823 准确率: 88.21%
+2025-02-25 01:49:37 - INFO - [BERA] 初始化 BERAUSDT 交易器和策略成功
+2025-02-25 01:49:37 - INFO - [BERA] 交易线程启动成功
+2025-02-25 01:49:37 - INFO - [root] 启动线程监控
+2025-02-25 01:49:37 - INFO - [root] 交易系统启动成功，正在交易的币对: BERAUSDT
+2025-02-25 01:49:37 - INFO - [BERA] USDT余额: 可用=104.00020309, 总额=125.05820364
+2025-02-25 01:49:37 - INFO - [BERA] 当前账户余额: 可用=104.00020309 USDT, 总额=125.05820364 USDT
+2025-02-25 01:49:37 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:49:38 - INFO - [BERA] 预测: 1 概率分布: 空[0.01] 多[0.99] 趋势指标: ADX[35.6] AROON_OSC[92.9] CCI[81.1] 价格一致性[64.3] 当前价格: 7.20
+2025-02-25 01:49:38 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 105.1638
+2025-02-25 01:49:38 - INFO - [BERA] 当前价格: 7.204, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: 0.23 USDT (0.22%)
+2025-02-25 01:50:38 - INFO - [BERA] USDT余额: 可用=103.79001484, 总额=124.79540364
+2025-02-25 01:50:38 - INFO - [BERA] 当前账户余额: 可用=103.79001484 USDT, 总额=124.79540364 USDT
+2025-02-25 01:50:38 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:50:39 - INFO - [BERA] 预测: 1 概率分布: 空[0.01] 多[0.99] 趋势指标: ADX[33.8] AROON_OSC[85.7] CCI[3.7] 价格一致性[57.1] 当前价格: 7.18
+2025-02-25 01:50:39 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.9046
+2025-02-25 01:50:39 - INFO - [BERA] 当前价格: 7.187, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.01 USDT (-0.01%)
+2025-02-25 01:51:39 - INFO - [BERA] USDT余额: 可用=103.51852173, 总额=124.47420364
+2025-02-25 01:51:39 - INFO - [BERA] 当前账户余额: 可用=103.51852173 USDT, 总额=124.47420364 USDT
+2025-02-25 01:51:39 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:51:39 - INFO - [BERA] 预测: 1 概率分布: 空[0.02] 多[0.98] 趋势指标: ADX[32.2] AROON_OSC[71.4] CCI[-54.5] 价格一致性[50.0] 当前价格: 7.17
+2025-02-25 01:51:40 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.5652
+2025-02-25 01:51:40 - INFO - [BERA] 当前价格: 7.168, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.29 USDT (-0.28%)
+2025-02-25 01:52:40 - INFO - [BERA] USDT余额: 可用=103.20324111, 总额=124.08000364
+2025-02-25 01:52:40 - INFO - [BERA] 当前账户余额: 可用=103.20324111 USDT, 总额=124.08000364 USDT
+2025-02-25 01:52:40 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:52:40 - INFO - [BERA] 预测: 1 概率分布: 空[0.04] 多[0.96] 趋势指标: ADX[30.0] AROON_OSC[-28.6] CCI[-164.2] 价格一致性[57.1] 当前价格: 7.13
+2025-02-25 01:52:40 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.1856
+2025-02-25 01:52:40 - INFO - [BERA] 当前价格: 7.139, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.72 USDT (-0.68%)
+2025-02-25 01:53:40 - INFO - [BERA] USDT余额: 可用=103.13609798, 总额=123.97780364
+2025-02-25 01:53:40 - INFO - [BERA] 当前账户余额: 可用=103.13609798 USDT, 总额=123.97780364 USDT
+2025-02-25 01:53:41 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:53:41 - INFO - [BERA] 预测: 1 概率分布: 空[0.02] 多[0.98] 趋势指标: ADX[28.6] AROON_OSC[-28.6] CCI[-151.1] 价格一致性[42.9] 当前价格: 7.13
+2025-02-25 01:53:41 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.0834
+2025-02-25 01:53:41 - INFO - [BERA] 当前价格: 7.128, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.88 USDT (-0.83%)
+2025-02-25 01:54:41 - INFO - [BERA] USDT余额: 可用=103.41634933, 总额=124.32820364
+2025-02-25 01:54:41 - INFO - [BERA] 当前账户余额: 可用=103.41634933 USDT, 总额=124.32820364 USDT
+2025-02-25 01:54:42 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:54:42 - INFO - [BERA] 预测: 1 概率分布: 空[0.02] 多[0.98] 趋势指标: ADX[26.6] AROON_OSC[-28.6] CCI[-91.0] 价格一致性[57.1] 当前价格: 7.15
+2025-02-25 01:54:42 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.4338
+2025-02-25 01:54:42 - INFO - [BERA] 当前价格: 7.153, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.51 USDT (-0.49%)
+2025-02-25 01:55:42 - INFO - [BERA] USDT余额: 可用=103.19448405, 总额=124.05080364
+2025-02-25 01:55:42 - INFO - [BERA] 当前账户余额: 可用=103.19448405 USDT, 总额=124.05080364 USDT
+2025-02-25 01:55:42 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:55:43 - INFO - [BERA] 预测: 1 概率分布: 空[0.02] 多[0.98] 趋势指标: ADX[25.0] AROON_OSC[-28.6] CCI[-101.7] 价格一致性[50.0] 当前价格: 7.13
+2025-02-25 01:55:43 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.1710
+2025-02-25 01:55:43 - INFO - [BERA] 当前价格: 7.13, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.85 USDT (-0.81%)
+2025-02-25 01:56:43 - INFO - [BERA] USDT余额: 可用=103.17112797, 总额=124.02161459
+2025-02-25 01:56:43 - INFO - [BERA] 当前账户余额: 可用=103.17112797 USDT, 总额=124.02161459 USDT
+2025-02-25 01:56:43 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:56:43 - INFO - [BERA] 预测: 1 概率分布: 空[0.01] 多[0.99] 趋势指标: ADX[23.5] AROON_OSC[-28.6] CCI[-89.5] 价格一致性[50.0] 当前价格: 7.13
+2025-02-25 01:56:44 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.1272
+2025-02-25 01:56:44 - INFO - [BERA] 当前价格: 7.132, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.82 USDT (-0.78%)
+2025-02-25 01:57:44 - INFO - [BERA] USDT余额: 可用=103.08939009, 总额=123.91940364
+2025-02-25 01:57:44 - INFO - [BERA] 当前账户余额: 可用=103.08939009 USDT, 总额=123.91940364 USDT
+2025-02-25 01:57:44 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:57:44 - INFO - [BERA] 预测: 1 概率分布: 空[0.02] 多[0.98] 趋势指标: ADX[22.3] AROON_OSC[-64.3] CCI[-84.0] 价格一致性[42.9] 当前价格: 7.13
+2025-02-25 01:57:44 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 104.0250
+2025-02-25 01:57:44 - INFO - [BERA] 当前价格: 7.123, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.95 USDT (-0.90%)
+2025-02-25 01:58:44 - INFO - [BERA] USDT余额: 可用=103.05339915, 总额=123.88039989
+2025-02-25 01:58:44 - INFO - [BERA] 当前账户余额: 可用=103.05339915 USDT, 总额=123.88039989 USDT
+2025-02-25 01:58:45 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:58:45 - INFO - [BERA] 预测: 1 概率分布: 空[0.10] 多[0.90] 趋势指标: ADX[21.2] AROON_OSC[-64.3] CCI[-74.1] 价格一致性[42.9] 当前价格: 7.12
+2025-02-25 01:58:45 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 103.9860
+2025-02-25 01:58:45 - INFO - [BERA] 当前价格: 7.122, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -0.96 USDT (-0.92%)
+2025-02-25 01:59:45 - INFO - [BERA] USDT余额: 可用=103.00053627, 总额=123.80830816
+2025-02-25 01:59:45 - INFO - [BERA] 当前账户余额: 可用=103.00053627 USDT, 总额=123.80830816 USDT
+2025-02-25 01:59:46 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 01:59:46 - INFO - [BERA] 预测: 1 概率分布: 空[0.08] 多[0.92] 趋势指标: ADX[20.4] AROON_OSC[-78.6] CCI[-81.8] 价格一致性[42.9] 当前价格: 7.12
+2025-02-25 01:59:46 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 103.9228
+2025-02-25 01:59:46 - INFO - [BERA] 当前价格: 7.116, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -1.05 USDT (-1.00%)
+2025-02-25 02:00:46 - INFO - [BERA] USDT余额: 可用=102.82081779, 总额=123.58360364
+2025-02-25 02:00:46 - INFO - [BERA] 当前账户余额: 可用=102.82081779 USDT, 总额=123.58360364 USDT
+2025-02-25 02:00:47 - INFO - [BERA] 成功获取1000根1mK线数据
+2025-02-25 02:00:47 - INFO - [BERA] 预测: 1 概率分布: 空[0.02] 多[0.98] 趋势指标: ADX[20.3] AROON_OSC[-85.7] CCI[-96.0] 价格一致性[42.9] 当前价格: 7.10
+2025-02-25 02:00:47 - INFO - [BERA] 当前持仓方向: 多，持仓金额: 103.6911
+2025-02-25 02:00:47 - INFO - [BERA] 当前价格: 7.103, AI信号: 1, 持仓数量: 14.6, 开仓均价: 7.188, 未实现盈亏: -1.24 USDT (-1.18%)

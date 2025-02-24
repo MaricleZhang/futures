@@ -11,7 +11,6 @@ from strategies.base_strategy import BaseStrategy
 import config
 import torch.nn.functional as F
 from torch.utils.data import TensorDataset, DataLoader, random_split
-import ta
 
 class DeepLearningStrategy(BaseStrategy):
     """DeepLearningStrategy - 深度学习交易策略
@@ -74,9 +73,6 @@ class DeepLearningStrategy(BaseStrategy):
         
         # 获取初始训练数据
         self.initial_training()
-        
-        # 当前仓位数量
-        self.current_quantity = None
     
     def initialize_model(self):
         """初始化深度学习模型"""
@@ -127,97 +123,44 @@ class DeepLearningStrategy(BaseStrategy):
         """准备特征数据
         
         Args:
-            df (pd.DataFrame): 包含OHLCV数据的DataFrame
+            df (pd.DataFrame): K线数据
             
         Returns:
-            pd.DataFrame: 特征DataFrame
+            pd.DataFrame: 处理后的特征数据
         """
-        try:
-            df = df.copy()  # 创建副本避免修改原始数据
-            
-            # 基础价格特征
-            df['returns'] = df['close'].pct_change()
-            df['log_returns'] = np.log(df['close']/df['close'].shift(1))
-            
-            # 趋势指标
-            # ADX - 趋势强度指标
-            df['adx'] = ta.trend.adx(df['high'], df['low'], df['close'], window=14, fillna=True)
-            df['plus_di'] = ta.trend.adx_pos(df['high'], df['low'], df['close'], window=14, fillna=True)
-            df['minus_di'] = ta.trend.adx_neg(df['high'], df['low'], df['close'], window=14, fillna=True)
-            
-            # AROON - 趋势方向和强度
-            df['aroon_up'] = ta.trend.aroon_up(df['high'], df['low'], window=14, fillna=True)
-            df['aroon_down'] = ta.trend.aroon_down(df['high'], df['low'], window=14, fillna=True)
-            df['aroon_osc'] = df['aroon_up'] - df['aroon_down']
-            
-            # CCI - 顺势指标
-            df['cci'] = ta.trend.cci(df['high'], df['low'], df['close'], window=14, fillna=True)
-            
-            # 趋势斜率
-            def calculate_slope(series, period=5):
-                try:
-                    slopes = []
-                    for i in range(len(series) - period + 1):
-                        y = series.iloc[i:i+period].values
-                        x = np.arange(period)
-                        slope = np.polyfit(x, y, 1)[0]
-                        slopes.append(slope)
-                    return pd.Series(index=series.index[period-1:], data=slopes)
-                except Exception:
-                    return pd.Series(index=series.index, data=np.nan)
-            
-            df['price_slope'] = calculate_slope(df['close'], 5)
-            df['volume_slope'] = calculate_slope(df['volume'], 5)
-            
-            # 趋势一致性
-            def trend_consistency(series, period=14):
-                try:
-                    up_days = (series.diff() > 0).rolling(period).sum()
-                    return (up_days / period * 100).round(2)
-                except Exception:
-                    return pd.Series(index=series.index, data=np.nan)
-            
-            df['price_consistency'] = trend_consistency(df['close'])
-            df['volume_consistency'] = trend_consistency(df['volume'])
-            
-            # 动量指标
-            df['rsi'] = ta.momentum.rsi(df['close'], window=14, fillna=True)
-            df['macd'] = ta.trend.macd_diff(df['close'], window_slow=26, window_fast=12, window_sign=9, fillna=True)
-            df['macd_signal'] = ta.trend.macd_signal(df['close'], window_slow=26, window_fast=12, window_sign=9, fillna=True)
-            
-            # 波动率指标
-            df['atr'] = ta.volatility.average_true_range(df['high'], df['low'], df['close'], window=14, fillna=True)
-            df['bbands_width'] = ta.volatility.bollinger_pband(df['close'], window=20, window_dev=2, fillna=True)
-            
-            # 成交量趋势
-            df['volume_sma'] = df['volume'].rolling(window=20, min_periods=1).mean()
-            df['volume_ratio'] = df['volume'] / df['volume_sma']
-            
-            # 价格和均线的关系
-            for period in [5, 10, 20, 30]:
-                df[f'sma_{period}'] = ta.trend.sma_indicator(df['close'], window=period, fillna=True)
-                df[f'ema_{period}'] = ta.trend.ema_indicator(df['close'], window=period, fillna=True)
-                df[f'distance_sma_{period}'] = (df['close'] - df[f'sma_{period}']) / df[f'sma_{period}'] * 100
-                df[f'distance_ema_{period}'] = (df['close'] - df[f'ema_{period}']) / df[f'ema_{period}'] * 100
-            
-            # 布林带指标
-            df['bb_high'] = ta.volatility.bollinger_hband(df['close'], window=20, window_dev=2, fillna=True)
-            df['bb_low'] = ta.volatility.bollinger_lband(df['close'], window=20, window_dev=2, fillna=True)
-            df['bb_mid'] = ta.volatility.bollinger_mavg(df['close'], window=20, fillna=True)
-            df['bb_width'] = ((df['bb_high'] - df['bb_low']) / df['bb_mid']) * 100
-            
-            # Keltner通道
-            df['kc_high'] = ta.volatility.keltner_channel_hband(df['high'], df['low'], df['close'], window=20, fillna=True)
-            df['kc_low'] = ta.volatility.keltner_channel_lband(df['high'], df['low'], df['close'], window=20, fillna=True)
-            
-            # 删除包含NaN的行
-            df = df.dropna()
-            
-            return df
-            
-        except Exception as e:
-            self.logger.error(f"特征准备出错: {str(e)}")
-            return None
+        df = df.copy()
+        
+        # 价格特征
+        df['returns'] = df['close'].pct_change()
+        df['log_returns'] = np.log(df['close']/df['close'].shift(1))
+        
+        # 技术指标
+        df['rsi'] = talib.RSI(df['close'].values)
+        df['macd'], df['macd_signal'], _ = talib.MACD(df['close'].values)
+        df['slowk'], df['slowd'] = talib.STOCH(df['high'].values, df['low'].values, df['close'].values)
+        df['atr'] = talib.ATR(df['high'].values, df['low'].values, df['close'].values)
+        
+        # 波动性指标
+        df['volatility'] = df['returns'].rolling(window=20).std()
+        
+        # 价格趋势
+        for period in [5, 10, 20]:
+            df[f'ma_{period}'] = talib.MA(df['close'].values, timeperiod=period)
+            df[f'ma_{period}_slope'] = df[f'ma_{period}'].pct_change()
+        
+        # 成交量特征
+        df['volume_ma'] = df['volume'].rolling(window=20).mean()
+        df['volume_std'] = df['volume'].rolling(window=20).std()
+        df['volume_ratio'] = df['volume'] / df['volume_ma']
+        
+        # 动量指标
+        df['mom'] = talib.MOM(df['close'].values, timeperiod=10)
+        df['cci'] = talib.CCI(df['high'].values, df['low'].values, df['close'].values)
+        
+        # 删除NaN值
+        df = df.dropna()
+        
+        return df
     
     def generate_labels(self, df):
         """生成训练标签
@@ -418,70 +361,6 @@ class DeepLearningStrategy(BaseStrategy):
         except Exception as e:
             self.logger.error(f"初始训练失败: {str(e)}")
     
-    def calculate_position_size(self, features_df):
-        """计算开仓数量"""
-        try:
-            # 获取趋势强度指标
-            adx = features_df['adx'].iloc[-1]
-            aroon_osc = features_df['aroon_osc'].iloc[-1]
-            price_consistency = features_df['price_consistency'].iloc[-1]
-            
-            # 基础仓位比例
-            base_ratio = 0.3
-            
-            # 根据趋势强度调整仓位
-            if adx > 35 and abs(aroon_osc) > 80:  # 强趋势
-                position_ratio = base_ratio * 1.2
-            elif adx > 25 and abs(aroon_osc) > 60:  # 中等趋势
-                position_ratio = base_ratio * 1.0
-            else:  # 弱趋势
-                position_ratio = base_ratio * 0.8
-                
-            # 根据价格一致性微调
-            if price_consistency > 70:
-                position_ratio *= 1.1
-            elif price_consistency < 40:
-                position_ratio *= 0.9
-                
-            # 确保不超过最大仓位
-            position_ratio = min(position_ratio, 0.5)
-            
-            # 计算实际下单数量
-            balance = float(self.trader.get_balance()['total'])
-            position_value = balance * position_ratio
-            current_price = features_df['close'].iloc[-1]
-            quantity = position_value / current_price
-            
-            return round(quantity, 1)  # 四舍五入到0.1
-            
-        except Exception as e:
-            self.logger.error(f"计算仓位大小出错: {str(e)}")
-            return None
-
-    def should_close_position(self, features_df, current_side):
-        """判断是否应该平仓"""
-        try:
-            # 获取技术指标
-            cci = features_df['cci'].iloc[-1]
-            rsi = features_df['rsi'].iloc[-1]
-            bb_width = features_df['bb_width'].iloc[-1]
-            
-            # 超买超卖信号
-            if current_side == 'long' and (cci > 100 or rsi > 75):
-                return True
-            if current_side == 'short' and (cci < -100 or rsi < 25):
-                return True
-                
-            # 波动率突变信号
-            if bb_width > features_df['bb_width'].rolling(20).mean().iloc[-1] * 1.5:
-                return True
-                
-            return False
-            
-        except Exception as e:
-            self.logger.error(f"判断平仓信号出错: {str(e)}")
-            return False
-    
     def monitor_position(self):
         """监控持仓状态并生成交易信号"""
         try:
@@ -534,7 +413,14 @@ class DeepLearningStrategy(BaseStrategy):
             self.logger.error(f"监控持仓出错: {str(e)}")
 
     def generate_signal(self, klines=None):
-        """生成交易信号"""
+        """生成交易信号
+        
+        Args:
+            klines (list, optional): K线数据. Defaults to None.
+            
+        Returns:
+            int: 1表示买入信号，-1表示卖出信号，None表示无法生成信号
+        """
         try:
             if klines is None:
                 klines = self.trader.get_klines(interval=self.kline_interval, limit=self.lookback)
@@ -562,53 +448,16 @@ class DeepLearningStrategy(BaseStrategy):
             prediction = np.argmax(predictions[0])
             probabilities = predictions[0]
             
-            # 获取趋势强度指标
-            adx = features_df['adx'].iloc[-1]
-            aroon_osc = features_df['aroon_osc'].iloc[-1]
-            cci = features_df['cci'].iloc[-1]
-            price_consistency = features_df['price_consistency'].iloc[-1]
-            rsi = features_df['rsi'].iloc[-1]
-            
-            # 记录预测和趋势信息
-            self.logger.info(
-                f"预测: {prediction} "
-                f"概率分布: 空[{probabilities[0]:.2f}] 多[{probabilities[1]:.2f}] "
-                f"趋势指标: ADX[{adx:.1f}] AROON_OSC[{aroon_osc:.1f}] "
-                f"CCI[{cci:.1f}] RSI[{rsi:.1f}] "
-                f"价格一致性[{price_consistency:.1f}] "
-                f"当前价格: {df['close'].iloc[-1]:.2f}"
-            )
-            
-            # 检查是否应该平仓
-            position = self.trader.get_position()
-            if position and position['size'] != 0:
-                current_side = 'long' if position['size'] > 0 else 'short'
-                if self.should_close_position(features_df, current_side):
-                    self.logger.info(f"触发平仓信号: CCI={cci:.1f} RSI={rsi:.1f}")
-                    return -1 if current_side == 'long' else 1
-            
-            # 根据趋势强度调整置信度要求
-            base_threshold = self.confidence_threshold
-            if adx > 35 and abs(aroon_osc) > 80:  # 强趋势
-                adjusted_threshold = base_threshold * 0.85
-            elif adx > 25 and abs(aroon_osc) > 60:  # 中等趋势
-                adjusted_threshold = base_threshold * 0.95
-            else:  # 弱趋势
-                adjusted_threshold = base_threshold * 1.1
+            self.logger.info(f"预测: {prediction} 概率分布: 空[{probabilities[0]:.2f}] 多[{probabilities[1]:.2f}] 当前价格: {df['close'].iloc[-1]:.2f}")
             
             confidence = probabilities[prediction]
-            if confidence > adjusted_threshold:
-                # 计算开仓数量
-                quantity = self.calculate_position_size(features_df)
-                if quantity:
-                    self.current_quantity = quantity
-                    if prediction == 1:  # 买入信号
-                        return 1
-                    else:  # 卖出信号
-                        return -1
+            if confidence > self.confidence_threshold:
+                if prediction == 1:  # 买入信号
+                    return 1
+                else:  # 卖出信号
+                    return -1
             
-            return None  # 无交易信号
+            return None  # 置信度不足，不产生信号
             
         except Exception as e:
             self.logger.error(f"生成信号出错: {str(e)}")
-            return None

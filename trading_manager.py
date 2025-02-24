@@ -9,6 +9,7 @@ from strategies.trend_strategy import TrendStrategy
 from strategies.short_term_rf_strategy import ShortTermRFStrategy
 from strategies.mid_term_rf_strategy import MidTermRFStrategy
 from strategies.long_term_rf_strategy import LongTermRFStrategy
+from strategies.ma_strategy import MAStrategy
 
 import config
 

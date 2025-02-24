@@ -83,7 +83,7 @@ class DeepLearningStrategy(BaseStrategy):
                 self.layer2 = nn.Linear(256, 128)
                 self.layer3 = nn.Linear(128, 64)
                 self.layer4 = nn.Linear(64, 32)
-                self.output = nn.Linear(32, 2)  # 改为2分类：0=卖出，1=买入
+                self.output = nn.Linear(32, 3)  # 改为3分类：0=下跌，1=盘整，2=上涨
                 self.dropout = nn.Dropout(0.3)
                 self.layer_norm1 = nn.LayerNorm(256)
                 self.layer_norm2 = nn.LayerNorm(128)
@@ -169,20 +169,21 @@ class DeepLearningStrategy(BaseStrategy):
             df (pd.DataFrame): 包含OHLCV数据的DataFrame
             
         Returns:
-            np.array: 标签数组，0=卖出，1=买入
+            np.array: 标签数组，0=下跌趋势，1=盘整，2=上涨趋势
         """
-        # 计算未来N根K线的收益率
-        future_returns = df['close'].shift(-self.predict_periods).div(df['close']) - 1
+        # 计算未来predict_periods期的价格变化百分比
+        future_returns = (df['close'].shift(-self.predict_periods) - df['close']) / df['close']
         
-        # 设置阈值
-        threshold = 0.001 * (self.predict_periods / 5)  # 根据预测周期调整阈值
+        # 定义趋势阈值
+        trend_threshold = 0.005  # 0.5%的价格变动作为趋势判断阈值
         
-        # 生成标签
+        # 生成趋势标签
         labels = np.zeros(len(df))
-        labels[future_returns > threshold] = 1  # 买入
-        labels[future_returns < -threshold] = 0  # 卖出
+        labels[future_returns > trend_threshold] = 2  # 上涨趋势
+        labels[future_returns < -trend_threshold] = 0  # 下跌趋势
+        labels[(future_returns >= -trend_threshold) & (future_returns <= trend_threshold)] = 1  # 盘整
         
-        # 删除最后N根K线的标签（因为我们无法知道它们的未来价格）
+        # 移除最后predict_periods个标签，因为它们没有对应的未来数据
         labels = labels[:-self.predict_periods]
         
         return labels.astype(np.int64)
@@ -419,14 +420,17 @@ class DeepLearningStrategy(BaseStrategy):
             klines (list, optional): K线数据. Defaults to None.
             
         Returns:
-            int: 1表示买入信号，-1表示卖出信号，None表示无法生成信号
+            int: 1表示买入信号，-1表示卖出信号，None表示无信号
         """
         try:
             if klines is None:
-                klines = self.trader.get_klines(interval=self.kline_interval, limit=self.lookback)
-            if len(klines) < self.lookback:
-                return None
+                klines = self.trader.get_klines(interval=self.kline_interval, 
+                                              limit=self.lookback + self.predict_periods)
             
+            if len(klines) < self.lookback:
+                self.logger.warning(f"K线数据不足，当前: {len(klines)}, 需要: {self.lookback}")
+                return None
+                
             df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
             df = df.astype({
                 'open': 'float64',
@@ -437,27 +441,30 @@ class DeepLearningStrategy(BaseStrategy):
             })
             
             features_df = self.prepare_features(df)
-            if len(features_df) < 2:
-                self.logger.error("特征数据不足")
+            if len(features_df) < 1:
                 return None
                 
-            latest_features = features_df.select_dtypes(include=['float64', 'int64']).iloc[-1:]
-            features = self.scaler.transform(latest_features)
+            numeric_features = features_df.select_dtypes(include=['float64', 'int64'])
+            features = self.scaler.transform(numeric_features)
             
-            predictions = self.predict(features)
-            prediction = np.argmax(predictions[0])
-            probabilities = predictions[0]
+            predictions = self.predict(features[-1:])
+            trend_prob = F.softmax(torch.FloatTensor(predictions), dim=1).numpy()[0]
             
-            self.logger.info(f"预测: {prediction} 概率分布: 空[{probabilities[0]:.2f}] 多[{probabilities[1]:.2f}] 当前价格: {df['close'].iloc[-1]:.2f}")
+            # 获取最可能的趋势和其概率
+            predicted_trend = np.argmax(trend_prob)
+            confidence = trend_prob[predicted_trend]
             
-            confidence = probabilities[prediction]
+            self.logger.info(f"预测趋势: {['下跌', '盘整', '上涨'][predicted_trend]}, 概率分布: 下跌[{trend_prob[0]:.2%}] 盘整[{trend_prob[1]:.2%}] 上涨[{trend_prob[2]:.2%}]")
+            
+            # 只在高置信度时产生交易信号
             if confidence > self.confidence_threshold:
-                if prediction == 1:  # 买入信号
+                if predicted_trend == 2:  # 上涨趋势
                     return 1
-                else:  # 卖出信号
+                elif predicted_trend == 0:  # 下跌趋势
                     return -1
             
-            return None  # 置信度不足，不产生信号
+            return 0
             
         except Exception as e:
-            self.logger.error(f"生成信号出错: {str(e)}")
+            self.logger.error(f"生成交易信号时出错: {str(e)}")
+            return None

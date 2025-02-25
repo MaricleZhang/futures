@@ -175,9 +175,6 @@ class BaseRFStrategy(BaseStrategy):
         1: 买入信号
         """
         try:
-            # 检查交易限制
-            if not self.check_trade_limits():
-                return 0  # 返回观望信号
             
             # 准备特征
             features = self.prepare_features(klines)
@@ -193,14 +190,6 @@ class BaseRFStrategy(BaseStrategy):
             
             # 输出预测概率
             self.logger.info(f"预测概率: 卖出={sell_prob:.4f}, 观望={hold_prob:.4f}, 买入={buy_prob:.4f}")
-            
-            # 检查成交量条件
-            df = pd.DataFrame(klines[-20:], columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
-            volume_percentile = pd.to_numeric(df['volume']).rank(pct=True).iloc[-1] * 100
-            
-            # if volume_percentile < self.min_vol_percentile:
-            #     self.logger.info(f"成交量百分位({volume_percentile:.2f}%)低于阈值({self.min_vol_percentile}%)")
-            #     return 0
             
             # 获取预测
             prediction = np.argmax(probabilities)

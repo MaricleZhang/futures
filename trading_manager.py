@@ -4,7 +4,6 @@ import time
 from strategies import mid_term_rf_strategy
 from trader import Trader
 from strategies.ml_strategy_random_forest import RandomForestStrategy
-from strategies.deep_learning_strategy import DeepLearningStrategy
 from strategies.trend_strategy import TrendStrategy
 from strategies.short_term_rf_strategy import ShortTermRFStrategy
 from strategies.mid_term_rf_strategy import MidTermRFStrategy
@@ -32,7 +31,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = DeepLearningStrategy(trader)
+                strategy = ShortTermRFStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")

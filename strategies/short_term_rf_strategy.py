@@ -47,9 +47,9 @@ class ShortTermRFStrategy(BaseRFStrategy):
         
         # 多周期设置
         self.timeframes = {
-            '1m': {'weight': 0.4, 'data': None},
-            '5m': {'weight': 0.3, 'data': None},
-            '15m': {'weight': 0.3, 'data': None}
+            '1m': {'weight': 0.2, 'data': None},
+            '5m': {'weight': 0.4, 'data': None},
+            '15m': {'weight': 0.4, 'data': None}
         }
         
         # 风险控制参数
@@ -165,41 +165,41 @@ class ShortTermRFStrategy(BaseRFStrategy):
             features['momentum_vol_30m'] = features['momentum_30m_pct'].rolling(window=5).std()
             
             # 价格变化率和加速度
-            features['price_change_1m'] = df['close'].pct_change(1)
-            features['price_change_2m'] = df['close'].pct_change(2)
-            features['price_change_3m'] = df['close'].pct_change(3)
-            features['price_acceleration'] = features['price_change_1m'] - features['price_change_1m'].shift(1)
+            features['price_change_5m'] = df['close'].pct_change(5)
+            features['price_change_15m'] = df['close'].pct_change(15)
+            features['price_change_30m'] = df['close'].pct_change(30)
+            features['price_acceleration'] = features['price_change_5m'] - features['price_change_5m'].shift(1)
             
             # 波动率指标
-            features['volatility_1m'] = df['close'].rolling(window=2).std()
-            features['volatility_2m'] = df['close'].rolling(window=4).std()
-            features['volatility_ratio'] = features['volatility_1m'] / features['volatility_2m']
+            features['volatility_5m'] = df['close'].rolling(window=5).std()
+            features['volatility_15m'] = df['close'].rolling(window=15).std()
+            features['volatility_ratio'] = features['volatility_5m'] / features['volatility_15m']
             
             # 成交量分析
-            features['volume_ma_3'] = df['volume'].rolling(window=3).mean()
             features['volume_ma_5'] = df['volume'].rolling(window=5).mean()
-            features['volume_ratio_3'] = df['volume'] / features['volume_ma_3']
+            features['volume_ma_15'] = df['volume'].rolling(window=15).mean()
             features['volume_ratio_5'] = df['volume'] / features['volume_ma_5']
-            features['volume_trend'] = df['volume'].pct_change()
+            features['volume_ratio_15'] = df['volume'] / features['volume_ma_15']
+            features['volume_trend'] = df['volume'].pct_change(5)  # 5分钟成交量变化率
             
             # 价格压力指标
             features['high_low_range'] = (df['high'] - df['low']) / df['close']
             features['close_position'] = (df['close'] - df['low']) / (df['high'] - df['low'])
             
             # 趋势强度指标
-            features['trend_strength_1m'] = features['price_change_1m'].abs() * features['volume_ratio_3']
-            features['trend_strength_2m'] = features['price_change_2m'].abs() * features['volume_ratio_5']
+            features['trend_strength_5m'] = features['price_change_5m'].abs() * features['volume_ratio_5']
+            features['trend_strength_15m'] = features['price_change_15m'].abs() * features['volume_ratio_15']
             
             # 布林带 - 多周期
-            for window in [5, 10, 20]:
+            for window in [15, 30, 60]:  # 更长周期的布林带
                 bb_middle = df['close'].rolling(window=window).mean()
                 bb_std = df['close'].rolling(window=window).std()
                 features[f'BB_width_{window}'] = (bb_std * 2) / bb_middle
                 features[f'BB_position_{window}'] = (df['close'] - (bb_middle - bb_std * 2)) / (bb_std * 4)
             
             # 价格突破指标
-            features['breakout_1m'] = df['close'] > df['high'].rolling(window=2).max().shift(1)
-            features['breakdown_1m'] = df['close'] < df['low'].rolling(window=2).min().shift(1)
+            features['breakout_5m'] = df['close'] > df['high'].rolling(window=5).max().shift(1)
+            features['breakdown_5m'] = df['close'] < df['low'].rolling(window=5).min().shift(1)
             
             # 删除NaN值
             valid_mask = ~(features.isna().any(axis=1))
@@ -223,7 +223,7 @@ class ShortTermRFStrategy(BaseRFStrategy):
             
             # 计算未来收益
             future_returns = []
-            lookback_windows = [1, 2, 3, 5]  # 短期预测窗口
+            lookback_windows = [5, 10, 15, 30]  # 更长期预测窗口
             weights = [0.4, 0.3, 0.2, 0.1]   # 权重偏向近期
             
             for window in lookback_windows:
@@ -237,18 +237,18 @@ class ShortTermRFStrategy(BaseRFStrategy):
                 weighted_returns += w * r
             
             # 计算技术指标
-            rsi = pd.Series(talib.RSI(df['close'].values, timeperiod=14), index=df.index)
+            rsi = pd.Series(talib.RSI(df['close'].values, timeperiod=30), index=df.index)
             
             # MACD
-            exp12 = df['close'].ewm(span=12, adjust=False).mean()
-            exp26 = df['close'].ewm(span=26, adjust=False).mean()
+            exp12 = df['close'].ewm(span=24, adjust=False).mean()
+            exp26 = df['close'].ewm(span=52, adjust=False).mean()
             macd = exp12 - exp26
-            signal = macd.ewm(span=9, adjust=False).mean()
+            signal = macd.ewm(span=18, adjust=False).mean()
             macd_hist = macd - signal
             
             # 布林带
-            bb_middle = df['close'].rolling(window=20).mean()
-            bb_std = df['close'].rolling(window=20).std()
+            bb_middle = df['close'].rolling(window=30).mean()
+            bb_std = df['close'].rolling(window=30).std()
             bb_position = (df['close'] - (bb_middle - bb_std * 2)) / (bb_std * 4)
             
             # 趋势强度
@@ -259,14 +259,14 @@ class ShortTermRFStrategy(BaseRFStrategy):
             )
             
             # 波动率
-            volatility = df['close'].pct_change().rolling(window=20).std()
-            atr = pd.Series(talib.ATR(df['high'].values, df['low'].values, df['close'].values, timeperiod=14), index=df.index)
+            volatility = df['close'].pct_change().rolling(window=30).std()
+            atr = pd.Series(talib.ATR(df['high'].values, df['low'].values, df['close'].values, timeperiod=30), index=df.index)
             atr_pct = atr / df['close']
             
             # 动态阈值
             threshold_base = 0.8
             threshold_volatility = threshold_base * (0.7 * volatility + 0.3 * atr_pct)
-            trend_adjustment = abs(trend_strength).rolling(window=3).mean()
+            trend_adjustment = abs(trend_strength).rolling(window=5).mean()  # 改为5分钟
             
             buy_threshold = threshold_volatility * (1 + trend_adjustment)
             sell_threshold = -threshold_volatility * (1 + trend_adjustment)
@@ -406,54 +406,54 @@ class ShortTermRFStrategy(BaseRFStrategy):
             self.logger.error(f"多周期信号分析失败: {str(e)}")
             return 0
 
-    def generate_signal(self, features):
-        """预测交易信号"""
-        try:
-            # 确保 features 是 DataFrame 类型
-            if isinstance(features, list):
-                features = self.prepare_features(features)
-                if features is None:
-                    return 0
+    # def generate_signal(self, features):
+    #     """预测交易信号"""
+    #     try:
+    #         # 确保 features 是 DataFrame 类型
+    #         if isinstance(features, list):
+    #             features = self.prepare_features(features)
+    #             if features is None:
+    #                 return 0
             
-            # 1. 获取模型预测概率
-            X = self.scaler.transform(features.iloc[[-1]])
-            probabilities = self.model.predict_proba(X)[0]
+    #         # 1. 获取模型预测概率
+    #         X = self.scaler.transform(features.iloc[[-1]])
+    #         probabilities = self.model.predict_proba(X)[0]
             
-            # 2. 分析当前趋势
-            trend_score = self.analyze_trend(features)
-            self.logger.info(f"当前趋势分析得分: {trend_score:.4f}, 趋势阈值: {self.trend_threshold}")
+    #         # 2. 分析当前趋势
+    #         trend_score = self.analyze_trend(features)
+    #         self.logger.info(f"当前趋势分析得分: {trend_score:.4f}, 趋势阈值: {self.trend_threshold}")
             
-            # 3. 获取多周期信号
-            multi_timeframe_signal = self.get_multi_timeframe_signal()
+    #         # 3. 获取多周期信号
+    #         multi_timeframe_signal = self.get_multi_timeframe_signal()
             
-            # 4. 根据预测概率生成初始信号
-            if probabilities[2] > self.confidence_threshold and probabilities[2] - probabilities[0] > self.prob_diff_threshold:
-                initial_signal = 1
-            elif probabilities[0] > self.confidence_threshold and probabilities[0] - probabilities[2] > self.prob_diff_threshold:
-                initial_signal = -1
-            else:
-                initial_signal = 0
+    #         # 4. 根据预测概率生成初始信号
+    #         if probabilities[2] > self.confidence_threshold and probabilities[2] - probabilities[0] > self.prob_diff_threshold:
+    #             initial_signal = 1
+    #         elif probabilities[0] > self.confidence_threshold and probabilities[0] - probabilities[2] > self.prob_diff_threshold:
+    #             initial_signal = -1
+    #         else:
+    #             initial_signal = 0
             
-            # 5. 确认信号
-            confirmed_signal = self.confirm_signal(initial_signal)
+    #         # 5. 确认信号
+    #         confirmed_signal = self.confirm_signal(initial_signal)
             
-            # 6. 综合分析
-            # 只有当趋势方向、多周期信号和确认信号一致时才产生最终信号
-            if confirmed_signal == 1 and trend_score > self.trend_threshold and multi_timeframe_signal == 1:
-                final_signal = 1
-            elif confirmed_signal == -1 and trend_score < -self.trend_threshold and multi_timeframe_signal == -1:
-                final_signal = -1
-            else:
-                final_signal = 0
+    #         # 6. 综合分析
+    #         # 只有当趋势方向、多周期信号和确认信号一致时才产生最终信号
+    #         if confirmed_signal == 1 and trend_score > self.trend_threshold and multi_timeframe_signal == 1:
+    #             final_signal = 1
+    #         elif confirmed_signal == -1 and trend_score < -self.trend_threshold and multi_timeframe_signal == -1:
+    #             final_signal = -1
+    #         else:
+    #             final_signal = 0
             
-            # 记录预测概率
-            self.logger.info(f"预测概率: 卖出={probabilities[0]:.4f}, 观望={probabilities[1]:.4f}, 买入={probabilities[2]:.4f}")
+    #         # 记录预测概率
+    #         self.logger.info(f"预测概率: 卖出={probabilities[0]:.4f}, 观望={probabilities[1]:.4f}, 买入={probabilities[2]:.4f}")
             
-            return final_signal
+    #         return final_signal
             
-        except Exception as e:
-            self.logger.error(f"预测失败: {str(e)}")
-            return 0
+    #     except Exception as e:
+    #         self.logger.error(f"预测失败: {str(e)}")
+    #         return 0
 
     def train_model(self, klines):
         """训练模型"""

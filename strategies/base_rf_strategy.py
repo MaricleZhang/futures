@@ -28,7 +28,7 @@ class BaseRFStrategy(BaseStrategy):
         self.max_depth = 8          # 树的最大深度
         self.min_samples_split = 20 # 分裂所需最小样本数
         self.min_samples_leaf = 10  # 叶节点最小样本数
-        self.confidence_threshold = 0.4  # 信号置信度阈值
+        self.confidence_threshold = 0.55  # 信号置信度阈值
         self.prob_diff_threshold = 0.08   # 概率差异阈值
         
         # K线设置 - 子类必须重写这些参数

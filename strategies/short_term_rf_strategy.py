@@ -36,7 +36,7 @@ class ShortTermRFStrategy(BaseRFStrategy):
         self.prob_diff_threshold = 0.15   # 概率差异阈值
         
         # K线设置
-        self.kline_interval = '3m'  # 1分钟K线
+        self.kline_interval = '1m'  # 1分钟K线
         self.training_lookback = 500  # 训练数据回看周期
         self.retraining_interval = 60  # 1分钟重新训练
         

@@ -37,7 +37,7 @@ class DeepLearningStrategy(BaseStrategy):
         # 模型参数
         self.sequence_length = 60  # 输入序列长度（过去的K线数量）
         self.prediction_length = 15  # 预测序列长度（未来的K线数量）
-        self.feature_count = 20  # 特征数量
+        self.feature_count = 19  # 特征数量
         self.batch_size = 32
         self.epochs = 50
         self.patience = 15  # 早停耐心值

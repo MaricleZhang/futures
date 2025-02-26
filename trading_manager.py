@@ -9,6 +9,7 @@ from strategies.short_term_rf_strategy import ShortTermRFStrategy
 from strategies.mid_term_rf_strategy import MidTermRFStrategy
 from strategies.long_term_rf_strategy import LongTermRFStrategy
 from strategies.ma_strategy import MAStrategy
+from strategies.deep_learning_strategy import DeepLearningStrategy
 
 import config
 
@@ -31,7 +32,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = ShortTermRFStrategy(trader)
+                strategy = DeepLearningStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")
@@ -81,6 +82,9 @@ class TradingManager:
                         trader.close_position(symbol)
                     if position_amount >= 0:  # 没有空仓时开空
                         trader.open_short(symbol, trade_amount)
+                elif signal == 2:  # 平仓信号
+                    if abs(position_amount) > 0:  # 有持仓就平掉
+                        trader.close_position(symbol)
 
                 # else:  # 观望信号
                     # if abs(position_amount) > 0:  # 有持仓就平掉

@@ -11,7 +11,7 @@ PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
 # 交易设置
-SYMBOLS = ['BERAUSDT']  # 支持多个交易对
+SYMBOLS = ['PIPPINUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
     # 'BTCUSDT': {
     #     'leverage': 5,
@@ -19,10 +19,10 @@ SYMBOL_CONFIGS = {
     #     'check_interval': 60,  # 交易检查间隔(秒)
     #     'trade_amount_percent': 50,  # 每次交易使用的资金百分比
     # },
-    'BERAUSDT': {
+        'PIPPINUSDT': {
         'leverage': 5,
         'min_notional': 20,
-        'trade_amount_percent': 200,
+        'trade_amount_percent': 50,
         'check_interval': 60,  # 交易检查间隔(秒)
     },
     # 'SOLUSDT': {
@@ -50,6 +50,11 @@ POSITION_SIDE = 'BOTH'  # 持仓模式：BOTH(单向持仓) LONG/SHORT(双向持
 # 订单设置
 DEFAULT_ORDER_TYPE = 'market'  # 默认订单类型：market(市价) 或 limit(限价)
 TIME_IN_FORCE = 'GTC'  # 订单有效期: GTC(永久有效) GTX(立即成交或取消) IOC(立即成交剩余取消)
+
+# 挂单策略设置
+LIMIT_ORDER_DISTANCE = 0.0002  # 挂单距离当前价格的比例（0.02%）
+MAX_ORDER_WAITING_TIME = 30    # 挂单最大等待时间（秒）
+PRICE_CHECK_INTERVAL = 5       # 价格检查间隔（秒）
 
 # 风控设置
 MAX_LEVERAGE = 10  # 最大允许杠杆

@@ -2334,3 +2334,283 @@
 2025-02-27 13:11:23 - INFO - [PIPPIN] 当前价格: 0.03559, AI信号: -1, 持仓数量: 1037.0, 开仓均价: 0.03528, 未实现盈亏: -0.32 USDT (-0.88%)
 2025-02-27 13:11:39 - INFO - [root] 接收到退出信号，正在关闭所有交易...
 2025-02-27 13:11:39 - INFO - [PIPPIN] 关闭 PIPPINUSDT 所有持仓
+2025-02-27 16:28:06 - INFO - [root] ==================================================
+2025-02-27 16:28:06 - INFO - [root] 日志系统初始化完成 - 2025-02-27 16:28:06
+2025-02-27 16:28:06 - INFO - [root] ==================================================
+2025-02-27 16:28:08 - INFO - [PIPPIN] 没有未成交的订单
+2025-02-27 16:28:08 - INFO - [PIPPIN] 当前已经是单向持仓模式
+2025-02-27 16:28:08 - INFO - [PIPPIN] 设置杠杆倍数 5倍 成功
+2025-02-27 16:28:09 - INFO - [PIPPIN] 当前已经是CROSSED保证金模式
+2025-02-27 16:28:09 - INFO - [PIPPIN] 交易器初始化成功 for PIPPINUSDT
+2025-02-27 16:28:09 - WARNING - [absl] At this time, the v2.11+ optimizer `tf.keras.optimizers.Adam` runs slowly on M1/M2 Macs, please use the legacy Keras optimizer instead, located at `tf.keras.optimizers.legacy.Adam`.
+2025-02-27 16:28:09 - WARNING - [absl] There is a known slowdown when using v2.11+ Keras optimizers on M1/M2 Macs. Falling back to the legacy Keras optimizer, i.e., `tf.keras.optimizers.legacy.Adam`.
+2025-02-27 16:28:09 - INFO - [PIPPIN] LSTM模型初始化成功
+2025-02-27 16:28:09 - INFO - [PIPPIN] 已加载模型: models/PIPPINUSDT_DeepLearningStrategy.h5
+2025-02-27 16:28:09 - INFO - [PIPPIN] 初始化 PIPPINUSDT 交易器和策略成功
+2025-02-27 16:28:09 - INFO - [PIPPIN] 交易线程启动成功
+2025-02-27 16:28:09 - INFO - [root] 启动线程监控
+2025-02-27 16:28:09 - INFO - [root] 交易系统启动成功，正在交易的币对: PIPPINUSDT
+2025-02-27 16:28:09 - INFO - [PIPPIN] USDT余额: 可用=72.93317235, 总额=72.94799246
+2025-02-27 16:28:09 - INFO - [PIPPIN] 当前账户余额: 可用=72.93317235 USDT, 总额=72.94799246 USDT
+2025-02-27 16:28:10 - INFO - [PIPPIN] 成功获取1000根1mK线数据
+2025-02-27 16:28:10 - INFO - [PIPPIN] 模型重新训练时间到，准备重新训练
+2025-02-27 16:28:10 - INFO - [PIPPIN] 训练数据形状 - X: (882, 60, 19), y: (882, 10)
+2025-02-27 16:28:10 - ERROR - [PIPPIN] 模型训练失败: in user code:
+
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1338, in train_function  *
+        return step_function(self, iterator)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1322, in step_function  **
+        outputs = model.distribute_strategy.run(run_step, args=(data,))
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1303, in run_step  **
+        outputs = model.train_step(data)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1081, in train_step
+        loss = self.compute_loss(x, y, y_pred, sample_weight)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1139, in compute_loss
+        return self.compiled_loss(
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/compile_utils.py", line 265, in __call__
+        loss_value = loss_obj(y_t, y_p, sample_weight=sw)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 142, in __call__
+        losses = call_fn(y_true, y_pred)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 268, in call  **
+        return ag_fn(y_true, y_pred, **self._fn_kwargs)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 1608, in mean_squared_error
+        return backend.mean(tf.math.squared_difference(y_pred, y_true), axis=-1)
+
+    ValueError: Dimensions must be equal, but are 15 and 10 for '{{node mean_squared_error/SquaredDifference}} = SquaredDifference[T=DT_FLOAT](sequential/dense_1/BiasAdd, IteratorGetNext:1)' with input shapes: [?,15], [?,10].
+
+2025-02-27 16:28:11 - INFO - [PIPPIN] 预测趋势: 0, 置信度: 0.5000, 预测价格变化: 0.2384%
+2025-02-27 16:28:11 - INFO - [PIPPIN] 当前价格: 0.03531, AI信号: 0
+2025-02-27 16:29:12 - INFO - [PIPPIN] USDT余额: 可用=72.93317203, 总额=72.94799246
+2025-02-27 16:29:12 - INFO - [PIPPIN] 当前账户余额: 可用=72.93317203 USDT, 总额=72.94799246 USDT
+2025-02-27 16:29:12 - INFO - [PIPPIN] 成功获取1000根1mK线数据
+2025-02-27 16:29:12 - INFO - [PIPPIN] 模型重新训练时间到，准备重新训练
+2025-02-27 16:29:13 - INFO - [PIPPIN] 训练数据形状 - X: (882, 60, 19), y: (882, 10)
+2025-02-27 16:29:13 - ERROR - [PIPPIN] 模型训练失败: in user code:
+
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1338, in train_function  *
+        return step_function(self, iterator)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1322, in step_function  **
+        outputs = model.distribute_strategy.run(run_step, args=(data,))
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1303, in run_step  **
+        outputs = model.train_step(data)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1081, in train_step
+        loss = self.compute_loss(x, y, y_pred, sample_weight)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1139, in compute_loss
+        return self.compiled_loss(
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/compile_utils.py", line 265, in __call__
+        loss_value = loss_obj(y_t, y_p, sample_weight=sw)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 142, in __call__
+        losses = call_fn(y_true, y_pred)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 268, in call  **
+        return ag_fn(y_true, y_pred, **self._fn_kwargs)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 1608, in mean_squared_error
+        return backend.mean(tf.math.squared_difference(y_pred, y_true), axis=-1)
+
+    ValueError: Dimensions must be equal, but are 15 and 10 for '{{node mean_squared_error/SquaredDifference}} = SquaredDifference[T=DT_FLOAT](sequential/dense_1/BiasAdd, IteratorGetNext:1)' with input shapes: [?,15], [?,10].
+
+2025-02-27 16:29:13 - INFO - [PIPPIN] 预测趋势: 0, 置信度: 0.5000, 预测价格变化: 0.2384%
+2025-02-27 16:29:13 - INFO - [PIPPIN] 当前价格: 0.03529, AI信号: 0
+2025-02-27 16:30:14 - INFO - [PIPPIN] USDT余额: 可用=72.93317247, 总额=72.94799246
+2025-02-27 16:30:14 - INFO - [PIPPIN] 当前账户余额: 可用=72.93317247 USDT, 总额=72.94799246 USDT
+2025-02-27 16:30:14 - INFO - [PIPPIN] 成功获取1000根1mK线数据
+2025-02-27 16:30:14 - INFO - [PIPPIN] 模型重新训练时间到，准备重新训练
+2025-02-27 16:30:15 - INFO - [PIPPIN] 训练数据形状 - X: (882, 60, 19), y: (882, 10)
+2025-02-27 16:30:15 - ERROR - [PIPPIN] 模型训练失败: in user code:
+
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1338, in train_function  *
+        return step_function(self, iterator)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1322, in step_function  **
+        outputs = model.distribute_strategy.run(run_step, args=(data,))
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1303, in run_step  **
+        outputs = model.train_step(data)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1081, in train_step
+        loss = self.compute_loss(x, y, y_pred, sample_weight)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1139, in compute_loss
+        return self.compiled_loss(
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/compile_utils.py", line 265, in __call__
+        loss_value = loss_obj(y_t, y_p, sample_weight=sw)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 142, in __call__
+        losses = call_fn(y_true, y_pred)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 268, in call  **
+        return ag_fn(y_true, y_pred, **self._fn_kwargs)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 1608, in mean_squared_error
+        return backend.mean(tf.math.squared_difference(y_pred, y_true), axis=-1)
+
+    ValueError: Dimensions must be equal, but are 15 and 10 for '{{node mean_squared_error/SquaredDifference}} = SquaredDifference[T=DT_FLOAT](sequential/dense_1/BiasAdd, IteratorGetNext:1)' with input shapes: [?,15], [?,10].
+
+2025-02-27 16:30:15 - INFO - [PIPPIN] 预测趋势: 0, 置信度: 0.5000, 预测价格变化: 0.2384%
+2025-02-27 16:30:15 - INFO - [PIPPIN] 当前价格: 0.03534, AI信号: 0
+2025-02-27 16:31:21 - ERROR - [PIPPIN] 获取账户余额失败: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740645075941&recvWindow=5000&signature=28c606831a3c4076938685a284405fbb7be5784be49147ce46c0a372a2f6de96
+2025-02-27 16:31:21 - WARNING - [PIPPIN] get_balance 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740645075941&recvWindow=5000&signature=28c606831a3c4076938685a284405fbb7be5784be49147ce46c0a372a2f6de96
+2025-02-27 16:31:31 - ERROR - [PIPPIN] 获取账户余额失败: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740645085953&recvWindow=5000&signature=db59cb6545ef36a05a8fb793999abf23ae68b42b19497007104d44899528885a
+2025-02-27 16:31:31 - WARNING - [PIPPIN] get_balance 调用失败，2/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740645085953&recvWindow=5000&signature=db59cb6545ef36a05a8fb793999abf23ae68b42b19497007104d44899528885a
+2025-02-27 16:31:41 - ERROR - [PIPPIN] 获取账户余额失败: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740645095961&recvWindow=5000&signature=9c1fb103323a3deae6c5599a67ac15ca09aaacf2551c5dd51021bd2ce84b75fe
+2025-02-27 16:31:41 - ERROR - [PIPPIN] get_balance 调用失败，已达到最大重试次数: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740645095961&recvWindow=5000&signature=9c1fb103323a3deae6c5599a67ac15ca09aaacf2551c5dd51021bd2ce84b75fe
+2025-02-27 16:31:41 - ERROR - [PIPPIN] PIPPINUSDT 交易过程出错: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740645095961&recvWindow=5000&signature=9c1fb103323a3deae6c5599a67ac15ca09aaacf2551c5dd51021bd2ce84b75fe
+2025-02-27 16:32:56 - ERROR - [PIPPIN] 获取账户余额失败: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740645170974&recvWindow=5000&signature=b03853223acfde9569a8a9d5e4a23e3b5402af6e1d8e24e8730719b517e4d818
+2025-02-27 16:32:56 - WARNING - [PIPPIN] get_balance 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740645170974&recvWindow=5000&signature=b03853223acfde9569a8a9d5e4a23e3b5402af6e1d8e24e8730719b517e4d818
+2025-02-27 16:32:56 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-02-27 16:32:56 - INFO - [PIPPIN] 关闭 PIPPINUSDT 所有持仓
+2025-02-27 16:33:00 - INFO - [root] ==================================================
+2025-02-27 16:33:00 - INFO - [root] 日志系统初始化完成 - 2025-02-27 16:33:00
+2025-02-27 16:33:00 - INFO - [root] ==================================================
+2025-02-27 16:33:02 - INFO - [PIPPIN] 没有未成交的订单
+2025-02-27 16:33:02 - INFO - [PIPPIN] 当前已经是单向持仓模式
+2025-02-27 16:33:02 - INFO - [PIPPIN] 设置杠杆倍数 5倍 成功
+2025-02-27 16:33:02 - INFO - [PIPPIN] 当前已经是CROSSED保证金模式
+2025-02-27 16:33:02 - INFO - [PIPPIN] 交易器初始化成功 for PIPPINUSDT
+2025-02-27 16:33:03 - WARNING - [absl] At this time, the v2.11+ optimizer `tf.keras.optimizers.Adam` runs slowly on M1/M2 Macs, please use the legacy Keras optimizer instead, located at `tf.keras.optimizers.legacy.Adam`.
+2025-02-27 16:33:03 - WARNING - [absl] There is a known slowdown when using v2.11+ Keras optimizers on M1/M2 Macs. Falling back to the legacy Keras optimizer, i.e., `tf.keras.optimizers.legacy.Adam`.
+2025-02-27 16:33:03 - INFO - [PIPPIN] LSTM模型初始化成功
+2025-02-27 16:33:03 - INFO - [PIPPIN] 已加载模型: models/PIPPINUSDT_DeepLearningStrategy.h5
+2025-02-27 16:33:03 - INFO - [PIPPIN] 初始化 PIPPINUSDT 交易器和策略成功
+2025-02-27 16:33:03 - INFO - [PIPPIN] 交易线程启动成功
+2025-02-27 16:33:03 - INFO - [root] 启动线程监控
+2025-02-27 16:33:03 - INFO - [root] 交易系统启动成功，正在交易的币对: PIPPINUSDT
+2025-02-27 16:33:03 - INFO - [PIPPIN] USDT余额: 可用=72.93317251, 总额=72.94799246
+2025-02-27 16:33:03 - INFO - [PIPPIN] 当前账户余额: 可用=72.93317251 USDT, 总额=72.94799246 USDT
+2025-02-27 16:33:03 - INFO - [PIPPIN] 成功获取1000根1mK线数据
+2025-02-27 16:33:03 - INFO - [PIPPIN] 模型重新训练时间到，准备重新训练
+2025-02-27 16:33:04 - INFO - [PIPPIN] 训练数据形状 - X: (882, 60, 19), y: (882, 10)
+2025-02-27 16:33:04 - ERROR - [PIPPIN] 模型训练失败: in user code:
+
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1338, in train_function  *
+        return step_function(self, iterator)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1322, in step_function  **
+        outputs = model.distribute_strategy.run(run_step, args=(data,))
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1303, in run_step  **
+        outputs = model.train_step(data)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1081, in train_step
+        loss = self.compute_loss(x, y, y_pred, sample_weight)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1139, in compute_loss
+        return self.compiled_loss(
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/compile_utils.py", line 265, in __call__
+        loss_value = loss_obj(y_t, y_p, sample_weight=sw)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 142, in __call__
+        losses = call_fn(y_true, y_pred)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 268, in call  **
+        return ag_fn(y_true, y_pred, **self._fn_kwargs)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 1608, in mean_squared_error
+        return backend.mean(tf.math.squared_difference(y_pred, y_true), axis=-1)
+
+    ValueError: Dimensions must be equal, but are 15 and 10 for '{{node mean_squared_error/SquaredDifference}} = SquaredDifference[T=DT_FLOAT](sequential/dense_1/BiasAdd, IteratorGetNext:1)' with input shapes: [?,15], [?,10].
+
+2025-02-27 16:33:04 - INFO - [PIPPIN] 预测趋势: 0, 置信度: 0.5000, 预测价格变化: 0.2384%
+2025-02-27 16:33:05 - INFO - [PIPPIN] 当前价格: 0.0344, AI信号: 0
+2025-02-27 16:34:06 - INFO - [PIPPIN] USDT余额: 可用=72.93317237, 总额=72.94799246
+2025-02-27 16:34:06 - INFO - [PIPPIN] 当前账户余额: 可用=72.93317237 USDT, 总额=72.94799246 USDT
+2025-02-27 16:34:06 - INFO - [PIPPIN] 成功获取1000根1mK线数据
+2025-02-27 16:34:06 - INFO - [PIPPIN] 模型重新训练时间到，准备重新训练
+2025-02-27 16:34:06 - INFO - [PIPPIN] 训练数据形状 - X: (882, 60, 19), y: (882, 10)
+2025-02-27 16:34:06 - ERROR - [PIPPIN] 模型训练失败: in user code:
+
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1338, in train_function  *
+        return step_function(self, iterator)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1322, in step_function  **
+        outputs = model.distribute_strategy.run(run_step, args=(data,))
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1303, in run_step  **
+        outputs = model.train_step(data)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1081, in train_step
+        loss = self.compute_loss(x, y, y_pred, sample_weight)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1139, in compute_loss
+        return self.compiled_loss(
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/compile_utils.py", line 265, in __call__
+        loss_value = loss_obj(y_t, y_p, sample_weight=sw)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 142, in __call__
+        losses = call_fn(y_true, y_pred)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 268, in call  **
+        return ag_fn(y_true, y_pred, **self._fn_kwargs)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 1608, in mean_squared_error
+        return backend.mean(tf.math.squared_difference(y_pred, y_true), axis=-1)
+
+    ValueError: Dimensions must be equal, but are 15 and 10 for '{{node mean_squared_error/SquaredDifference}} = SquaredDifference[T=DT_FLOAT](sequential/dense_1/BiasAdd, IteratorGetNext:1)' with input shapes: [?,15], [?,10].
+
+2025-02-27 16:34:06 - INFO - [PIPPIN] 预测趋势: 0, 置信度: 0.5000, 预测价格变化: 0.2384%
+2025-02-27 16:34:07 - INFO - [PIPPIN] 当前价格: 0.03414, AI信号: 0
+2025-02-27 16:35:08 - INFO - [PIPPIN] USDT余额: 可用=72.93317275, 总额=72.94799246
+2025-02-27 16:35:08 - INFO - [PIPPIN] 当前账户余额: 可用=72.93317275 USDT, 总额=72.94799246 USDT
+2025-02-27 16:35:08 - INFO - [PIPPIN] 成功获取1000根1mK线数据
+2025-02-27 16:35:08 - INFO - [PIPPIN] 模型重新训练时间到，准备重新训练
+2025-02-27 16:35:08 - INFO - [PIPPIN] 训练数据形状 - X: (882, 60, 19), y: (882, 10)
+2025-02-27 16:35:08 - ERROR - [PIPPIN] 模型训练失败: in user code:
+
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1338, in train_function  *
+        return step_function(self, iterator)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1322, in step_function  **
+        outputs = model.distribute_strategy.run(run_step, args=(data,))
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1303, in run_step  **
+        outputs = model.train_step(data)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1081, in train_step
+        loss = self.compute_loss(x, y, y_pred, sample_weight)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/training.py", line 1139, in compute_loss
+        return self.compiled_loss(
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/engine/compile_utils.py", line 265, in __call__
+        loss_value = loss_obj(y_t, y_p, sample_weight=sw)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 142, in __call__
+        losses = call_fn(y_true, y_pred)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 268, in call  **
+        return ag_fn(y_true, y_pred, **self._fn_kwargs)
+    File "/Users/zhangjian/WorkSpace/futures/venv/lib/python3.9/site-packages/keras/src/losses.py", line 1608, in mean_squared_error
+        return backend.mean(tf.math.squared_difference(y_pred, y_true), axis=-1)
+
+    ValueError: Dimensions must be equal, but are 15 and 10 for '{{node mean_squared_error/SquaredDifference}} = SquaredDifference[T=DT_FLOAT](sequential/dense_1/BiasAdd, IteratorGetNext:1)' with input shapes: [?,15], [?,10].
+
+2025-02-27 16:35:09 - INFO - [PIPPIN] 预测趋势: 0, 置信度: 0.5000, 预测价格变化: 0.2384%
+2025-02-27 16:35:09 - INFO - [PIPPIN] 当前价格: 0.03421, AI信号: 0
+2025-02-27 16:36:03 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-02-27 16:36:03 - INFO - [PIPPIN] 关闭 PIPPINUSDT 所有持仓
+2025-02-27 16:36:07 - INFO - [root] ==================================================
+2025-02-27 16:36:07 - INFO - [root] 日志系统初始化完成 - 2025-02-27 16:36:07
+2025-02-27 16:36:07 - INFO - [root] ==================================================
+2025-02-27 16:36:09 - INFO - [PIPPIN] 没有未成交的订单
+2025-02-27 16:36:09 - INFO - [PIPPIN] 当前已经是单向持仓模式
+2025-02-27 16:36:09 - INFO - [PIPPIN] 设置杠杆倍数 5倍 成功
+2025-02-27 16:36:09 - INFO - [PIPPIN] 当前已经是CROSSED保证金模式
+2025-02-27 16:36:09 - INFO - [PIPPIN] 交易器初始化成功 for PIPPINUSDT
+2025-02-27 16:36:09 - WARNING - [absl] At this time, the v2.11+ optimizer `tf.keras.optimizers.Adam` runs slowly on M1/M2 Macs, please use the legacy Keras optimizer instead, located at `tf.keras.optimizers.legacy.Adam`.
+2025-02-27 16:36:09 - WARNING - [absl] There is a known slowdown when using v2.11+ Keras optimizers on M1/M2 Macs. Falling back to the legacy Keras optimizer, i.e., `tf.keras.optimizers.legacy.Adam`.
+2025-02-27 16:36:09 - INFO - [PIPPIN] LSTM模型初始化成功
+2025-02-27 16:36:09 - INFO - [PIPPIN] 获取历史K线数据...
+2025-02-27 16:36:10 - INFO - [PIPPIN] 成功获取1000根1mK线数据
+2025-02-27 16:36:10 - INFO - [PIPPIN] 成功获取1000根1mK线数据
+2025-02-27 16:36:10 - INFO - [PIPPIN] 训练数据形状 - X: (882, 60, 19), y: (882, 10)
+2025-02-27 16:36:35 - INFO - [PIPPIN] 模型训练完成 - 训练损失: 0.086847, 验证损失: 0.119021
+2025-02-27 16:36:35 - INFO - [PIPPIN] 模型已保存至: models/PIPPINUSDT_DeepLearningStrategy.h5
+2025-02-27 16:36:35 - INFO - [PIPPIN] 模型训练和保存完成
+2025-02-27 16:36:35 - INFO - [PIPPIN] 初始化 PIPPINUSDT 交易器和策略成功
+2025-02-27 16:36:35 - INFO - [PIPPIN] 交易线程启动成功
+2025-02-27 16:36:35 - INFO - [root] 启动线程监控
+2025-02-27 16:36:35 - INFO - [root] 交易系统启动成功，正在交易的币对: PIPPINUSDT
+2025-02-27 16:36:36 - INFO - [PIPPIN] USDT余额: 可用=72.93317193, 总额=72.94799246
+2025-02-27 16:36:36 - INFO - [PIPPIN] 当前账户余额: 可用=72.93317193 USDT, 总额=72.94799246 USDT
+2025-02-27 16:36:36 - INFO - [PIPPIN] 成功获取1000根1mK线数据
+2025-02-27 16:36:36 - INFO - [PIPPIN] 预测趋势: 1, 置信度: 1.0000, 预测价格变化: 122.2660%
+2025-02-27 16:36:37 - INFO - [PIPPIN] 生成买入信号 - 预测价格上涨: 122.2660%, 置信度: 1.0000
+2025-02-27 16:36:37 - INFO - [PIPPIN] 当前价格: 0.03417, AI信号: 1
+2025-02-27 16:36:37 - INFO - [PIPPIN] 订单创建成功: {'info': {'orderId': '222588957', 'symbol': 'PIPPINUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu550bd711839f1606bd2f6d', 'price': '0.0000000', 'avgPrice': '0.0342100', 'origQty': '1067', 'executedQty': '1067', 'cumQty': '1067', 'cumQuote': '36.5020700', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740645397706'}, 'id': '222588957', 'clientOrderId': 'x-xcKtGhcu550bd711839f1606bd2f6d', 'timestamp': 1740645397706, 'datetime': '2025-02-27T08:36:37.706Z', 'lastTradeTimestamp': 1740645397706, 'lastUpdateTimestamp': 1740645397706, 'symbol': 'PIPPIN/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.03421, 'triggerPrice': None, 'amount': 1067.0, 'cost': 36.50207, 'average': 0.03421, 'filled': 1067.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-02-27 16:37:38 - INFO - [PIPPIN] USDT余额: 可用=65.63011306, 总额=72.95841172
+2025-02-27 16:37:38 - INFO - [PIPPIN] 当前账户余额: 可用=65.63011306 USDT, 总额=72.95841172 USDT
+2025-02-27 16:37:38 - INFO - [PIPPIN] 成功获取1000根1mK线数据
+2025-02-27 16:37:38 - INFO - [PIPPIN] 预测趋势: 1, 置信度: 1.0000, 预测价格变化: 122.2660%
+2025-02-27 16:37:39 - INFO - [PIPPIN] 当前持仓方向: 多，持仓金额: 36.5307
+2025-02-27 16:37:39 - INFO - [PIPPIN] 当前价格: 0.03419, AI信号: 0, 持仓数量: 1067.0, 开仓均价: 0.03421, 未实现盈亏: -0.02 USDT (-0.06%)
+2025-02-27 16:38:39 - INFO - [PIPPIN] USDT余额: 可用=65.67942315, 总额=73.08523534
+2025-02-27 16:38:39 - INFO - [PIPPIN] 当前账户余额: 可用=65.67942315 USDT, 总额=73.08523534 USDT
+2025-02-27 16:38:40 - INFO - [PIPPIN] 成功获取1000根1mK线数据
+2025-02-27 16:38:40 - INFO - [PIPPIN] 预测趋势: 1, 置信度: 1.0000, 预测价格变化: 122.2660%
+2025-02-27 16:38:40 - INFO - [PIPPIN] 当前持仓方向: 多，持仓金额: 36.6576
+2025-02-27 16:38:40 - INFO - [PIPPIN] 当前价格: 0.03437, AI信号: 0, 持仓数量: 1067.0, 开仓均价: 0.03421, 未实现盈亏: 0.17 USDT (0.47%)
+2025-02-27 16:39:50 - ERROR - [PIPPIN] 获取账户余额失败: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740645580876&recvWindow=5000&signature=9705fe3a972a454e417d178354946cca8e16f205d27ffc01dbfe158f509d82af
+2025-02-27 16:39:50 - WARNING - [PIPPIN] get_balance 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740645580876&recvWindow=5000&signature=9705fe3a972a454e417d178354946cca8e16f205d27ffc01dbfe158f509d82af
+2025-02-27 16:39:56 - INFO - [PIPPIN] USDT余额: 可用=65.79432757, 总额=73.154569
+2025-02-27 16:39:56 - INFO - [PIPPIN] 当前账户余额: 可用=65.79432757 USDT, 总额=73.15456900 USDT
+2025-02-27 16:39:56 - INFO - [PIPPIN] 成功获取1000根1mK线数据
+2025-02-27 16:39:56 - INFO - [PIPPIN] 预测趋势: 1, 置信度: 1.0000, 预测价格变化: 122.2660%
+2025-02-27 16:39:57 - INFO - [PIPPIN] 当前持仓方向: 多，持仓金额: 36.7726
+2025-02-27 16:39:57 - INFO - [PIPPIN] 当前价格: 0.03446, AI信号: 0, 持仓数量: 1067.0, 开仓均价: 0.03421, 未实现盈亏: 0.27 USDT (0.73%)
+2025-02-27 16:40:58 - INFO - [PIPPIN] USDT余额: 可用=65.79524372, 总额=73.19954305
+2025-02-27 16:40:58 - INFO - [PIPPIN] 当前账户余额: 可用=65.79524372 USDT, 总额=73.19954305 USDT
+2025-02-27 16:40:58 - INFO - [PIPPIN] 成功获取1000根1mK线数据
+2025-02-27 16:40:58 - INFO - [PIPPIN] 预测趋势: 1, 置信度: 1.0000, 预测价格变化: 122.2660%
+2025-02-27 16:40:59 - INFO - [PIPPIN] 当前持仓方向: 多，持仓金额: 36.7719
+2025-02-27 16:40:59 - INFO - [PIPPIN] 当前价格: 0.03451, AI信号: 0, 持仓数量: 1067.0, 开仓均价: 0.03421, 未实现盈亏: 0.32 USDT (0.88%)

@@ -1,11 +1,9 @@
 import logging
 import threading
 import time
-from strategies import high_precision_rf_strategy
 from trader import Trader
 from strategies.short_term_rf_strategy import ShortTermRFStrategy
 from strategies.deep_learning_strategy import DeepLearningStrategy
-from strategies.high_precision_rf_strategy import HighPrecisionRFStrategy
 import config
 
 class TradingManager:
@@ -27,7 +25,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = HighPrecisionRFStrategy(trader)
+                strategy = DeepLearningStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")

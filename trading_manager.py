@@ -80,9 +80,9 @@ class TradingManager:
                     if abs(position_amount) > 0:  # 有持仓就平掉
                         trader.close_position(symbol)
 
-                else:  # 观望信号
-                    if abs(position_amount) > 0:  # 有持仓就平掉
-                        trader.close_position(symbol)
+                # else:  # 观望信号
+                #     if abs(position_amount) > 0:  # 有持仓就平掉
+                #         trader.close_position(symbol)
             except Exception as e:
                 logger.error(f"{symbol} 交易过程出错: {str(e)}")
                 time.sleep(10)  # 错误后等待较短时间

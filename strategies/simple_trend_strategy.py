@@ -153,6 +153,15 @@ class SimpleTrendStrategy(BaseStrategy):
             # 添加成交量确认分量 (0 到 0.5)
             volume_factor = (indicators['volume_ratio'] - 1).clip(-1, 1) * 0.25
             
+            # 打印各个趋势评分组成部分
+            self.logger.info(f"""趋势评分组成部分:
+                EMA趋势: {ema_trend.iloc[-1]:.4f}
+                ADX趋势: {adx_trend.iloc[-1]:.4f}
+                MACD因子: {macd_factor.iloc[-1]:.4f}
+                RSI因子: {rsi_factor.iloc[-1]:.4f}
+                成交量因子: {volume_factor.iloc[-1]:.4f}
+            """)
+            
             # 组合所有分量
             trend_score = ema_trend + adx_trend + macd_factor + rsi_factor + volume_factor
             
@@ -204,6 +213,14 @@ class SimpleTrendStrategy(BaseStrategy):
         2: 趋势反转信号
         """
         try:
+            # 检测反转
+            is_reversed, reversal_direction, reversal_strength = self.detect_reversal(klines)
+            
+            # 如果检测到反转且强度足够高
+            if is_reversed and reversal_strength > 0.6:
+                self.logger.info(f"检测到强烈的{'向上' if reversal_direction > 0 else '向下'}反转信号，强度: {reversal_strength:.4f}")
+                return 2  # 返回反转信号
+            
             # 计算指标
             indicators, df = self.calculate_indicators(klines)
             if indicators is None or df is None:
@@ -217,10 +234,20 @@ class SimpleTrendStrategy(BaseStrategy):
             
             self.logger.info(f"趋势评分: {trend_score:.4f}, 趋势方向: {trend_direction}, 上一次信号: {self.last_signal}")
             
-            # 检查趋势反转
+            # 轻微反转处理
+            if is_reversed and reversal_strength > 0.4:
+                self.logger.info(f"检测到{'向上' if reversal_direction > 0 else '向下'}反转信号，强度: {reversal_strength:.4f}")
+                if (self.last_signal == 1 and reversal_direction < 0) or (self.last_signal == -1 and reversal_direction > 0):
+                    self.logger.info("检测到趋势反转信号")
+                    signal = 2
+                    return signal
+            
+            # 检查趋势反转 (原有逻辑保留作为备选)
             if (self.last_signal == 1 and trend_score < 0) or (self.last_signal == -1 and trend_score > 0):
-                self.logger.info("检测到趋势反转信号")
+                self.logger.info("检测到趋势评分反转信号")
                 signal = 2
+                return signal
+            
             # 生成常规信号
             if trend_direction > 0 and trend_score > 0.4:
                 signal = 1
@@ -238,6 +265,127 @@ class SimpleTrendStrategy(BaseStrategy):
         except Exception as e:
             self.logger.error(f"生成信号失败: {str(e)}")
             return 0  # 发生错误时返回观望信号
+    
+    def detect_reversal(self, klines):
+        """
+        检测市场是否处于反转状态
+        
+        Args:
+            klines (list): K线数据，格式为 [[timestamp, open, high, low, close, volume], ...]
+        
+        Returns:
+            tuple: (is_reversed, direction, strength)
+                is_reversed (bool): 是否检测到反转
+                direction (int): 反转方向，1 为向上反转（由空转多），-1 为向下反转（由多转空）
+                strength (float): 反转信号强度，范围 0-1
+        """
+        try:
+            # 计算技术指标
+            indicators, df = self.calculate_indicators(klines)
+            if indicators is None or df is None:
+                return False, 0, 0
+            
+            # 获取最近几根K线的指标
+            latest_idx = -1  # 最新的K线
+            
+            # 1. 基于RSI的反转信号
+            rsi = indicators['rsi'].iloc[latest_idx]
+            rsi_prev = indicators['rsi'].iloc[latest_idx-1]
+            rsi_change = rsi - rsi_prev
+            
+            # 超卖反转信号 (RSI < 30 且开始回升)
+            oversold_reversal = (rsi < 30 and rsi_change > 0)
+            
+            # 超买反转信号 (RSI > 70 且开始下降)
+            overbought_reversal = (rsi > 70 and rsi_change < 0)
+            
+            # 2. 基于MACD的反转信号
+            macd_hist = indicators['macd_hist'].iloc[latest_idx]
+            macd_hist_prev = indicators['macd_hist'].iloc[latest_idx-1]
+            macd_hist_change = macd_hist - macd_hist_prev
+            
+            # MACD柱状图由负转正
+            macd_bullish_cross = (macd_hist_prev < 0 and macd_hist > 0)
+            
+            # MACD柱状图由正转负
+            macd_bearish_cross = (macd_hist_prev > 0 and macd_hist < 0)
+            
+            # 3. 基于EMA的反转信号
+            ema_short = indicators['ema_short'].iloc[latest_idx]
+            ema_medium = indicators['ema_medium'].iloc[latest_idx]
+            
+            ema_short_prev = indicators['ema_short'].iloc[latest_idx-1]
+            ema_medium_prev = indicators['ema_medium'].iloc[latest_idx-1]
+            
+            # EMA短线上穿中线
+            ema_bullish_cross = (ema_short_prev < ema_medium_prev and ema_short > ema_medium)
+            
+            # EMA短线下穿中线
+            ema_bearish_cross = (ema_short_prev > ema_medium_prev and ema_short < ema_medium)
+            
+            # 4. 基于K线形态的反转信号
+            price_change = (df['close'].iloc[latest_idx] - df['close'].iloc[latest_idx-1]) / df['close'].iloc[latest_idx-1]
+            
+            # 当前K线实体较大
+            large_body = abs(df['close'].iloc[latest_idx] - df['open'].iloc[latest_idx]) > indicators['atr'].iloc[latest_idx] * 1.5
+            
+            # 成交量放大
+            volume_surge = df['volume'].iloc[latest_idx] > df['volume'].iloc[latest_idx-3:latest_idx].mean() * 1.5
+            
+            # 5. 趋势强度变化
+            trend_strength = indicators['trend_score'].iloc[latest_idx]
+            trend_strength_prev = indicators['trend_score'].iloc[latest_idx-1]
+            trend_change = trend_strength - trend_strength_prev
+            
+            # 综合计算向上反转信号强度 (0-1)
+            bullish_signals = [
+                1 if oversold_reversal else 0,  # RSI超卖回升
+                1 if macd_bullish_cross else 0,  # MACD金叉
+                1 if ema_bullish_cross else 0,   # EMA金叉
+                1 if (large_body and price_change > 0) else 0,  # 大阳线
+                1 if (volume_surge and price_change > 0) else 0,  # 放量上涨
+                min(max(trend_change * 2, 0), 1) if trend_change > 0 else 0  # 趋势由负转正的强度
+            ]
+            
+            # 综合计算向下反转信号强度 (0-1)
+            bearish_signals = [
+                1 if overbought_reversal else 0,  # RSI超买回落
+                1 if macd_bearish_cross else 0,   # MACD死叉
+                1 if ema_bearish_cross else 0,    # EMA死叉
+                1 if (large_body and price_change < 0) else 0,  # 大阴线
+                1 if (volume_surge and price_change < 0) else 0,  # 放量下跌
+                min(max(-trend_change * 2, 0), 1) if trend_change < 0 else 0  # 趋势由正转负的强度
+            ]
+            
+            # 计算向上和向下反转的信号强度 (加权平均)
+            weights = [0.2, 0.2, 0.2, 0.15, 0.15, 0.1]  # 各信号权重
+            bullish_strength = sum(signal * weight for signal, weight in zip(bullish_signals, weights))
+            bearish_strength = sum(signal * weight for signal, weight in zip(bearish_signals, weights))
+            
+            # 6. 市场波动率和趋势疲劳评估
+            volatility = indicators['atr_pct'].iloc[latest_idx]
+            avg_volatility = indicators['atr_pct'].iloc[latest_idx-5:latest_idx].mean()
+            volatility_change = volatility / avg_volatility - 1
+            
+            # 波动率突变会增强反转信号
+            if volatility_change > 0.5:  # 波动率显著增加
+                bullish_strength *= (1 + 0.2 * min(volatility_change, 1))
+                bearish_strength *= (1 + 0.2 * min(volatility_change, 1))
+            
+            # 7. 判断最终反转方向和强度
+            is_bullish_reversal = bullish_strength > 0.4 and bullish_strength > bearish_strength * 1.5
+            is_bearish_reversal = bearish_strength > 0.4 and bearish_strength > bullish_strength * 1.5
+            
+            if is_bullish_reversal:
+                return True, 1, bullish_strength
+            elif is_bearish_reversal:
+                return True, -1, bearish_strength
+            else:
+                return False, 0, max(bullish_strength, bearish_strength)
+            
+        except Exception as e:
+            self.logger.error(f"检测反转失败: {str(e)}")
+            return False, 0, 0
     
     def monitor_position(self):
         """监控当前持仓，并根据策略决定是否平仓"""

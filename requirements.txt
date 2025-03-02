@@ -8,3 +8,4 @@ tensorflow==2.13.0
 keras==2.13.1
 torch==2.1.0
 pytest==8.2.0
+xgboost==2.0.3

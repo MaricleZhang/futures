@@ -3,7 +3,8 @@ import threading
 import time
 from trader import Trader
 from strategies.short_term_rf_strategy import ShortTermRFStrategy
-from strategies.deep_learning_strategy import DeepLearningStrategy
+from strategies.simple_trend_strategy import SimpleTrendStrategy
+from strategies.transform_strategy import TransformStrategy
 import config
 
 class TradingManager:
@@ -25,7 +26,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = DeepLearningStrategy(trader)
+                strategy = SimpleTrendStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")
@@ -79,9 +80,9 @@ class TradingManager:
                     if abs(position_amount) > 0:  # 有持仓就平掉
                         trader.close_position(symbol)
 
-                # else:  # 观望信号
-                    # if abs(position_amount) > 0:  # 有持仓就平掉
-                        # trader.close_position(symbol)
+                else:  # 观望信号
+                    if abs(position_amount) > 0:  # 有持仓就平掉
+                        trader.close_position(symbol)
             except Exception as e:
                 logger.error(f"{symbol} 交易过程出错: {str(e)}")
                 time.sleep(10)  # 错误后等待较短时间

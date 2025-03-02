@@ -41,7 +41,7 @@ class BaseRFStrategy(BaseStrategy):
         self.max_position_hold_time = 30  # 最大持仓时间(分钟)
         self.profit_target_pct = 0.003    # 目标利润率
         self.stop_loss_pct = 0.002        # 止损率
-        self.max_trades_per_hour = 12     # 每小时最大交易次数
+        self.max_trades_per_hour = 20     # 每小时最大交易次数
         self.min_vol_percentile = 30      # 最小成交量百分位
         
         # 交易状态

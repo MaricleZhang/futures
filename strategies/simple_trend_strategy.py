@@ -242,11 +242,14 @@ class SimpleTrendStrategy(BaseStrategy):
                     signal = 2
                     return signal
             
-            # 检查趋势反转 (原有逻辑保留作为备选)
-            if (self.last_signal == 1 and trend_score < 0) or (self.last_signal == -1 and trend_score > 0):
-                self.logger.info("检测到趋势评分反转信号")
-                signal = 2
-                return signal
+            # 检查趋势反转
+            position = self.trader.get_position()
+            if position is not None:
+                position_amount = float(position['info'].get('positionAmt', 0))
+                if (position_amount > 0 and trend_score < 0) or (position_amount < 0 and trend_score > 0):
+                    self.logger.info("检测到趋势评分反转信号")
+                    signal = 2
+                    return signal
             
             # 生成常规信号
             if trend_direction > 0 and trend_score > 0.4:
@@ -257,7 +260,7 @@ class SimpleTrendStrategy(BaseStrategy):
                 signal = 0
             
             # 更新上一次信号（仅当不是反转信号时）
-            if signal != 2 and signal != 0:
+            if signal != 0:
                 self.last_signal = signal
             
             return signal

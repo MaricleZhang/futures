@@ -80,10 +80,8 @@ class RLTrendStrategy(BaseStrategy):
         
         # 模型存储路径
         self.model_dir = "models"
-        self.model_path = f"{self.model_dir}/rl_trend_strategy.h5"
-        
-        # 尝试加载已有模型
-        self._load_model()
+        self.model_path = f"{self.model_dir}/rl_trend_strategy_{self.trader.symbol}.h5"
+        self.metadata_path = f"{self.model_dir}/model_metadata_{self.trader.symbol}.json"
         
         # 性能跟踪
         self.cum_reward = 0
@@ -93,13 +91,19 @@ class RLTrendStrategy(BaseStrategy):
         self.last_training_time = time.time()
         self.retraining_interval = 3600  # 1小时重新训练一次
 
-        # 强制执行初始训练
-        # self.epsilon = 0.8  # 从较低的探索率开始
-        # initial_klines = self.trader.get_klines(interval=self.kline_interval, limit=1000)  # 获取更多历史数据
-        # if len(initial_klines) > 500:
-        #     for _ in range(10):  # 重复训练10次
-        #         self.train_model(initial_klines)
-        #     self.logger.info(f"初始训练完成，当前探索率: {self.epsilon:.4f}")
+        # 尝试加载模型
+        model_loaded = self._load_model()
+    
+        # 如果没有成功加载模型，则执行初始训练
+        if not model_loaded:
+            self.logger.info("模型加载失败，执行初始训练...")
+            initial_klines = self.trader.get_klines(interval=self.kline_interval, limit=1000)
+            if len(initial_klines) > 500:
+                for _ in range(10):
+                    self.train_model(initial_klines)
+                    self._save_model()  # 保存训练好的模型
+            else:
+               self.logger.info("成功加载保存的模型，可以直接使用")
     
     def _build_model(self):
         """构建深度Q学习网络"""
@@ -128,7 +132,7 @@ class RLTrendStrategy(BaseStrategy):
                 self.logger.info(f"已加载保存的模型: {self.model_path}")
                 
                 # 尝试加载元数据
-                metadata_path = f"{self.model_dir}/model_metadata.json"
+                metadata_path = self.metadata_path
                 if os.path.exists(metadata_path):
                     with open(metadata_path, 'r') as f:
                         metadata = json.load(f)
@@ -142,11 +146,13 @@ class RLTrendStrategy(BaseStrategy):
                         self.epsilon = max(self.epsilon_min, self.epsilon * 0.5)
                 else:
                     self.epsilon = max(self.epsilon_min, self.epsilon * 0.5)
+                return True
             else:
                 self.logger.info("未找到保存的模型，将使用新模型")
+                return False
         except Exception as e:
             self.logger.error(f"加载模型失败: {str(e)}")
-    
+            return False
     def _save_model(self):
         try:
             # 保存模型

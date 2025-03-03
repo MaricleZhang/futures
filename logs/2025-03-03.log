@@ -16786,3 +16786,236 @@
 2025-03-03 18:40:39 - INFO - [1000PEPE] 平仓成功: {'info': {'orderId': '33153135971', 'symbol': '1000PEPEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcuf41f0cc5655dd7e8a18ed', 'price': '0.0000000', 'avgPrice': '0.0082820', 'origQty': '4399', 'executedQty': '4399', 'cumQty': '4399', 'cumQuote': '36.4325180', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740998439370'}, 'id': '33153135971', 'clientOrderId': 'x-xcKtGhcuf41f0cc5655dd7e8a18ed', 'timestamp': 1740998439370, 'datetime': '2025-03-03T10:40:39.370Z', 'lastTradeTimestamp': 1740998439370, 'lastUpdateTimestamp': 1740998439370, 'symbol': '1000PEPE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.008282, 'triggerPrice': None, 'amount': 4399.0, 'cost': 36.432518, 'average': 0.008282, 'filled': 4399.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
 2025-03-03 18:40:39 - INFO - [1000PEPE] 交易完成: ID=10, 类型=LONG, 利润率=-0.1230%, 持仓时间=1.0分钟, 平仓原因=signal_reverse
 2025-03-03 18:40:41 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:41:42 - INFO - [1000PEPE] USDT余额: 可用=72.86648082, 总额=72.88128785
+2025-03-03 18:41:42 - INFO - [1000PEPE] 当前账户余额: 可用=72.86648082 USDT, 总额=72.88128785 USDT
+2025-03-03 18:41:42 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:41:43 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [18.55277  19.929932 18.662767])
+2025-03-03 18:41:43 - INFO - [1000PEPE] 当前价格: 0.0082916, AI信号: 0
+2025-03-03 18:41:43 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:41:44 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [19.328888 20.872553 19.501858])
+2025-03-03 18:42:45 - INFO - [1000PEPE] USDT余额: 可用=72.86648093, 总额=72.88128785
+2025-03-03 18:42:45 - INFO - [1000PEPE] 当前账户余额: 可用=72.86648093 USDT, 总额=72.88128785 USDT
+2025-03-03 18:42:45 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:42:45 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 0 (Q值: [12.886291 12.807113 12.859843])
+2025-03-03 18:42:46 - INFO - [1000PEPE] 当前价格: 0.0082927, AI信号: -1
+2025-03-03 18:42:46 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:42:47 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 0 (Q值: [12.850534 12.754829 12.814194])
+2025-03-03 18:42:47 - INFO - [1000PEPE] USDT余额: 可用=72.86648092, 总额=72.88128785
+2025-03-03 18:42:47 - INFO - [1000PEPE] 订单创建成功: {'info': {'orderId': '33153220461', 'symbol': '1000PEPEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu4c147cadb5e89f79e9664a', 'price': '0.0000000', 'avgPrice': '0.0082923', 'origQty': '4393', 'executedQty': '4393', 'cumQty': '4393', 'cumQuote': '36.4280739', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740998567752'}, 'id': '33153220461', 'clientOrderId': 'x-xcKtGhcu4c147cadb5e89f79e9664a', 'timestamp': 1740998567752, 'datetime': '2025-03-03T10:42:47.752Z', 'lastTradeTimestamp': 1740998567752, 'lastUpdateTimestamp': 1740998567752, 'symbol': '1000PEPE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.0082923, 'triggerPrice': None, 'amount': 4393.0, 'cost': 36.4280739, 'average': 0.0082923, 'filled': 4393.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-03-03 18:42:47 - INFO - [1000PEPE] 开空仓 - 数量: 4393.887993, 价格: 0.0082918
+2025-03-03 18:43:48 - INFO - [1000PEPE] USDT余额: 可用=65.44965191, 总额=72.7688879
+2025-03-03 18:43:48 - INFO - [1000PEPE] 当前账户余额: 可用=65.44965191 USDT, 总额=72.76888790 USDT
+2025-03-03 18:43:48 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:43:48 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [21.216017 24.561867 21.671429])
+2025-03-03 18:43:49 - INFO - [1000PEPE] 当前持仓方向: 空，持仓金额: 36.5223
+2025-03-03 18:43:49 - INFO - [1000PEPE] 当前价格: 0.0083079, AI信号: 0, 持仓数量: 4393.0, 开仓均价: 0.0082923, 未实现盈亏: -0.07 USDT (-0.19%)
+2025-03-03 18:43:49 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:43:50 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [21.161558 24.484287 21.607954])
+2025-03-03 18:44:51 - INFO - [1000PEPE] USDT余额: 可用=65.44390723, 总额=72.76409953
+2025-03-03 18:44:51 - INFO - [1000PEPE] 当前账户余额: 可用=65.44390723 USDT, 总额=72.76409953 USDT
+2025-03-03 18:44:51 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:44:51 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [22.48615  26.018663 23.048111])
+2025-03-03 18:44:52 - INFO - [1000PEPE] 当前持仓方向: 空，持仓金额: 36.5270
+2025-03-03 18:44:52 - INFO - [1000PEPE] 当前价格: 0.0083116, AI信号: 0, 持仓数量: 4393.0, 开仓均价: 0.0082923, 未实现盈亏: -0.08 USDT (-0.23%)
+2025-03-03 18:44:52 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:44:53 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [22.49836  26.033794 23.06011 ])
+2025-03-03 18:45:53 - INFO - [1000PEPE] USDT余额: 可用=65.50462548, 总额=72.81470689
+2025-03-03 18:45:53 - INFO - [1000PEPE] 当前账户余额: 可用=65.50462548 USDT, 总额=72.81470689 USDT
+2025-03-03 18:45:53 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:45:54 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [23.478354 26.939026 24.149286])
+2025-03-03 18:45:54 - INFO - [1000PEPE] 当前持仓方向: 空，持仓金额: 36.4711
+2025-03-03 18:45:54 - INFO - [1000PEPE] 当前价格: 0.0083041, AI信号: 0, 持仓数量: 4393.0, 开仓均价: 0.0082923, 未实现盈亏: -0.05 USDT (-0.14%)
+2025-03-03 18:45:54 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:45:55 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [24.914259 28.90485  25.835028])
+2025-03-03 18:46:56 - INFO - [1000PEPE] USDT余额: 可用=65.54825775, 总额=72.85696755
+2025-03-03 18:46:56 - INFO - [1000PEPE] 当前账户余额: 可用=65.54825775 USDT, 总额=72.85696755 USDT
+2025-03-03 18:46:56 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:46:57 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [25.35998  30.024422 26.831667])
+2025-03-03 18:46:57 - INFO - [1000PEPE] 当前持仓方向: 空，持仓金额: 36.4342
+2025-03-03 18:46:57 - INFO - [1000PEPE] 当前价格: 0.0082917, AI信号: 0, 持仓数量: 4393.0, 开仓均价: 0.0082923, 未实现盈亏: 0.00 USDT (0.01%)
+2025-03-03 18:46:57 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:46:58 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [25.371918 30.038418 26.843365])
+2025-03-03 18:47:59 - INFO - [1000PEPE] USDT余额: 可用=65.58895716, 总额=72.88499489
+2025-03-03 18:47:59 - INFO - [1000PEPE] 当前账户余额: 可用=65.58895716 USDT, 总额=72.88499489 USDT
+2025-03-03 18:47:59 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:47:59 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [20.573233 25.350458 22.368256])
+2025-03-03 18:48:00 - INFO - [1000PEPE] 当前持仓方向: 空，持仓金额: 36.4062
+2025-03-03 18:48:00 - INFO - [1000PEPE] 当前价格: 0.0082837, AI信号: 0, 持仓数量: 4393.0, 开仓均价: 0.0082923, 未实现盈亏: 0.04 USDT (0.10%)
+2025-03-03 18:48:00 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:48:01 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [20.070322 24.774248 21.85199 ])
+2025-03-03 18:49:01 - INFO - [1000PEPE] USDT余额: 可用=65.61958907, 总额=72.91715165
+2025-03-03 18:49:01 - INFO - [1000PEPE] 当前账户余额: 可用=65.61958907 USDT, 总额=72.91715165 USDT
+2025-03-03 18:49:02 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:49:02 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [24.866005 28.769678 26.230446])
+2025-03-03 18:49:02 - INFO - [1000PEPE] 当前持仓方向: 空，持仓金额: 36.3740
+2025-03-03 18:49:02 - INFO - [1000PEPE] 当前价格: 0.0082798, AI信号: 0, 持仓数量: 4393.0, 开仓均价: 0.0082923, 未实现盈亏: 0.05 USDT (0.15%)
+2025-03-03 18:49:03 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:49:03 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [24.872711 28.77479  26.234852])
+2025-03-03 18:50:04 - INFO - [1000PEPE] USDT余额: 可用=65.57498066, 总额=72.87418811
+2025-03-03 18:50:04 - INFO - [1000PEPE] 当前账户余额: 可用=65.57498066 USDT, 总额=72.87418811 USDT
+2025-03-03 18:50:04 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:50:05 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [22.679714 26.935928 23.8449  ])
+2025-03-03 18:50:05 - INFO - [1000PEPE] 当前持仓方向: 空，持仓金额: 36.4092
+2025-03-03 18:50:05 - INFO - [1000PEPE] 当前价格: 0.0082872, AI信号: 0, 持仓数量: 4393.0, 开仓均价: 0.0082923, 未实现盈亏: 0.02 USDT (0.06%)
+2025-03-03 18:50:05 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:50:06 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [22.682487 26.938839 23.845911])
+2025-03-03 18:51:07 - INFO - [1000PEPE] USDT余额: 可用=65.66617232, 总额=72.94935234
+2025-03-03 18:51:07 - INFO - [1000PEPE] 当前账户余额: 可用=65.66617232 USDT, 总额=72.94935234 USDT
+2025-03-03 18:51:07 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:51:07 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [19.472582 20.249516 19.632406])
+2025-03-03 18:51:08 - INFO - [1000PEPE] 当前持仓方向: 空，持仓金额: 36.3425
+2025-03-03 18:51:08 - INFO - [1000PEPE] 当前价格: 0.0082782, AI信号: 0, 持仓数量: 4393.0, 开仓均价: 0.0082923, 未实现盈亏: 0.06 USDT (0.17%)
+2025-03-03 18:51:08 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:51:09 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [19.477354 20.251467 19.631159])
+2025-03-03 18:52:14 - ERROR - [1000PEPE] 获取账户余额失败: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999129437&recvWindow=5000&signature=3bddff2623e1eeec49d31e366d8dcafd5a981bbeab5ddd5db550d3f08438c75b
+2025-03-03 18:52:14 - WARNING - [1000PEPE] get_balance 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999129437&recvWindow=5000&signature=3bddff2623e1eeec49d31e366d8dcafd5a981bbeab5ddd5db550d3f08438c75b
+2025-03-03 18:52:24 - ERROR - [1000PEPE] 获取账户余额失败: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999139447&recvWindow=5000&signature=7894de4c1d7e5891b773bf74638c3b8a9b32eef688cfaadab9f1e53f00ffc363
+2025-03-03 18:52:24 - WARNING - [1000PEPE] get_balance 调用失败，2/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999139447&recvWindow=5000&signature=7894de4c1d7e5891b773bf74638c3b8a9b32eef688cfaadab9f1e53f00ffc363
+2025-03-03 18:52:34 - ERROR - [1000PEPE] 获取账户余额失败: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999149454&recvWindow=5000&signature=3865de298af12697b7e11996cd987459d41405d33775cb9d74d36ea7d2ae7b08
+2025-03-03 18:52:34 - ERROR - [1000PEPE] get_balance 调用失败，已达到最大重试次数: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999149454&recvWindow=5000&signature=3865de298af12697b7e11996cd987459d41405d33775cb9d74d36ea7d2ae7b08
+2025-03-03 18:52:34 - ERROR - [1000PEPE] 1000PEPEUSDT 交易过程出错: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999149454&recvWindow=5000&signature=3865de298af12697b7e11996cd987459d41405d33775cb9d74d36ea7d2ae7b08
+2025-03-03 18:53:49 - ERROR - [1000PEPE] 获取账户余额失败: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999224468&recvWindow=5000&signature=9df58d482b79d9314c8f76449761d5a3d7940b9fbadad484971c5a7d8e059b7c
+2025-03-03 18:53:49 - WARNING - [1000PEPE] get_balance 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999224468&recvWindow=5000&signature=9df58d482b79d9314c8f76449761d5a3d7940b9fbadad484971c5a7d8e059b7c
+2025-03-03 18:53:59 - ERROR - [1000PEPE] 获取账户余额失败: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999234481&recvWindow=5000&signature=15055d146a3c27ae8be36a430691730396250a8150ddd39ce01cf3d0aff0de4a
+2025-03-03 18:53:59 - WARNING - [1000PEPE] get_balance 调用失败，2/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999234481&recvWindow=5000&signature=15055d146a3c27ae8be36a430691730396250a8150ddd39ce01cf3d0aff0de4a
+2025-03-03 18:54:09 - ERROR - [1000PEPE] 获取账户余额失败: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999244489&recvWindow=5000&signature=87f05185ecfcc1a5e6bd06b1aaba2fbcc553a56baf77c75c1e0d47bdf52e5856
+2025-03-03 18:54:09 - ERROR - [1000PEPE] get_balance 调用失败，已达到最大重试次数: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999244489&recvWindow=5000&signature=87f05185ecfcc1a5e6bd06b1aaba2fbcc553a56baf77c75c1e0d47bdf52e5856
+2025-03-03 18:54:09 - ERROR - [1000PEPE] 1000PEPEUSDT 交易过程出错: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999244489&recvWindow=5000&signature=87f05185ecfcc1a5e6bd06b1aaba2fbcc553a56baf77c75c1e0d47bdf52e5856
+2025-03-03 18:54:58 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-03-03 18:54:58 - INFO - [1000PEPE] 关闭 1000PEPEUSDT 所有持仓
+2025-03-03 18:55:05 - INFO - [root] ==================================================
+2025-03-03 18:55:05 - INFO - [root] 日志系统初始化完成 - 2025-03-03 18:55:05
+2025-03-03 18:55:05 - INFO - [root] ==================================================
+2025-03-03 18:55:06 - INFO - [1000PEPE] 没有未成交的订单
+2025-03-03 18:55:07 - INFO - [1000PEPE] 当前已经是单向持仓模式
+2025-03-03 18:55:07 - INFO - [1000PEPE] 设置杠杆倍数 5倍 成功
+2025-03-03 18:55:07 - INFO - [1000PEPE] 当前已经是CROSSED保证金模式
+2025-03-03 18:55:07 - INFO - [1000PEPE] 交易器初始化成功 for 1000PEPEUSDT
+2025-03-03 18:55:07 - WARNING - [absl] At this time, the v2.11+ optimizer `tf.keras.optimizers.Adam` runs slowly on M1/M2 Macs, please use the legacy Keras optimizer instead, located at `tf.keras.optimizers.legacy.Adam`.
+2025-03-03 18:55:07 - WARNING - [absl] There is a known slowdown when using v2.11+ Keras optimizers on M1/M2 Macs. Falling back to the legacy Keras optimizer, i.e., `tf.keras.optimizers.legacy.Adam`.
+2025-03-03 18:55:07 - WARNING - [absl] At this time, the v2.11+ optimizer `tf.keras.optimizers.Adam` runs slowly on M1/M2 Macs, please use the legacy Keras optimizer instead, located at `tf.keras.optimizers.legacy.Adam`.
+2025-03-03 18:55:07 - WARNING - [absl] There is a known slowdown when using v2.11+ Keras optimizers on M1/M2 Macs. Falling back to the legacy Keras optimizer, i.e., `tf.keras.optimizers.legacy.Adam`.
+2025-03-03 18:55:07 - INFO - [1000PEPE] 已加载保存的模型: models/rl_trend_strategy.h5
+2025-03-03 18:55:07 - INFO - [1000PEPE] 已恢复探索率: 0.0100
+2025-03-03 18:55:07 - INFO - [1000PEPE] 初始化 1000PEPEUSDT 交易器和策略成功
+2025-03-03 18:55:07 - INFO - [1000PEPE] 交易线程启动成功
+2025-03-03 18:55:07 - INFO - [root] 启动线程监控
+2025-03-03 18:55:07 - INFO - [root] 交易系统启动成功，正在交易的币对: 1000PEPEUSDT
+2025-03-03 18:55:07 - INFO - [1000PEPE] USDT余额: 可用=65.65642249, 总额=72.94320214
+2025-03-03 18:55:07 - INFO - [1000PEPE] 当前账户余额: 可用=65.65642249 USDT, 总额=72.94320214 USDT
+2025-03-03 18:55:08 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:55:08 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [22.076849 25.499622 24.39199 ])
+2025-03-03 18:55:09 - INFO - [1000PEPE] 当前持仓方向: 空，持仓金额: 36.3479
+2025-03-03 18:55:09 - INFO - [1000PEPE] 当前价格: 0.0082746, AI信号: 0, 持仓数量: 4393.0, 开仓均价: 0.0082923, 未实现盈亏: 0.08 USDT (0.21%)
+2025-03-03 18:55:09 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:55:10 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [21.92536  25.47044  24.324162])
+2025-03-03 18:56:11 - INFO - [1000PEPE] USDT余额: 可用=65.62537794, 总额=72.91535052
+2025-03-03 18:56:11 - INFO - [1000PEPE] 当前账户余额: 可用=65.62537794 USDT, 总额=72.91535052 USDT
+2025-03-03 18:56:11 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:56:11 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [17.92748  22.519817 19.460009])
+2025-03-03 18:56:12 - INFO - [1000PEPE] 当前持仓方向: 空，持仓金额: 36.3758
+2025-03-03 18:56:12 - INFO - [1000PEPE] 当前价格: 0.0082784, AI信号: 0, 持仓数量: 4393.0, 开仓均价: 0.0082923, 未实现盈亏: 0.06 USDT (0.17%)
+2025-03-03 18:56:12 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:56:13 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [27.091923 32.40919  28.601274])
+2025-03-03 18:57:23 - ERROR - [1000PEPE] 获取账户余额失败: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999433219&recvWindow=5000&signature=73017fb98c72d11b7bb1c31453792d19535d54ce74ac8f73922a1c8f7873d118
+2025-03-03 18:57:23 - WARNING - [1000PEPE] get_balance 调用失败，1/3次尝试: binanceusdm GET https://fapi.binance.com/fapi/v2/account?timestamp=1740999433219&recvWindow=5000&signature=73017fb98c72d11b7bb1c31453792d19535d54ce74ac8f73922a1c8f7873d118
+2025-03-03 18:57:36 - ERROR - [1000PEPE] 获取账户余额失败: binanceusdm {"code":-1021,"msg":"Timestamp for this request is outside of the recvWindow."}
+2025-03-03 18:57:36 - WARNING - [1000PEPE] get_balance 调用失败，2/3次尝试: binanceusdm {"code":-1021,"msg":"Timestamp for this request is outside of the recvWindow."}
+2025-03-03 18:57:41 - INFO - [1000PEPE] USDT余额: 可用=65.62389315, 总额=72.91671235
+2025-03-03 18:57:41 - INFO - [1000PEPE] 当前账户余额: 可用=65.62389315 USDT, 总额=72.91671235 USDT
+2025-03-03 18:57:41 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:57:42 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [22.482056 25.953634 23.850418])
+2025-03-03 18:57:42 - INFO - [1000PEPE] 当前持仓方向: 空，持仓金额: 36.3744
+2025-03-03 18:57:42 - INFO - [1000PEPE] 当前价格: 0.00828, AI信号: 0, 持仓数量: 4393.0, 开仓均价: 0.0082923, 未实现盈亏: 0.05 USDT (0.15%)
+2025-03-03 18:57:42 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:57:43 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [23.047272 26.733421 24.37998 ])
+2025-03-03 18:58:44 - INFO - [1000PEPE] USDT余额: 可用=65.63706107, 总额=72.93643692
+2025-03-03 18:58:44 - INFO - [1000PEPE] 当前账户余额: 可用=65.63706107 USDT, 总额=72.93643692 USDT
+2025-03-03 18:58:44 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:58:45 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [29.121927 33.901123 30.24592 ])
+2025-03-03 18:58:45 - INFO - [1000PEPE] 当前持仓方向: 空，持仓金额: 36.3513
+2025-03-03 18:58:45 - INFO - [1000PEPE] 当前价格: 0.0082775, AI信号: 0, 持仓数量: 4393.0, 开仓均价: 0.0082923, 未实现盈亏: 0.07 USDT (0.18%)
+2025-03-03 18:58:45 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:58:46 - INFO - [1000PEPE] 探索模式: 随机选择动作 2 (探索率 ε=0.0100)
+2025-03-03 18:58:46 - INFO - [1000PEPE] 根据RL模型信号(1)平空仓
+2025-03-03 18:58:47 - INFO - [1000PEPE] 订单创建成功: {'info': {'orderId': '33153912294', 'symbol': '1000PEPEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcuf8a05fcf3b0372f63c9bfb', 'price': '0.0000000', 'avgPrice': '0.0082810', 'origQty': '4393', 'executedQty': '4393', 'cumQty': '4393', 'cumQuote': '36.3784330', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740999527370'}, 'id': '33153912294', 'clientOrderId': 'x-xcKtGhcuf8a05fcf3b0372f63c9bfb', 'timestamp': 1740999527370, 'datetime': '2025-03-03T10:58:47.370Z', 'lastTradeTimestamp': 1740999527370, 'lastUpdateTimestamp': 1740999527370, 'symbol': '1000PEPE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.008281, 'triggerPrice': None, 'amount': 4393.0, 'cost': 36.378433, 'average': 0.008281, 'filled': 4393.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-03-03 18:58:47 - INFO - [1000PEPE] 平仓成功: {'info': {'orderId': '33153912294', 'symbol': '1000PEPEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcuf8a05fcf3b0372f63c9bfb', 'price': '0.0000000', 'avgPrice': '0.0082810', 'origQty': '4393', 'executedQty': '4393', 'cumQty': '4393', 'cumQuote': '36.3784330', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740999527370'}, 'id': '33153912294', 'clientOrderId': 'x-xcKtGhcuf8a05fcf3b0372f63c9bfb', 'timestamp': 1740999527370, 'datetime': '2025-03-03T10:58:47.370Z', 'lastTradeTimestamp': 1740999527370, 'lastUpdateTimestamp': 1740999527370, 'symbol': '1000PEPE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'buy', 'price': 0.008281, 'triggerPrice': None, 'amount': 4393.0, 'cost': 36.378433, 'average': 0.008281, 'filled': 4393.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-03-03 18:58:49 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:59:50 - INFO - [1000PEPE] USDT余额: 可用=72.8797157, 总额=72.89452551
+2025-03-03 18:59:50 - INFO - [1000PEPE] 当前账户余额: 可用=72.87971570 USDT, 总额=72.89452551 USDT
+2025-03-03 18:59:50 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 18:59:50 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [26.612276 29.815067 26.745792])
+2025-03-03 18:59:51 - INFO - [1000PEPE] 当前价格: 0.0082717, AI信号: 0
+2025-03-03 18:59:51 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 18:59:52 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [26.69699  29.91361  26.835817])
+2025-03-03 19:00:53 - INFO - [1000PEPE] USDT余额: 可用=72.87971616, 总额=72.89452551
+2025-03-03 19:00:53 - INFO - [1000PEPE] 当前账户余额: 可用=72.87971616 USDT, 总额=72.89452551 USDT
+2025-03-03 19:00:53 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 19:00:54 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [28.0981   31.898335 28.674988])
+2025-03-03 19:00:54 - INFO - [1000PEPE] 当前价格: 0.0082488, AI信号: 0
+2025-03-03 19:00:54 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 19:00:55 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [28.064896 31.834215 28.610357])
+2025-03-03 19:01:56 - INFO - [1000PEPE] USDT余额: 可用=72.87971594, 总额=72.89452551
+2025-03-03 19:01:56 - INFO - [1000PEPE] 当前账户余额: 可用=72.87971594 USDT, 总额=72.89452551 USDT
+2025-03-03 19:01:56 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 19:01:56 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [24.908659 27.02912  24.23963 ])
+2025-03-03 19:01:57 - INFO - [1000PEPE] 当前价格: 0.0082684, AI信号: 0
+2025-03-03 19:01:57 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 19:01:58 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [10.003495 12.713601 11.201282])
+2025-03-03 19:02:04 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-03-03 19:02:04 - INFO - [1000PEPE] 关闭 1000PEPEUSDT 所有持仓
+2025-03-03 19:02:12 - INFO - [root] ==================================================
+2025-03-03 19:02:12 - INFO - [root] 日志系统初始化完成 - 2025-03-03 19:02:12
+2025-03-03 19:02:12 - INFO - [root] ==================================================
+2025-03-03 19:02:14 - INFO - [1000PEPE] 没有未成交的订单
+2025-03-03 19:02:14 - INFO - [1000PEPE] 当前已经是单向持仓模式
+2025-03-03 19:02:14 - INFO - [1000PEPE] 设置杠杆倍数 5倍 成功
+2025-03-03 19:02:14 - INFO - [1000PEPE] 当前已经是CROSSED保证金模式
+2025-03-03 19:02:14 - INFO - [1000PEPE] 交易器初始化成功 for 1000PEPEUSDT
+2025-03-03 19:02:15 - WARNING - [absl] At this time, the v2.11+ optimizer `tf.keras.optimizers.Adam` runs slowly on M1/M2 Macs, please use the legacy Keras optimizer instead, located at `tf.keras.optimizers.legacy.Adam`.
+2025-03-03 19:02:15 - WARNING - [absl] There is a known slowdown when using v2.11+ Keras optimizers on M1/M2 Macs. Falling back to the legacy Keras optimizer, i.e., `tf.keras.optimizers.legacy.Adam`.
+2025-03-03 19:02:15 - WARNING - [absl] At this time, the v2.11+ optimizer `tf.keras.optimizers.Adam` runs slowly on M1/M2 Macs, please use the legacy Keras optimizer instead, located at `tf.keras.optimizers.legacy.Adam`.
+2025-03-03 19:02:15 - WARNING - [absl] There is a known slowdown when using v2.11+ Keras optimizers on M1/M2 Macs. Falling back to the legacy Keras optimizer, i.e., `tf.keras.optimizers.legacy.Adam`.
+2025-03-03 19:02:15 - INFO - [1000PEPE] 已加载保存的模型: models/rl_trend_strategy_1000PEPEUSDT.h5
+2025-03-03 19:02:15 - INFO - [1000PEPE] 初始化 1000PEPEUSDT 交易器和策略成功
+2025-03-03 19:02:15 - INFO - [1000PEPE] 交易线程启动成功
+2025-03-03 19:02:15 - INFO - [root] 启动线程监控
+2025-03-03 19:02:15 - INFO - [root] 交易系统启动成功，正在交易的币对: 1000PEPEUSDT
+2025-03-03 19:02:15 - INFO - [1000PEPE] USDT余额: 可用=72.87971607, 总额=72.89452551
+2025-03-03 19:02:15 - INFO - [1000PEPE] 当前账户余额: 可用=72.87971607 USDT, 总额=72.89452551 USDT
+2025-03-03 19:02:15 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 19:02:16 - INFO - [1000PEPE] 探索模式: 随机选择动作 1 (探索率 ε=0.5000)
+2025-03-03 19:02:16 - INFO - [1000PEPE] 当前价格: 0.0082704, AI信号: 0
+2025-03-03 19:02:17 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 19:02:17 - INFO - [1000PEPE] 探索模式: 随机选择动作 0 (探索率 ε=0.5000)
+2025-03-03 19:02:17 - INFO - [1000PEPE] USDT余额: 可用=72.87971642, 总额=72.89452551
+2025-03-03 19:02:18 - INFO - [1000PEPE] 订单创建成功: {'info': {'orderId': '33154090967', 'symbol': '1000PEPEUSDT', 'status': 'FILLED', 'clientOrderId': 'x-xcKtGhcu58c90827c18de134d17c9c', 'price': '0.0000000', 'avgPrice': '0.0082719', 'origQty': '4406', 'executedQty': '4406', 'cumQty': '4406', 'cumQuote': '36.4459914', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0.0000000', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': '0', 'updateTime': '1740999738379'}, 'id': '33154090967', 'clientOrderId': 'x-xcKtGhcu58c90827c18de134d17c9c', 'timestamp': 1740999738379, 'datetime': '2025-03-03T11:02:18.379Z', 'lastTradeTimestamp': 1740999738379, 'lastUpdateTimestamp': 1740999738379, 'symbol': '1000PEPE/USDT:USDT', 'type': 'market', 'timeInForce': 'GTC', 'postOnly': False, 'reduceOnly': False, 'side': 'sell', 'price': 0.0082719, 'triggerPrice': None, 'amount': 4406.0, 'cost': 36.4459914, 'average': 0.0082719, 'filled': 4406.0, 'remaining': 0.0, 'status': 'closed', 'fee': {'currency': None, 'cost': None, 'rate': None}, 'trades': [], 'fees': [{'currency': None, 'cost': None, 'rate': None}], 'stopPrice': None, 'takeProfitPrice': None, 'stopLossPrice': None}
+2025-03-03 19:02:18 - INFO - [1000PEPE] 开空仓 - 数量: 4406.057532, 价格: 0.0082704
+2025-03-03 19:03:05 - INFO - [root] 接收到退出信号，正在关闭所有交易...
+2025-03-03 19:03:05 - INFO - [1000PEPE] 关闭 1000PEPEUSDT 所有持仓
+2025-03-03 19:06:28 - INFO - [root] ==================================================
+2025-03-03 19:06:28 - INFO - [root] 日志系统初始化完成 - 2025-03-03 19:06:28
+2025-03-03 19:06:28 - INFO - [root] ==================================================
+2025-03-03 19:06:29 - INFO - [1000PEPE] 没有未成交的订单
+2025-03-03 19:06:30 - INFO - [1000PEPE] 当前已经是单向持仓模式
+2025-03-03 19:06:30 - INFO - [1000PEPE] 设置杠杆倍数 5倍 成功
+2025-03-03 19:06:30 - INFO - [1000PEPE] 当前已经是CROSSED保证金模式
+2025-03-03 19:06:30 - INFO - [1000PEPE] 交易器初始化成功 for 1000PEPEUSDT
+2025-03-03 19:06:30 - WARNING - [absl] At this time, the v2.11+ optimizer `tf.keras.optimizers.Adam` runs slowly on M1/M2 Macs, please use the legacy Keras optimizer instead, located at `tf.keras.optimizers.legacy.Adam`.
+2025-03-03 19:06:30 - WARNING - [absl] There is a known slowdown when using v2.11+ Keras optimizers on M1/M2 Macs. Falling back to the legacy Keras optimizer, i.e., `tf.keras.optimizers.legacy.Adam`.
+2025-03-03 19:06:30 - WARNING - [absl] At this time, the v2.11+ optimizer `tf.keras.optimizers.Adam` runs slowly on M1/M2 Macs, please use the legacy Keras optimizer instead, located at `tf.keras.optimizers.legacy.Adam`.
+2025-03-03 19:06:30 - WARNING - [absl] There is a known slowdown when using v2.11+ Keras optimizers on M1/M2 Macs. Falling back to the legacy Keras optimizer, i.e., `tf.keras.optimizers.legacy.Adam`.
+2025-03-03 19:06:30 - INFO - [1000PEPE] 已加载保存的模型: models/rl_trend_strategy_1000PEPEUSDT.h5
+2025-03-03 19:06:30 - INFO - [1000PEPE] 已恢复探索率: 0.0100
+2025-03-03 19:06:30 - INFO - [1000PEPE] 初始化 1000PEPEUSDT 交易器和策略成功
+2025-03-03 19:06:30 - INFO - [1000PEPE] 交易线程启动成功
+2025-03-03 19:06:30 - INFO - [root] 启动线程监控
+2025-03-03 19:06:30 - INFO - [root] 交易系统启动成功，正在交易的币对: 1000PEPEUSDT
+2025-03-03 19:06:30 - INFO - [1000PEPE] USDT余额: 可用=65.61144412, 总额=72.9200541
+2025-03-03 19:06:30 - INFO - [1000PEPE] 当前账户余额: 可用=65.61144412 USDT, 总额=72.92005410 USDT
+2025-03-03 19:06:31 - INFO - [1000PEPE] 成功获取500根3mK线数据
+2025-03-03 19:06:31 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [23.907728 27.226126 25.246452])
+2025-03-03 19:06:32 - INFO - [1000PEPE] 当前持仓方向: 空，持仓金额: 36.4059
+2025-03-03 19:06:32 - INFO - [1000PEPE] 当前价格: 0.0082641, AI信号: 0, 持仓数量: 4406.0, 开仓均价: 0.0082719, 未实现盈亏: 0.03 USDT (0.09%)
+2025-03-03 19:06:32 - INFO - [1000PEPE] 成功获取100根3mK线数据
+2025-03-03 19:06:33 - INFO - [1000PEPE] 利用模式: 选择Q值最大的动作 1 (Q值: [24.157604 27.927689 25.604136])

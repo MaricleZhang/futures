@@ -15,6 +15,10 @@ import random
 import config
 from strategies.base_strategy import BaseStrategy
 
+import os
+import warnings
+
+
 class RLTrendStrategy(BaseStrategy):
     """RLTrendStrategy - 强化学习趋势跟踪策略
     
@@ -35,6 +39,10 @@ class RLTrendStrategy(BaseStrategy):
     def __init__(self, trader):
         """初始化强化学习趋势跟踪策略"""
         super().__init__(trader)
+
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+        warnings.filterwarnings('ignore', message='Even though the.*tf.data functions')
+        
         self.logger = self.get_logger()
         
         # K线设置
@@ -107,14 +115,28 @@ class RLTrendStrategy(BaseStrategy):
     
     def _build_model(self):
         """构建深度Q学习网络"""
+        # 设置TensorFlow
+        import tensorflow as tf
+        
+        # 启用急切执行模式，有助于调试
+        tf.config.run_functions_eagerly(True)
+        
         model = Sequential()
         model.add(Dense(64, input_dim=self.state_size, activation='relu'))
         model.add(BatchNormalization())
+        model.add(Dropout(0.2))  # 添加dropout以减少过拟合
         model.add(Dense(64, activation='relu'))
         model.add(BatchNormalization())
+        model.add(Dropout(0.2))
         model.add(Dense(32, activation='relu'))
         model.add(Dense(self.action_size, activation='linear'))
-        model.compile(loss='mse', optimizer=Adam(learning_rate=self.learning_rate))
+        
+        # 使用Huber损失函数，对离群值更稳健
+        model.compile(
+            loss=tf.keras.losses.Huber(),
+            optimizer=Adam(learning_rate=self.learning_rate),
+            run_eagerly=True  # 启用急切执行模式
+        )
         return model
     
     def _load_model(self):
@@ -187,6 +209,11 @@ class RLTrendStrategy(BaseStrategy):
             for col in ['open', 'high', 'low', 'close', 'volume']:
                 df[col] = pd.to_numeric(df[col], errors='coerce')
             
+            # 检查是否有缺失值，并进行插值
+            if df.isnull().any().any():
+                self.logger.warning("K线数据存在缺失值，进行插值处理")
+                df = df.interpolate(method='linear')
+            
             # 准备特征
             features = []
             
@@ -209,47 +236,88 @@ class RLTrendStrategy(BaseStrategy):
             # RSI - 3个不同周期
             for period in [7, 14, 21]:
                 rsi = talib.RSI(close, timeperiod=period)
-                features.append(rsi[-1] / 100)  # 归一化到0-1范围
+                # 处理RSI中的NaN
+                if np.isnan(rsi[-1]):
+                    features.append(0.5)  # 默认中性值
+                else:
+                    features.append(rsi[-1] / 100)  # 归一化到0-1范围
             
             # 移动平均 - 3个不同周期
             for period in [5, 10, 20]:
                 sma = talib.SMA(close, timeperiod=period)
-                features.append(close[-1] / sma[-1] - 1)  # 当前价格与MA的偏离度
+                # 处理SMA中的NaN
+                if np.isnan(sma[-1]):
+                    features.append(0)
+                else:
+                    features.append(close[-1] / sma[-1] - 1)  # 当前价格与MA的偏离度
             
             # MACD
             macd, macd_signal, macd_hist = talib.MACD(
                 close, fastperiod=12, slowperiod=26, signalperiod=9
             )
-            features.append(macd[-1] / close[-1])  # 归一化MACD
-            features.append(macd_signal[-1] / close[-1])  # 归一化信号线
-            features.append(macd_hist[-1] / close[-1])  # 归一化直方图
+            # 处理MACD中的NaN
+            if np.isnan(macd[-1]):
+                features.append(0)
+            else:
+                features.append(macd[-1] / close[-1] if close[-1] != 0 else 0)
+                
+            if np.isnan(macd_signal[-1]):
+                features.append(0)
+            else:
+                features.append(macd_signal[-1] / close[-1] if close[-1] != 0 else 0)
+                
+            if np.isnan(macd_hist[-1]):
+                features.append(0)
+            else:
+                features.append(macd_hist[-1] / close[-1] if close[-1] != 0 else 0)
             
             # 布林带
             upper, middle, lower = talib.BBANDS(close, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0)
-            features.append((close[-1] - lower[-1]) / (upper[-1] - lower[-1]))  # 价格在布林带中的位置
-            features.append((upper[-1] - lower[-1]) / middle[-1])  # 布林带宽度
+            # 处理布林带中的NaN
+            if np.isnan(upper[-1]) or np.isnan(lower[-1]) or np.isnan(middle[-1]) or upper[-1] == lower[-1]:
+                features.append(0.5)  # 默认中间位置
+                features.append(0.02)  # 默认宽度
+            else:
+                features.append((close[-1] - lower[-1]) / (upper[-1] - lower[-1]))  # 价格在布林带中的位置
+                features.append((upper[-1] - lower[-1]) / middle[-1])  # 布林带宽度
             
             # ATR - 波动率
             atr = talib.ATR(df['high'].values, df['low'].values, close, timeperiod=14)
-            features.append(atr[-1] / close[-1])  # 相对ATR
+            # 处理ATR中的NaN
+            if np.isnan(atr[-1]) or close[-1] == 0:
+                features.append(0.02)  # 默认值
+            else:
+                features.append(atr[-1] / close[-1])  # 相对ATR
             
             # Stochastic Oscillator
             slowk, slowd = talib.STOCH(df['high'].values, df['low'].values, close, 
                                       fastk_period=14, slowk_period=3, slowk_matype=0, 
                                       slowd_period=3, slowd_matype=0)
-            features.append(slowk[-1] / 100)  # 归一化到0-1范围
-            features.append(slowd[-1] / 100)  # 归一化到0-1范围
+            # 处理随机指标中的NaN
+            if np.isnan(slowk[-1]):
+                features.append(0.5)
+            else:
+                features.append(slowk[-1] / 100)  # 归一化到0-1范围
+                
+            if np.isnan(slowd[-1]):
+                features.append(0.5)
+            else:
+                features.append(slowd[-1] / 100)  # 归一化到0-1范围
             
             # 3. 成交量特征 (5个)
             volume = df['volume'].values
             
             # 成交量变化
             vol_ma = talib.SMA(volume, timeperiod=10)
-            features.append(volume[-1] / vol_ma[-1])  # 相对于MA的成交量
+            # 处理成交量MA中的NaN
+            if np.isnan(vol_ma[-1]) or vol_ma[-1] == 0:
+                features.append(1.0)  # 默认正常成交量
+            else:
+                features.append(volume[-1] / vol_ma[-1])  # 相对于MA的成交量
             
             # 成交量趋势 - 最近几根K线的成交量变化
             for i in range(1, 5):
-                if len(volume) > i:
+                if len(volume) > i and volume[-i-1] != 0:
                     features.append(volume[-1] / volume[-i-1]) 
                 else:
                     features.append(1.0)
@@ -284,7 +352,7 @@ class RLTrendStrategy(BaseStrategy):
             features.append(1 if position_amt > 0 else (-1 if position_amt < 0 else 0))  # 持仓方向
             
             # 如果有持仓，计算当前的盈亏率
-            if abs(position_amt) > 0:
+            if abs(position_amt) > 0 and entry_price != 0:
                 if position_amt > 0:  # 多仓
                     profit_pct = (close[-1] - entry_price) / entry_price
                 else:  # 空仓
@@ -297,17 +365,30 @@ class RLTrendStrategy(BaseStrategy):
             features.append(holding_time)
             
             # 确保维度正确
-            features = np.array(features)
+            features = np.array(features, dtype=np.float32)
+            
+            # 检查是否有NaN或无穷值
+            if np.isnan(features).any() or np.isinf(features).any():
+                self.logger.warning("特征中包含NaN或Inf值，将被替换为0")
+                features = np.nan_to_num(features, nan=0.0, posinf=0.0, neginf=0.0)
             
             # 验证特征数量
             if len(features) != self.state_size:
                 self.logger.error(f"特征维度不匹配! 预期 {self.state_size}, 实际 {len(features)}")
-                return None
+                # 如果特征数量不够，填充0
+                if len(features) < self.state_size:
+                    padding = np.zeros(self.state_size - len(features), dtype=np.float32)
+                    features = np.concatenate([features, padding])
+                # 如果特征数量过多，截断
+                elif len(features) > self.state_size:
+                    features = features[:self.state_size]
                 
             return features
             
         except Exception as e:
             self.logger.error(f"提取状态特征失败: {str(e)}")
+            import traceback
+            self.logger.error(traceback.format_exc())
             return None
     
     def _get_reward(self, action, prev_state, next_state, current_price, next_price):
@@ -442,17 +523,30 @@ class RLTrendStrategy(BaseStrategy):
             old_epsilon = self.epsilon
             self.epsilon *= self.epsilon_decay
             self.logger.info(f"探索率更新: {old_epsilon:.6f} -> {self.epsilon:.6f}")
-            
+        
         try:
             minibatch = random.sample(self.memory, batch_size)
             
+            # 准备批次数据
             states = np.array([experience[0] for experience in minibatch])
             actions = np.array([experience[1] for experience in minibatch])
             rewards = np.array([experience[2] for experience in minibatch])
             next_states = np.array([experience[3] for experience in minibatch])
             dones = np.array([experience[4] for experience in minibatch])
             
-            # 计算目标Q值
+            # 检查数据形状和类型
+            self.logger.debug(f"状态形状: {states.shape}, 类型: {states.dtype}")
+            
+            # 添加异常捕获和错误检查
+            if np.isnan(states).any() or np.isinf(states).any():
+                self.logger.error("状态包含NaN或Inf值，跳过此批次训练")
+                return
+            
+            if np.isnan(next_states).any() or np.isinf(next_states).any():
+                self.logger.error("下一状态包含NaN或Inf值，跳过此批次训练")
+                return
+            
+            # 计算目标Q值 - 不再使用get_session()
             target = self.online_model.predict(states, verbose=0)
             target_next = self.target_model.predict(next_states, verbose=0)
             
@@ -462,13 +556,19 @@ class RLTrendStrategy(BaseStrategy):
                 else:
                     target[i, actions[i]] = rewards[i] + self.gamma * np.amax(target_next[i])
             
-            # 训练模型
-            self.online_model.fit(states, target, epochs=1, verbose=0)
+            # 训练模型，添加早期停止以防止过拟合
+            self.online_model.fit(
+                states, 
+                target, 
+                epochs=1, 
+                verbose=0, 
+                batch_size=min(32, batch_size)
+            )
             
             # 更新探索率
             if self.epsilon > self.epsilon_min:
                 self.epsilon *= self.epsilon_decay
-                
+            
             # 增加步数计数器
             self.step_count += 1
             
@@ -480,9 +580,12 @@ class RLTrendStrategy(BaseStrategy):
                 # 每更新10次目标网络保存一次模型
                 if self.target_updates % 10 == 0:
                     self._save_model()
-                    
+                
         except Exception as e:
             self.logger.error(f"经验回放训练失败: {str(e)}")
+            # 在错误时添加堆栈跟踪以便调试
+            import traceback
+            self.logger.error(traceback.format_exc())
     
     def generate_signal(self, klines):
         """生成交易信号

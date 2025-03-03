@@ -58,7 +58,7 @@ class RLTrendStrategy(BaseStrategy):
         # 风险控制参数
         self.max_position_hold_time = 120  # 最大持仓时间(分钟)
         self.profit_target_pct = 0.5     # 目标利润率 50%
-        self.stop_loss_pct = 0.1         # 止损率 10%
+        self.stop_loss_pct = 0.05         # 止损率 5%
         self.max_trades_per_hour = 4       # 每小时最大交易次数
         
         # 交易状态
@@ -168,7 +168,7 @@ class RLTrendStrategy(BaseStrategy):
             
             # 保存到单独的文件
             import json
-            with open(f"{self.model_dir}/model_metadata.json", 'w') as f:
+            with open(f"{self.metadata_path}", 'w') as f:
                 json.dump(metadata, f)
                 
             self.logger.info(f"模型和元数据已保存，当前探索率: {self.epsilon:.4f}")

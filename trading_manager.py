@@ -4,7 +4,6 @@ import time
 from trader import Trader
 from strategies.short_term_rf_strategy import ShortTermRFStrategy
 from strategies.simple_trend_strategy import SimpleTrendStrategy
-from strategies.transform_strategy import TransformStrategy
 from strategies.rl_strategy import RLTrendStrategy
 from strategies.trend_strategy_15m import MediumTrendStrategy
 from strategies.ppo_strategy import PPOTrendStrategy
@@ -55,12 +54,12 @@ class TradingManager:
                 klines = trader.get_klines(symbol=symbol, interval=strategy.kline_interval, limit=strategy.training_lookback)
                 
                 # 生成交易信号
-                signal = strategy.generate_signal(klines)
+                # signal = strategy.generate_signal(klines)
                 current_price = trader.get_market_price(symbol)
                 position = trader.get_position(symbol)
                 position_amount = 0
                 
-                self.logger_info(symbol, position, current_price, signal)
+                self.logger_info(symbol, position, current_price, 0)
                 
                 strategy.monitor_position()
                 if position and 'info' in position:
@@ -132,7 +131,7 @@ class TradingManager:
             except Exception as e:
                 self.symbol_loggers[symbol].error(f"关闭 {symbol} 持仓失败: {str(e)}")
 
-    def logger_info(self, symbol, position, current_price, signal):
+    def logger_info(self, symbol, position, current_price, signal=0):
         """记录交易信息到日志
         
         Args:

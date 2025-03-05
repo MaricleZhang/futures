@@ -744,6 +744,126 @@ class PPOTrendStrategy(BaseStrategy):
             self.logger.error(f"训练模型失败: {str(e)}")
             return False
     
+    def print_metrics(self):
+        """打印PPO模型的指标和性能统计"""
+        try:
+            self.logger.info("========== PPO模型指标 ==========")
+            
+            # 1. 基本信息
+            self.logger.info(f"模型名称: {self.MODEL_NAME}")
+            self.logger.info(f"版本: {self.VERSION}")
+            self.logger.info(f"交易品种: {self.trader.symbol}")
+            
+            # 2. 模型参数
+            self.logger.info("\n----- 模型参数 -----")
+            self.logger.info(f"状态维度: {self.state_size}")
+            self.logger.info(f"动作空间: {self.action_size}")
+            self.logger.info(f"批次大小: {self.batch_size}")
+            self.logger.info(f"奖励折扣因子: {self.gamma}")
+            self.logger.info(f"PPO裁剪参数: {self.clip_ratio}")
+            self.logger.info(f"策略网络学习率: {self.policy_learning_rate}")
+            self.logger.info(f"价值网络学习率: {self.value_learning_rate}")
+            
+            # 3. 性能指标
+            self.logger.info("\n----- 性能指标 -----")
+            self.logger.info(f"累积奖励: {self.cum_reward:.4f}")
+            self.logger.info(f"交易次数: {len(self.trades_history)}")
+            
+            # 4. 当前状态
+            self.logger.info("\n----- 当前状态 -----")
+            position = self.trader.get_position()
+            if position and 'info' in position:
+                position_amt = float(position['info'].get('positionAmt', 0))
+                if abs(position_amt) > 0:
+                    entry_price = float(position['info'].get('entryPrice', 0))
+                    self.logger.info(f"当前持仓: {'多仓' if position_amt > 0 else '空仓'}")
+                    self.logger.info(f"持仓数量: {abs(position_amt):.6f}")
+                    self.logger.info(f"开仓价格: {entry_price:.2f}")
+                    
+                    # 计算持仓时间
+                    if self.position_entry_time:
+                        holding_time = (time.time() - self.position_entry_time) / 60  # 转为分钟
+                        self.logger.info(f"持仓时间: {holding_time:.2f}分钟")
+                    
+                    # 计算当前盈亏
+                    current_price = self.trader.get_market_price()
+                    if position_amt > 0:  # 多仓
+                        profit_pct = (current_price - entry_price) / entry_price * 100
+                    else:  # 空仓
+                        profit_pct = (entry_price - current_price) / entry_price * 100
+                    self.logger.info(f"当前盈亏: {profit_pct:.2f}%")
+                else:
+                    self.logger.info("当前无持仓")
+            else:
+                self.logger.info("当前无持仓")
+            
+            # 5. 模型预测
+            self.logger.info("\n----- 模型预测 -----")
+            # 获取最新K线数据
+            klines = self.trader.get_klines(interval=self.kline_interval, limit=self.lookback_period)
+            if len(klines) >= self.lookback_period:
+                state = self._get_state(klines)
+                if state is not None:
+                    # 使用Actor网络预测动作概率
+                    action_probs = self.actor_model.predict(state.reshape(1, -1), verbose=0)[0]
+                    self.logger.info(f"动作概率: 卖出={action_probs[0]:.4f}, 观望={action_probs[1]:.4f}, 买入={action_probs[2]:.4f}")
+                    
+                    # 计算价值估计
+                    value = self.critic_model.predict(state.reshape(1, -1), verbose=0)[0][0]
+                    self.logger.info(f"当前状态价值估计: {value:.4f}")
+            
+            # 6. 交易历史统计
+            if len(self.trades_history) > 0:
+                self.logger.info("\n----- 交易历史统计 -----")
+                wins = sum(1 for trade in self.trades_history if trade.get('profit', 0) > 0)
+                losses = sum(1 for trade in self.trades_history if trade.get('profit', 0) <= 0)
+                total_trades = len(self.trades_history)
+                win_rate = wins / total_trades * 100 if total_trades > 0 else 0
+                self.logger.info(f"总交易次数: {total_trades}")
+                self.logger.info(f"盈利次数: {wins}")
+                self.logger.info(f"亏损次数: {losses}")
+                self.logger.info(f"胜率: {win_rate:.2f}%")
+                
+                # 计算平均盈亏
+                if total_trades > 0:
+                    avg_profit = sum(trade.get('profit', 0) for trade in self.trades_history) / total_trades
+                    self.logger.info(f"平均盈亏: {avg_profit:.4f}")
+                    
+                    # 计算最大盈利和最大亏损
+                    max_profit = max((trade.get('profit', 0) for trade in self.trades_history), default=0)
+                    max_loss = min((trade.get('profit', 0) for trade in self.trades_history), default=0)
+                    self.logger.info(f"最大盈利: {max_profit:.4f}")
+                    self.logger.info(f"最大亏损: {max_loss:.4f}")
+            
+            # 7. 模型元数据
+            if os.path.exists(self.metadata_path):
+                self.logger.info("\n----- 模型元数据 -----")
+                import json
+                with open(self.metadata_path, 'r') as f:
+                    metadata = json.load(f)
+                    last_update_time = datetime.fromtimestamp(metadata.get('last_update', 0))
+                    self.logger.info(f"上次更新时间: {last_update_time}")
+                    self.logger.info(f"记录的累积奖励: {metadata.get('cum_reward', 0):.4f}")
+                    self.logger.info(f"记录的交易次数: {metadata.get('trade_count', 0)}")
+            
+            self.logger.info("=================================")
+            
+            # 返回一个字典，包含所有指标，方便其他地方使用
+            return {
+                "model_name": self.MODEL_NAME,
+                "version": self.VERSION,
+                "cum_reward": self.cum_reward,
+                "trades_count": len(self.trades_history),
+                "action_probs": action_probs.tolist() if 'action_probs' in locals() else None,
+                "state_value": float(value) if 'value' in locals() else None
+            }
+            
+        except Exception as e:
+            self.logger.error(f"打印指标失败: {str(e)}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+            return None
+    
     def monitor_position(self):
         """监控当前持仓，并根据策略决定是否平仓"""
         try:
@@ -891,6 +1011,7 @@ class PPOTrendStrategy(BaseStrategy):
                 # 如果信号与当前持仓方向相反，则平仓
                 if (position_side == "多" and signal == -1) or (position_side == "空" and signal == 1):
                     self.logger.info(f"根据策略信号({signal})平{position_side}仓")
+                    self.print_metrics()
                     self._handle_position_close(current_state, current_price, "signal_reverse")
                     return
                 

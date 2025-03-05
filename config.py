@@ -11,7 +11,7 @@ PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
 # 交易设置
-SYMBOLS = ['1000PEPEUSDT']  # 支持多个交易对
+SYMBOLS = ['PIPPINUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
     # 'BTCUSDT': {
     #     'leverage': 5,
@@ -19,7 +19,7 @@ SYMBOL_CONFIGS = {
     #     'check_interval': 60,  # 交易检查间隔(秒)
     #     'trade_amount_percent': 50,  # 每次交易使用的资金百分比
     # },
-        '1000PEPEUSDT': {
+        'PIPPINUSDT': {
         'leverage': 5,
         'min_notional': 20,
         'trade_amount_percent': 50,

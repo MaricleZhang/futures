@@ -9,65 +9,63 @@ import tensorflow as tf
 from tensorflow.keras.models import Sequential, load_model, Model
 from tensorflow.keras.layers import Dense, LSTM, Input, Dropout, BatchNormalization
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.losses import Huber
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 import random
+import os
+import warnings
 import config
 from strategies.base_strategy import BaseStrategy
 
-import os
-import warnings
 
-
-class RLTrendStrategy(BaseStrategy):
-    """RLTrendStrategy - 强化学习趋势跟踪策略
+class PPOTrendStrategy(BaseStrategy):
+    """PPOTrendStrategy - PPO强化学习趋势跟踪策略
     
-    基于深度强化学习(DQN)的交易策略，使用3分钟K线数据进行市场分析和交易决策。
-    通过状态表示、动作选择和奖励机制来训练代理进行最优交易决策。
+    基于PPO (Proximal Policy Optimization)强化学习算法的交易策略，使用5分钟K线数据进行市场分析和交易决策。
+    PPO算法相比传统DQN有更好的样本效率和稳定性，能够处理连续动作空间并防止策略更新过大。
     
     特点:
-    1. 深度Q网络(DQN): 使用深度学习模型学习价格走势特征
-    2. 经验回放: 通过存储和回放历史交易数据提高学习效率
-    3. ε-贪婪策略: 在探索新策略和利用已知策略间平衡
-    4. 复合奖励函数: 同时考虑收益率、风险控制和交易成本
-    5. 动态适应: 在线学习能力，随市场变化而调整
+    1. 双网络架构: 使用演员-评论家(Actor-Critic)结构进行策略优化和价值评估
+    2. 近端策略优化: 通过限制新旧策略差异来提高训练稳定性
+    3. 多周期分析: 结合多个时间框架的特征进行决策
+    4. 自适应学习: 根据市场波动性调整学习率和更新频率
+    5. 风险管理: 综合考虑持仓时间、未实现盈亏和市场波动进行风控
     """
     
-    MODEL_NAME = "RLTrend"
+    MODEL_NAME = "PPOTrend"
     VERSION = "1.0.0"
     
     def __init__(self, trader):
-        """初始化强化学习趋势跟踪策略"""
+        """初始化PPO趋势跟踪策略"""
         super().__init__(trader)
 
+        # 抑制TensorFlow警告
         os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
         warnings.filterwarnings('ignore', message='Even though the.*tf.data functions')
-
+        
         self.logger = self.get_logger()
         
         # K线设置
-        self.kline_interval = '3m'      # 3分钟K线
+        self.kline_interval = '5m'      # 使用5分钟K线
         self.check_interval = 60        # 检查信号间隔(秒)
-        self.lookback_period = 100      # 计算指标所需的K线数量
+        self.lookback_period = 120      # 计算指标所需的K线数量
         self.training_lookback = 500    # 训练所需K线数量
         
-        # RL模型参数
-        self.state_size = 30           # 状态特征维度
-        self.action_size = 3           # 动作空间大小: [卖出, 观望, 买入]
-        self.batch_size = 32           # 经验回放批次大小
-        self.gamma = 0.95              # 奖励折扣因子
-        self.epsilon = 1.0             # 探索率初始值
-        self.epsilon_min = 0.01        # 最小探索率
-        self.epsilon_decay = 0.995     # 探索率衰减速度
-        self.learning_rate = 0.001     # 学习率
-        self.update_target_freq = 10   # 目标网络更新频率
-        self.memory_size = 2000        # 经验回放缓冲区大小
+        # PPO模型参数
+        self.state_size = 40            # 状态特征维度
+        self.action_size = 3            # 动作空间大小: [卖出, 观望, 买入]
+        self.batch_size = 64            # 批次大小
+        self.gamma = 0.99               # 奖励折扣因子
+        self.clip_ratio = 0.2           # PPO裁剪参数
+        self.policy_learning_rate = 0.0001  # 策略网络学习率
+        self.value_learning_rate = 0.0005   # 价值网络学习率
+        self.gae_lambda = 0.95          # GAE参数Lambda
+        self.update_epochs = 4          # 每次训练的epoch数
+        self.memory_size = 2000         # 经验回放缓冲区大小
         
         # 风险控制参数
-        self.max_position_hold_time = 120  # 最大持仓时间(分钟)
+        self.max_position_hold_time = 240  # 最大持仓时间(分钟)
         self.profit_target_pct = 0.5     # 目标利润率 50%
-        self.stop_loss_pct = 0.01       # 止损率 1%
-        self.max_trades_per_hour = 4       # 每小时最大交易次数
+        self.stop_loss_pct = 0.05       # 止损率 5%
+        self.max_trades_per_hour = 3    # 每小时最大交易次数
         
         # 交易状态
         self.trade_count_hour = 0       # 当前小时交易次数
@@ -77,19 +75,25 @@ class RLTrendStrategy(BaseStrategy):
         self.last_action = 1            # 上一次动作 (初始为观望)
         
         # 经验回放缓冲区
-        self.memory = deque(maxlen=self.memory_size)
+        self.memory = []
         
-        # 模型
-        self.online_model = self._build_model()
-        self.target_model = self._build_model()
-        self.target_model.set_weights(self.online_model.get_weights())
-        self.target_updates = 0
-        self.step_count = 0
+        # PPO网络模型
+        self.actor_model = self._build_actor_model()
+        self.critic_model = self._build_critic_model()
+        
+        # 存储当前回合的数据
+        self.states = []
+        self.actions = []
+        self.rewards = []
+        self.next_states = []
+        self.dones = []
+        self.action_probs = []  # 存储动作概率以计算旧策略的概率比
         
         # 模型存储路径
         self.model_dir = "models"
-        self.model_path = f"{self.model_dir}/rl_trend_strategy_{self.trader.symbol}.h5"
-        self.metadata_path = f"{self.model_dir}/model_metadata_{self.trader.symbol}.json"
+        self.actor_model_path = f"{self.model_dir}/ppo_actor_{self.trader.symbol}.h5"
+        self.critic_model_path = f"{self.model_dir}/ppo_critic_{self.trader.symbol}.h5"
+        self.metadata_path = f"{self.model_dir}/ppo_metadata_{self.trader.symbol}.json"
         
         # 性能跟踪
         self.cum_reward = 0
@@ -99,6 +103,10 @@ class RLTrendStrategy(BaseStrategy):
         self.last_training_time = time.time()
         self.retraining_interval = 3600  # 1小时重新训练一次
 
+        # 创建模型目录
+        if not os.path.exists(self.model_dir):
+            os.makedirs(self.model_dir)
+            
         # 尝试加载模型
         model_loaded = self._load_model()
     
@@ -107,95 +115,114 @@ class RLTrendStrategy(BaseStrategy):
             self.logger.info("模型加载失败，执行初始训练...")
             initial_klines = self.trader.get_klines(interval=self.kline_interval, limit=1000)
             if len(initial_klines) > 500:
-                for _ in range(10):
+                self.logger.info(f"开始初始训练，使用{len(initial_klines)}根K线数据...")
+                for _ in range(5):  # 进行5轮初始训练
                     self.train_model(initial_klines)
-                    self._save_model()  # 保存训练好的模型
+                self._save_model()  # 保存训练好的模型
+                self.logger.info("初始训练完成")
             else:
-               self.logger.info("成功加载保存的模型，可以直接使用")
+                self.logger.warning("K线数据不足，无法进行初始训练")
+        else:
+            self.logger.info("成功加载保存的模型，可以直接使用")
     
-    def _build_model(self):
-        """构建深度Q学习网络"""
-        # 设置TensorFlow
-        import tensorflow as tf
+    def _build_actor_model(self):
+        """构建策略网络(Actor)"""
+        inputs = Input(shape=(self.state_size,))
+        x = Dense(128, activation='relu')(inputs)
+        x = BatchNormalization()(x)
+        x = Dropout(0.2)(x)
+        x = Dense(64, activation='relu')(x)
+        x = BatchNormalization()(x)
+        x = Dropout(0.2)(x)
+        outputs = Dense(self.action_size, activation='softmax')(x)
         
-        # 启用急切执行模式，有助于调试
-        tf.config.run_functions_eagerly(True)
-        
-        model = Sequential()
-        model.add(Dense(64, input_dim=self.state_size, activation='relu'))
-        model.add(BatchNormalization())
-        model.add(Dropout(0.2))  # 添加dropout以减少过拟合
-        model.add(Dense(64, activation='relu'))
-        model.add(BatchNormalization())
-        model.add(Dropout(0.2))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(self.action_size, activation='linear'))
-        
-        # 使用Huber损失函数，对离群值更稳健
+        model = Model(inputs=inputs, outputs=outputs)
         model.compile(
-            loss=tf.keras.losses.Huber(),
-            optimizer=Adam(learning_rate=self.learning_rate),
-            run_eagerly=True  # 启用急切执行模式
+            optimizer=Adam(learning_rate=self.policy_learning_rate),
+            loss='categorical_crossentropy'
+        )
+        return model
+    
+    def _build_critic_model(self):
+        """构建价值网络(Critic)"""
+        inputs = Input(shape=(self.state_size,))
+        x = Dense(128, activation='relu')(inputs)
+        x = BatchNormalization()(x)
+        x = Dropout(0.2)(x)
+        x = Dense(64, activation='relu')(x)
+        x = BatchNormalization()(x)
+        x = Dropout(0.2)(x)
+        outputs = Dense(1, activation='linear')(x)
+        
+        model = Model(inputs=inputs, outputs=outputs)
+        model.compile(
+            optimizer=Adam(learning_rate=self.value_learning_rate),
+            loss='mse'
         )
         return model
     
     def _load_model(self):
+        """加载保存的模型"""
         try:
-            import os
-            import json
-            
-            if not os.path.exists(self.model_dir):
-                os.makedirs(self.model_dir)
+            # 加载Actor模型
+            if os.path.exists(self.actor_model_path):
+                self.actor_model = load_model(self.actor_model_path)
+                self.logger.info(f"已加载策略网络(Actor)模型: {self.actor_model_path}")
                 
-            # 加载模型
-            if os.path.exists(self.model_path):
-                self.online_model = load_model(self.model_path)
-                self.target_model.set_weights(self.online_model.get_weights())
-                self.logger.info(f"已加载保存的模型: {self.model_path}")
-                
-                # 尝试加载元数据
-                metadata_path = self.metadata_path
-                if os.path.exists(metadata_path):
-                    with open(metadata_path, 'r') as f:
-                        metadata = json.load(f)
+                # 加载Critic模型
+                if os.path.exists(self.critic_model_path):
+                    self.critic_model = load_model(self.critic_model_path)
+                    self.logger.info(f"已加载价值网络(Critic)模型: {self.critic_model_path}")
                     
-                    # 恢复探索率
-                    if 'epsilon' in metadata:
-                        self.epsilon = metadata['epsilon']
-                        self.logger.info(f"已恢复探索率: {self.epsilon:.4f}")
-                    else:
-                        # 如果没有保存过探索率，使用默认值但略低
-                        self.epsilon = max(self.epsilon_min, self.epsilon * 0.5)
+                    # 尝试加载元数据
+                    if os.path.exists(self.metadata_path):
+                        import json
+                        with open(self.metadata_path, 'r') as f:
+                            metadata = json.load(f)
+                            self.logger.info(f"已加载元数据: {self.metadata_path}")
+                            
+                    return True
                 else:
-                    self.epsilon = max(self.epsilon_min, self.epsilon * 0.5)
-                return True
+                    self.logger.warning(f"未找到价值网络模型: {self.critic_model_path}")
+                    return False
             else:
                 self.logger.info("未找到保存的模型，将使用新模型")
                 return False
+                
         except Exception as e:
             self.logger.error(f"加载模型失败: {str(e)}")
+            import traceback
+            self.logger.error(traceback.format_exc())
             return False
-    def _save_model(self):
-        try:
-            # 保存模型
-            self.online_model.save(self.model_path)
             
-            # 保存探索率和其他超参数
+    def _save_model(self):
+        """保存模型"""
+        try:
+            # 保存Actor模型
+            self.actor_model.save(self.actor_model_path)
+            self.logger.info(f"策略网络(Actor)模型已保存: {self.actor_model_path}")
+            
+            # 保存Critic模型
+            self.critic_model.save(self.critic_model_path)
+            self.logger.info(f"价值网络(Critic)模型已保存: {self.critic_model_path}")
+            
+            # 保存元数据
             metadata = {
-                'epsilon': self.epsilon,
-                'epsilon_min': self.epsilon_min,
-                'epsilon_decay': self.epsilon_decay,
-                'last_update': time.time()
+                'last_update': time.time(),
+                'cum_reward': self.cum_reward,
+                'trade_count': len(self.trades_history)
             }
             
             # 保存到单独的文件
             import json
-            with open(f"{self.metadata_path}", 'w') as f:
+            with open(self.metadata_path, 'w') as f:
                 json.dump(metadata, f)
+            self.logger.info(f"元数据已保存: {self.metadata_path}")
                 
-            self.logger.info(f"模型和元数据已保存，当前探索率: {self.epsilon:.4f}")
         except Exception as e:
             self.logger.error(f"保存模型失败: {str(e)}")
+            import traceback
+            self.logger.error(traceback.format_exc())
     
     def _get_state(self, klines):
         """从K线数据提取当前状态特征"""
@@ -209,7 +236,7 @@ class RLTrendStrategy(BaseStrategy):
             for col in ['open', 'high', 'low', 'close', 'volume']:
                 df[col] = pd.to_numeric(df[col], errors='coerce')
             
-            # 检查是否有缺失值，并进行插值
+            # 检查是否有缺失值
             if df.isnull().any().any():
                 self.logger.warning("K线数据存在缺失值，进行插值处理")
                 df = df.interpolate(method='linear')
@@ -217,124 +244,94 @@ class RLTrendStrategy(BaseStrategy):
             # 准备特征
             features = []
             
-            # 1. 价格相对特征 (6个，这里增加了一个特征以达到总共30个)
+            # 1. 价格特征
             close = df['close'].values
-            close_prev = np.roll(close, 1)
-            close_prev[0] = close[0]
+            open_price = df['open'].values
+            high = df['high'].values
+            low = df['low'].values
             
-            # 价格相对于开盘价
-            features.append((df['close'].iloc[-1] / df['open'].iloc[-1]) - 1)
+            # 价格变化特征
+            price_change = df['close'].pct_change()
+            features.append(price_change.iloc[-1])  # 最近一根K线的价格变化率
+            features.append(price_change.rolling(5).mean().iloc[-1])  # 5根K线的平均变化率
+            features.append(price_change.rolling(10).mean().iloc[-1])  # 10根K线的平均变化率
             
-            # 最近5根K线的价格变化率
-            for i in range(1, 6):
-                if len(close) > i:
-                    features.append((close[-1] / close[-i-1]) - 1)
-                else:
-                    features.append(0)
+            # 价格结构特征
+            # K线实体占比
+            body_ratio = abs(df['close'] - df['open']) / (df['high'] - df['low'])
+            features.append(body_ratio.iloc[-1])
+            features.append(body_ratio.rolling(5).mean().iloc[-1])
             
-            # 2. 技术指标 (15个)
-            # RSI - 3个不同周期
-            for period in [7, 14, 21]:
+            # 上下影线占比
+            upper_shadow = (df['high'] - df[['open', 'close']].max(axis=1)) / (df['high'] - df['low'])
+            lower_shadow = (df[['open', 'close']].min(axis=1) - df['low']) / (df['high'] - df['low'])
+            features.append(upper_shadow.iloc[-1])
+            features.append(lower_shadow.iloc[-1])
+            
+            # 2. 技术指标
+            # 多周期RSI
+            for period in [6, 14, 21]:
                 rsi = talib.RSI(close, timeperiod=period)
-                # 处理RSI中的NaN
-                if np.isnan(rsi[-1]):
-                    features.append(0.5)  # 默认中性值
-                else:
-                    features.append(rsi[-1] / 100)  # 归一化到0-1范围
+                features.append(rsi[-1] / 100)  # 归一化到0-1
+                features.append((rsi[-1] - rsi[-2]) / 100)  # RSI变化率
             
-            # 移动平均 - 3个不同周期
-            for period in [5, 10, 20]:
-                sma = talib.SMA(close, timeperiod=period)
-                # 处理SMA中的NaN
-                if np.isnan(sma[-1]):
-                    features.append(0)
-                else:
-                    features.append(close[-1] / sma[-1] - 1)  # 当前价格与MA的偏离度
+            # 多周期移动平均
+            for period in [5, 10, 20, 50]:
+                ma = talib.SMA(close, timeperiod=period)
+                features.append((close[-1] / ma[-1]) - 1)  # 价格相对于MA的偏离度
             
             # MACD
-            macd, macd_signal, macd_hist = talib.MACD(
-                close, fastperiod=12, slowperiod=26, signalperiod=9
-            )
-            # 处理MACD中的NaN
-            if np.isnan(macd[-1]):
-                features.append(0)
-            else:
-                features.append(macd[-1] / close[-1] if close[-1] != 0 else 0)
-                
-            if np.isnan(macd_signal[-1]):
-                features.append(0)
-            else:
-                features.append(macd_signal[-1] / close[-1] if close[-1] != 0 else 0)
-                
-            if np.isnan(macd_hist[-1]):
-                features.append(0)
-            else:
-                features.append(macd_hist[-1] / close[-1] if close[-1] != 0 else 0)
+            macd, macd_signal, macd_hist = talib.MACD(close, fastperiod=12, slowperiod=26, signalperiod=9)
+            features.append(macd[-1] / close[-1] if close[-1] != 0 else 0)
+            features.append(macd_signal[-1] / close[-1] if close[-1] != 0 else 0)
+            features.append(macd_hist[-1] / close[-1] if close[-1] != 0 else 0)
+            features.append((macd_hist[-1] - macd_hist[-2]) / close[-1] if close[-1] != 0 else 0)
             
             # 布林带
             upper, middle, lower = talib.BBANDS(close, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0)
-            # 处理布林带中的NaN
-            if np.isnan(upper[-1]) or np.isnan(lower[-1]) or np.isnan(middle[-1]) or upper[-1] == lower[-1]:
-                features.append(0.5)  # 默认中间位置
-                features.append(0.02)  # 默认宽度
-            else:
-                features.append((close[-1] - lower[-1]) / (upper[-1] - lower[-1]))  # 价格在布林带中的位置
-                features.append((upper[-1] - lower[-1]) / middle[-1])  # 布林带宽度
+            features.append((close[-1] - lower[-1]) / (upper[-1] - lower[-1]) if (upper[-1] - lower[-1]) != 0 else 0.5)
+            features.append((upper[-1] - lower[-1]) / middle[-1] if middle[-1] != 0 else 0)
             
-            # ATR - 波动率
-            atr = talib.ATR(df['high'].values, df['low'].values, close, timeperiod=14)
-            # 处理ATR中的NaN
-            if np.isnan(atr[-1]) or close[-1] == 0:
-                features.append(0.02)  # 默认值
-            else:
-                features.append(atr[-1] / close[-1])  # 相对ATR
+            # 多周期ATR - 波动率
+            for period in [7, 14, 21]:
+                atr = talib.ATR(high, low, close, timeperiod=period)
+                features.append(atr[-1] / close[-1] if close[-1] != 0 else 0)
             
-            # Stochastic Oscillator
-            slowk, slowd = talib.STOCH(df['high'].values, df['low'].values, close, 
-                                      fastk_period=14, slowk_period=3, slowk_matype=0, 
-                                      slowd_period=3, slowd_matype=0)
-            # 处理随机指标中的NaN
-            if np.isnan(slowk[-1]):
-                features.append(0.5)
-            else:
-                features.append(slowk[-1] / 100)  # 归一化到0-1范围
-                
-            if np.isnan(slowd[-1]):
-                features.append(0.5)
-            else:
-                features.append(slowd[-1] / 100)  # 归一化到0-1范围
+            # 随机指标
+            slowk, slowd = talib.STOCH(high, low, close, fastk_period=14, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0)
+            features.append(slowk[-1] / 100)
+            features.append(slowd[-1] / 100)
+            features.append((slowk[-1] - slowd[-1]) / 100)
             
-            # 3. 成交量特征 (5个)
+            # 3. 成交量特征
             volume = df['volume'].values
-            
-            # 成交量变化
             vol_ma = talib.SMA(volume, timeperiod=10)
-            # 处理成交量MA中的NaN
-            if np.isnan(vol_ma[-1]) or vol_ma[-1] == 0:
-                features.append(1.0)  # 默认正常成交量
-            else:
-                features.append(volume[-1] / vol_ma[-1])  # 相对于MA的成交量
+            features.append(volume[-1] / vol_ma[-1] if vol_ma[-1] != 0 else 1.0)
             
-            # 成交量趋势 - 最近几根K线的成交量变化
-            for i in range(1, 5):
-                if len(volume) > i and volume[-i-1] != 0:
-                    features.append(volume[-1] / volume[-i-1]) 
-                else:
-                    features.append(1.0)
+            # 成交量趋势
+            features.append(volume[-1] / volume[-6] if volume[-6] != 0 else 1.0)
             
-            # 4. 形态识别特征 (2个)
-            # 使用形态识别模式，检测潜在反转模式
-            doji = talib.CDLDOJI(df['open'].values, df['high'].values, df['low'].values, close)
-            features.append(1 if doji[-1] != 0 else 0)
+            # OBV - 能量潮指标
+            obv = talib.OBV(close, volume)
+            features.append((obv[-1] - obv[-10]) / obv[-10] if obv[-10] != 0 else 0)
             
-            hammer = talib.CDLHAMMER(df['open'].values, df['high'].values, df['low'].values, close)
-            features.append(1 if hammer[-1] != 0 else 0)
+            # 4. 市场模式特征
+            # ADX - 趋势强度
+            adx = talib.ADX(high, low, close, timeperiod=14)
+            features.append(adx[-1] / 100)
             
-            # 5. 当前持仓相关特征 (3个)
-            # 获取当前持仓状态
+            # Aroon - 趋势方向和强度
+            aroon_down, aroon_up = talib.AROON(high, low, timeperiod=14)
+            features.append(aroon_up[-1] / 100)
+            features.append(aroon_down[-1] / 100)
+            
+            # 多周期CCI - 顺势指标
+            for period in [14, 20]:
+                cci = talib.CCI(high, low, close, timeperiod=period)
+                features.append(cci[-1] / 200 + 0.5)  # 归一化到0-1
+            
+            # 5. 当前持仓特征
             position = self.trader.get_position()
-            
-            # 持仓方向和数量
             position_amt = 0
             entry_price = 0
             holding_time = 0
@@ -343,25 +340,24 @@ class RLTrendStrategy(BaseStrategy):
                 position_amt = float(position['info'].get('positionAmt', 0))
                 if abs(position_amt) > 0:
                     entry_price = float(position['info'].get('entryPrice', 0))
-                    # 计算持仓时间比例 (相对于最大持仓时间)
                     if self.position_entry_time:
                         holding_time = (time.time() - self.position_entry_time) / 60  # 转为分钟
                         holding_time = min(holding_time / self.max_position_hold_time, 1.0)  # 归一化
             
-            # 添加持仓特征
-            features.append(1 if position_amt > 0 else (-1 if position_amt < 0 else 0))  # 持仓方向
+            # 持仓方向
+            features.append(1 if position_amt > 0 else (-1 if position_amt < 0 else 0))
             
-            # 如果有持仓，计算当前的盈亏率
+            # 持仓盈亏
             if abs(position_amt) > 0 and entry_price != 0:
                 if position_amt > 0:  # 多仓
                     profit_pct = (close[-1] - entry_price) / entry_price
                 else:  # 空仓
                     profit_pct = (entry_price - close[-1]) / entry_price
-                features.append(profit_pct)  # 未实现盈亏率
+                features.append(profit_pct)
             else:
-                features.append(0)  # 无持仓，盈亏为0
+                features.append(0)
                 
-            # 持仓时间比例
+            # 持仓时间
             features.append(holding_time)
             
             # 确保维度正确
@@ -374,15 +370,13 @@ class RLTrendStrategy(BaseStrategy):
             
             # 验证特征数量
             if len(features) != self.state_size:
-                self.logger.error(f"特征维度不匹配! 预期 {self.state_size}, 实际 {len(features)}")
-                # 如果特征数量不够，填充0
+                self.logger.warning(f"特征维度不匹配! 预期 {self.state_size}, 实际 {len(features)}")
                 if len(features) < self.state_size:
                     padding = np.zeros(self.state_size - len(features), dtype=np.float32)
                     features = np.concatenate([features, padding])
-                # 如果特征数量过多，截断
-                elif len(features) > self.state_size:
+                else:
                     features = features[:self.state_size]
-                
+            
             return features
             
         except Exception as e:
@@ -391,7 +385,7 @@ class RLTrendStrategy(BaseStrategy):
             self.logger.error(traceback.format_exc())
             return None
     
-    def _get_reward(self, action, prev_state, next_state, current_price, next_price):
+    def _calculate_reward(self, action, prev_state, next_state, current_price, next_price):
         """计算给定动作的奖励"""
         try:
             # 获取持仓状态
@@ -404,42 +398,44 @@ class RLTrendStrategy(BaseStrategy):
                 if abs(position_amt) > 0:
                     entry_price = float(position['info'].get('entryPrice', 0))
             
-            # 1. 基础奖励 - 来自价格变化的收益
+            # 价格变化奖励
             price_change_pct = (next_price - current_price) / current_price
             
-            # 2. 动作奖励
-            action_reward = 0
-            
-            # 持仓奖励计算
-            if abs(position_amt) > 0:  # 有持仓
+            # 持仓奖励
+            if abs(position_amt) > 0:
                 if position_amt > 0:  # 多仓
                     position_reward = price_change_pct * 100  # 放大奖励
                 else:  # 空仓
-                    position_reward = -price_change_pct * 100  # 价格下跌时有正奖励
+                    position_reward = -price_change_pct * 100
                 
-                # 根据持仓方向和当前动作给予额外奖励/惩罚
+                # 持仓方向与动作一致性奖励
                 if (position_amt > 0 and action == 2) or (position_amt < 0 and action == 0):
-                    # 持有方向正确的仓位
-                    action_reward += 0.1
+                    # 持有正确方向的仓位
+                    action_reward = 0.2
                 elif (position_amt > 0 and action == 0) or (position_amt < 0 and action == 2):
-                    # 应该平仓或反向操作
-                    action_reward -= 0.1
-            else:  # 无持仓
+                    # 持仓方向与动作不一致
+                    action_reward = -0.2
+                else:
+                    # 观望
+                    action_reward = 0
+            else:
+                # 无持仓
                 position_reward = 0
                 
-                # 观望奖励 - 根据价格趋势给予观望的奖励
+                # 根据价格趋势给予观望的奖励
                 if action == 1:  # 观望
                     if abs(price_change_pct) < 0.0005:  # 价格变化很小时，观望是好的
-                        action_reward += 0.05
+                        action_reward = 0.1
                     else:
-                    # 添加这行：在明显趋势中观望的惩罚
-                     action_reward -= 0.1 * abs(price_change_pct) * 100
+                        action_reward = -0.05  # 价格明显变化时，观望是次优的
+                else:
+                    action_reward = 0
             
-            # 3. 风险控制奖励
+            # 风险控制奖励
             risk_reward = 0
             
-            # 止盈止损奖励
-            if abs(position_amt) > 0:
+            # 如果有持仓，计算当前盈亏
+            if abs(position_amt) > 0 and entry_price > 0:
                 current_profit_pct = 0
                 
                 if position_amt > 0:  # 多仓
@@ -448,46 +444,30 @@ class RLTrendStrategy(BaseStrategy):
                     current_profit_pct = (entry_price - current_price) / entry_price
                 
                 # 止盈奖励
-                if current_profit_pct >= self.profit_target_pct and action != 1:  # 非观望动作
-                    risk_reward += 0.5
+                if current_profit_pct >= self.profit_target_pct * 0.7 and action != 1:
+                    risk_reward += 0.5  # 接近目标利润且准备平仓
                 
                 # 止损惩罚
-                if current_profit_pct <= -self.stop_loss_pct and action != 1:  # 非观望动作
-                    risk_reward += 0.3
-                elif current_profit_pct <= -self.stop_loss_pct * 2 and action == 1:  # 观望动作
-                    risk_reward -= 0.5  # 严重亏损还不平仓的惩罚
+                if current_profit_pct <= -self.stop_loss_pct * 0.7 and action != 1:
+                    risk_reward += 0.3  # 接近止损点且准备平仓
+                elif current_profit_pct <= -self.stop_loss_pct and action == 1:
+                    risk_reward -= 0.5  # 亏损严重还坚持观望
             
-            # 4. 交易频率控制
+            # 交易频率控制奖励
             freq_reward = 0
             
             # 过度交易惩罚
-            if self.last_action != action and action != 1:  # 如果动作改变了且不是观望
-                freq_reward -= 0.05  # 小惩罚以减少频繁交易
+            if self.last_action != action and action != 1:  # 动作改变且不是观望
+                freq_reward -= 0.1
             
             # 长时间持仓惩罚
             if abs(position_amt) > 0 and self.position_entry_time:
                 holding_time = (time.time() - self.position_entry_time) / 60  # 转为分钟
                 if holding_time > self.max_position_hold_time * 0.8:
-                    freq_reward -= 0.1  # 接近最大持仓时间时给予惩罚
+                    freq_reward -= 0.2  # 接近最大持仓时间
             
-            # 5. 市场状态匹配度奖励
-            state_reward = 0
-            
-            # 根据RSI指标添加市场状态匹配度奖励
-            if prev_state is not None:
-                rsi_value = prev_state[2] * 100  # 第3个特征是RSI(14)，还原为0-100范围
-                
-                if rsi_value > 70 and action == 0:  # 超买时卖出
-                    state_reward += 0.2
-                elif rsi_value < 30 and action == 2:  # 超卖时买入
-                    state_reward += 0.2
-                elif rsi_value > 70 and action == 2:  # 超买时买入
-                    state_reward -= 0.2
-                elif rsi_value < 30 and action == 0:  # 超卖时卖出
-                    state_reward -= 0.2
-            
-            # 综合奖励计算
-            total_reward = position_reward + action_reward + risk_reward + freq_reward + state_reward
+            # 总奖励计算
+            total_reward = position_reward + action_reward + risk_reward + freq_reward
             
             self.logger.debug(f"""
                 奖励组成:
@@ -495,7 +475,6 @@ class RLTrendStrategy(BaseStrategy):
                 - 动作奖励: {action_reward:.4f}
                 - 风险奖励: {risk_reward:.4f}
                 - 频率奖励: {freq_reward:.4f}
-                - 状态奖励: {state_reward:.4f}
                 = 总奖励: {total_reward:.4f}
             """)
             
@@ -505,88 +484,106 @@ class RLTrendStrategy(BaseStrategy):
             self.logger.error(f"计算奖励失败: {str(e)}")
             return 0
     
-    def _remember(self, state, action, reward, next_state, done):
+    def _remember(self, state, action, reward, next_state, done, action_prob):
         """将经验添加到回放缓冲区"""
         try:
             if state is not None and next_state is not None:
-                self.memory.append((state, action, reward, next_state, done))
+                self.states.append(state)
+                self.actions.append(action)
+                self.rewards.append(reward)
+                self.next_states.append(next_state)
+                self.dones.append(done)
+                self.action_probs.append(action_prob)
         except Exception as e:
             self.logger.error(f"保存经验失败: {str(e)}")
     
-    def _replay(self, batch_size=None):
-        """从经验回放缓冲区中训练模型"""
-        if batch_size is None:
-            batch_size = self.batch_size
-            
-        if len(self.memory) < batch_size:
-            return
-        
-        # 更新探索率后记录日志
-        if self.epsilon > self.epsilon_min:
-            old_epsilon = self.epsilon
-            self.epsilon *= self.epsilon_decay
-            self.logger.info(f"探索率更新: {old_epsilon:.6f} -> {self.epsilon:.6f}")
-        
+    def _train_ppo(self):
+        """使用PPO算法训练模型"""
         try:
-            minibatch = random.sample(self.memory, batch_size)
-            
-            # 准备批次数据
-            states = np.array([experience[0] for experience in minibatch])
-            actions = np.array([experience[1] for experience in minibatch])
-            rewards = np.array([experience[2] for experience in minibatch])
-            next_states = np.array([experience[3] for experience in minibatch])
-            dones = np.array([experience[4] for experience in minibatch])
-            
-            # 检查数据形状和类型
-            self.logger.debug(f"状态形状: {states.shape}, 类型: {states.dtype}")
-            
-            # 添加异常捕获和错误检查
-            if np.isnan(states).any() or np.isinf(states).any():
-                self.logger.error("状态包含NaN或Inf值，跳过此批次训练")
+            if len(self.states) < self.batch_size:
                 return
             
-            if np.isnan(next_states).any() or np.isinf(next_states).any():
-                self.logger.error("下一状态包含NaN或Inf值，跳过此批次训练")
-                return
+            states = np.array(self.states)
+            actions = np.array(self.actions)
+            rewards = np.array(self.rewards)
+            next_states = np.array(self.next_states)
+            dones = np.array(self.dones)
+            old_action_probs = np.array(self.action_probs)
             
-            # 计算目标Q值 - 不再使用get_session()
-            target = self.online_model.predict(states, verbose=0)
-            target_next = self.target_model.predict(next_states, verbose=0)
+            # 1. 计算优势函数(Advantage)和回报(Returns)
+            # 使用GAE(Generalized Advantage Estimation)
+            values = self.critic_model.predict(states, verbose=0).flatten()
+            next_values = self.critic_model.predict(next_states, verbose=0).flatten()
             
-            for i in range(batch_size):
-                if dones[i]:
-                    target[i, actions[i]] = rewards[i]
+            # 计算时序差分目标(TD targets)和优势
+            deltas = rewards + self.gamma * next_values * (1 - dones) - values
+            advantages = np.zeros_like(rewards)
+            returns = np.zeros_like(rewards)
+            gae = 0
+            
+            # 从后向前计算GAE
+            for t in reversed(range(len(rewards))):
+                if t == len(rewards) - 1:
+                    gae = deltas[t]
                 else:
-                    target[i, actions[i]] = rewards[i] + self.gamma * np.amax(target_next[i])
+                    gae = deltas[t] + self.gamma * self.gae_lambda * (1 - dones[t]) * gae
+                advantages[t] = gae
+                returns[t] = advantages[t] + values[t]
             
-            # 训练模型，添加早期停止以防止过拟合
-            self.online_model.fit(
-                states, 
-                target, 
-                epochs=1, 
-                verbose=0, 
-                batch_size=min(32, batch_size)
-            )
+            # 标准化优势函数
+            advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
             
-            # 更新探索率
-            if self.epsilon > self.epsilon_min:
-                self.epsilon *= self.epsilon_decay
-            
-            # 增加步数计数器
-            self.step_count += 1
-            
-            # 定期更新目标网络
-            if self.step_count % self.update_target_freq == 0:
-                self.target_model.set_weights(self.online_model.get_weights())
-                self.target_updates += 1
+            # 2. 训练Actor网络
+            for _ in range(self.update_epochs):
+                # 为每个动作创建one-hot编码
+                actions_one_hot = np.zeros((len(actions), self.action_size))
+                for i, a in enumerate(actions):
+                    actions_one_hot[i, a] = 1
                 
-                # 每更新10次目标网络保存一次模型
-                if self.target_updates % 10 == 0:
-                    self._save_model()
+                # 获取当前策略下的动作概率
+                current_probs = self.actor_model.predict(states, verbose=0)
                 
+                # 对于每个样本，提取对应动作的概率
+                current_action_probs = np.sum(current_probs * actions_one_hot, axis=1)
+                
+                # 计算概率比率
+                ratio = current_action_probs / (old_action_probs + 1e-8)
+                
+                # 计算裁剪的目标函数
+                clip_1 = ratio * advantages
+                clip_2 = np.clip(ratio, 1 - self.clip_ratio, 1 + self.clip_ratio) * advantages
+                
+                # 最小化负的目标函数(相当于最大化目标函数)
+                actor_loss = -np.minimum(clip_1, clip_2)
+                
+                # 自定义训练步骤
+                with tf.GradientTape() as tape:
+                    current_probs = self.actor_model(states, training=True)
+                    current_action_probs = tf.reduce_sum(current_probs * actions_one_hot, axis=1)
+                    ratio = current_action_probs / (old_action_probs + 1e-8)
+                    clip_1 = ratio * advantages
+                    clip_2 = tf.clip_by_value(ratio, 1 - self.clip_ratio, 1 + self.clip_ratio) * advantages
+                    actor_loss = -tf.reduce_mean(tf.minimum(clip_1, clip_2))
+                
+                grads = tape.gradient(actor_loss, self.actor_model.trainable_variables)
+                self.actor_model.optimizer.apply_gradients(zip(grads, self.actor_model.trainable_variables))
+            
+            # 3. 训练Critic网络
+            for _ in range(self.update_epochs):
+                self.critic_model.fit(states, returns, epochs=1, verbose=0, batch_size=min(64, len(states)))
+            
+            # 清空回合数据
+            self.states = []
+            self.actions = []
+            self.rewards = []
+            self.next_states = []
+            self.dones = []
+            self.action_probs = []
+            
+            self.logger.info("PPO模型训练完成")
+            
         except Exception as e:
-            self.logger.error(f"经验回放训练失败: {str(e)}")
-            # 在错误时添加堆栈跟踪以便调试
+            self.logger.error(f"PPO训练失败: {str(e)}")
             import traceback
             self.logger.error(traceback.format_exc())
     
@@ -611,16 +608,16 @@ class RLTrendStrategy(BaseStrategy):
             # 获取当前价格
             current_price = self.trader.get_market_price()
             
-            # ε-贪婪策略选择动作
-            if np.random.rand() <= self.epsilon:
-                # 探索 - 随机选择动作
-                action = np.random.randint(0, self.action_size)
-                self.logger.info(f"探索模式: 随机选择动作 {action} (探索率 ε={self.epsilon:.4f})")
-            else:
-                # 利用 - 选择Q值最大的动作
-                act_values = self.online_model.predict(state.reshape(1, -1), verbose=0)
-                action = np.argmax(act_values[0])
-                self.logger.info(f"利用模式: 选择Q值最大的动作 {action} (Q值: {act_values[0]})")
+            # 使用Actor网络预测动作概率
+            action_probs = self.actor_model.predict(state.reshape(1, -1), verbose=0)[0]
+            self.logger.info(f"动作概率: 卖出={action_probs[0]:.4f}, 观望={action_probs[1]:.4f}, 买入={action_probs[2]:.4f}")
+            
+            # 根据概率随机选择动作
+            # 探索与利用的平衡 - 高概率动作被选中的几率更大
+            action = np.random.choice(self.action_size, p=action_probs)
+            
+            # 记录选择的动作和概率
+            self.last_action = action
             
             # 映射动作到信号
             # 动作空间: [0=卖出, 1=观望, 2=买入]
@@ -628,8 +625,9 @@ class RLTrendStrategy(BaseStrategy):
             signal_mapping = {0: -1, 1: 0, 2: 1}
             signal = signal_mapping[action]
             
-            # 记录这次选择的动作
-            self.last_action = action
+            # 记录到日志
+            signal_name = "卖出" if signal == -1 else ("观望" if signal == 0 else "买入")
+            self.logger.info(f"选择动作: {signal_name}, 概率: {action_probs[action]:.4f}")
             
             return signal
             
@@ -637,18 +635,20 @@ class RLTrendStrategy(BaseStrategy):
             self.logger.error(f"生成信号失败: {str(e)}")
             return 0
     
-    def update_model(self, prev_state, action, next_state, reward, done):
-        """更新RL模型"""
+    def update_model(self, prev_state, action, next_state, reward, done, action_prob):
+        """更新PPO模型"""
         try:
             if prev_state is not None and next_state is not None:
                 # 记录经验
-                self._remember(prev_state, action, reward, next_state, done)
-                
-                # 进行经验回放训练
-                self._replay()
+                self._remember(prev_state, action, reward, next_state, done, action_prob)
                 
                 # 累计奖励
                 self.cum_reward += reward
+                
+                # 如果回合结束或积累了足够的样本，则进行训练
+                if done or len(self.states) >= self.batch_size:
+                    self._train_ppo()
+                    
         except Exception as e:
             self.logger.error(f"更新模型失败: {str(e)}")
     
@@ -656,7 +656,6 @@ class RLTrendStrategy(BaseStrategy):
         """检查是否需要重新训练"""
         current_time = time.time()
         if current_time - self.last_training_time >= self.retraining_interval:
-            self.last_training_time = current_time
             return True
         return False
     
@@ -667,7 +666,7 @@ class RLTrendStrategy(BaseStrategy):
                 self.logger.error("K线数据不足，无法训练模型")
                 return False
                 
-            self.logger.info(f"使用 {len(klines)} 根K线数据训练RL模型")
+            self.logger.info(f"使用 {len(klines)} 根K线数据训练PPO模型")
             
             # 创建DataFrame
             df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
@@ -677,11 +676,10 @@ class RLTrendStrategy(BaseStrategy):
             # 获取价格序列
             prices = df['close'].values
             
-            # 训练轮次
-            batch_size = min(32, len(self.memory) // 2) if len(self.memory) > 0 else 32
+            # 训练参数
             episodes = min(200, len(klines) - self.lookback_period)
             
-            self.logger.info(f"开始训练，批次大小: {batch_size}, 训练轮次: {episodes}")
+            self.logger.info(f"开始训练，训练轮次: {episodes}")
             
             # 开始训练循环
             for episode in range(episodes):
@@ -697,12 +695,9 @@ class RLTrendStrategy(BaseStrategy):
                 
                 # 模拟几个时间步
                 for t in range(5):  # 每个episode模拟5个时间步
-                    # ε-贪婪策略选择动作
-                    if np.random.rand() <= self.epsilon:
-                        action = np.random.randint(0, self.action_size)
-                    else:
-                        act_values = self.online_model.predict(state.reshape(1, -1), verbose=0)
-                        action = np.argmax(act_values[0])
+                    # 使用Actor网络选择动作
+                    action_probs = self.actor_model.predict(state.reshape(1, -1), verbose=0)[0]
+                    action = np.random.choice(self.action_size, p=action_probs)
                     
                     # 模拟执行动作，获取下一状态
                     next_idx = start_idx + t + 1
@@ -723,10 +718,10 @@ class RLTrendStrategy(BaseStrategy):
                     done = (t == 4) or (next_idx >= len(klines) - 1)
                     
                     # 计算奖励
-                    reward = self._get_reward(action, state, next_state, current_price, next_price)
+                    reward = self._calculate_reward(action, state, next_state, current_price, next_price)
                     
-                    # 保存经验
-                    self._remember(state, action, reward, next_state, done)
+                    # 记录经验
+                    self._remember(state, action, reward, next_state, done, action_probs[action])
                     
                     # 更新状态
                     state = next_state
@@ -734,14 +729,15 @@ class RLTrendStrategy(BaseStrategy):
                     if done:
                         break
                 
-                # 经验回放训练
-                if len(self.memory) >= batch_size:
-                    self._replay(batch_size)
+                # 每积累一定样本后进行训练
+                if len(self.states) >= self.batch_size:
+                    self._train_ppo()
             
             # 训练后保存模型
             self._save_model()
             
-            self.logger.info(f"模型训练完成，当前探索率: {self.epsilon:.4f}")
+            self.logger.info("模型训练完成")
+            self.last_training_time = time.time()
             return True
             
         except Exception as e:
@@ -774,7 +770,9 @@ class RLTrendStrategy(BaseStrategy):
                 if self.should_retrain():
                     training_klines = self.trader.get_klines(interval=self.kline_interval, limit=self.training_lookback)
                     if self.train_model(training_klines):
-                        self.logger.info("RL模型重新训练完成")
+                        self.logger.info("PPO模型重新训练完成")
+                    else:
+                        self.logger.error("PPO模型重新训练失败")
                 
                 # 生成交易信号
                 signal = self.generate_signal(klines)
@@ -792,10 +790,7 @@ class RLTrendStrategy(BaseStrategy):
                     # 计算交易金额
                     trade_amount = (available_balance * trade_percent / 100) / current_price
                     
-                    # 记录开仓前状态
-                    prev_state = current_state
-                    
-                    # 开多仓
+                    # 执行开多仓操作
                     order = self.trader.open_long(amount=trade_amount)
                     if order:
                         self.logger.info(f"开多仓 - 数量: {trade_amount:.6f}, 价格: {current_price}")
@@ -814,8 +809,9 @@ class RLTrendStrategy(BaseStrategy):
                             'amount': trade_amount
                         })
                         
-                        # 下一个状态将在下次循环中获取，这里暂不更新模型
-                        # 将在下次调用时使用close_position的结果更新模型
+                        # 记录当前Actor网络的动作概率，用于后续更新
+                        action_probs = self.actor_model.predict(current_state.reshape(1, -1), verbose=0)[0]
+                        self.update_model(current_state, 2, None, 0, False, action_probs[2])
                 
                 elif signal == -1:  # 卖出信号
                     # 计算交易数量
@@ -829,10 +825,7 @@ class RLTrendStrategy(BaseStrategy):
                     # 计算交易金额
                     trade_amount = (available_balance * trade_percent / 100) / current_price
                     
-                    # 记录开仓前状态
-                    prev_state = current_state
-                    
-                    # 开空仓
+                    # 执行开空仓操作
                     order = self.trader.open_short(amount=trade_amount)
                     if order:
                         self.logger.info(f"开空仓 - 数量: {trade_amount:.6f}, 价格: {current_price}")
@@ -851,7 +844,9 @@ class RLTrendStrategy(BaseStrategy):
                             'amount': trade_amount
                         })
                         
-                        # 下一个状态将在下次循环中获取，这里暂不更新模型
+                        # 记录当前Actor网络的动作概率，用于后续更新
+                        action_probs = self.actor_model.predict(current_state.reshape(1, -1), verbose=0)[0]
+                        self.update_model(current_state, 0, None, 0, False, action_probs[0])
             
             # 如果有持仓，检查是否需要平仓
             else:
@@ -895,7 +890,7 @@ class RLTrendStrategy(BaseStrategy):
                 
                 # 如果信号与当前持仓方向相反，则平仓
                 if (position_side == "多" and signal == -1) or (position_side == "空" and signal == 1):
-                    self.logger.info(f"根据RL模型信号({signal})平{position_side}仓")
+                    self.logger.info(f"根据策略信号({signal})平{position_side}仓")
                     self._handle_position_close(current_state, current_price, "signal_reverse")
                     return
                 
@@ -903,7 +898,7 @@ class RLTrendStrategy(BaseStrategy):
             self.logger.error(f"监控持仓失败: {str(e)}")
     
     def _handle_position_close(self, current_state, current_price, reason):
-        """处理平仓操作并更新RL模型"""
+        """处理平仓操作并更新PPO模型"""
         try:
             # 获取平仓前的状态和持仓信息
             position = self.trader.get_position()
@@ -983,12 +978,14 @@ class RLTrendStrategy(BaseStrategy):
             if holding_time_minutes < self.max_position_hold_time * 0.3 and profit_rate > 0:
                 reward += 0.3  # 快速盈利加分
             
-            # 更新RL模型
-            # 假设我们的平仓操作对应动作 1 (观望，因为平仓后就是观望状态)
-            action = 1  # 观望动作
+            # 获取当前观望动作(平仓)的概率
+            action_probs = self.actor_model.predict(current_state.reshape(1, -1), verbose=0)[0]
+            
+            # 更新PPO模型
+            action = 1  # 观望/平仓动作
             done = True  # 交易完成
             
-            self.update_model(current_state, action, next_state, reward, done)
+            self.update_model(current_state, action, next_state, reward, done, action_probs[action])
             
             # 重置持仓记录
             self.position_entry_time = None
@@ -1000,13 +997,14 @@ class RLTrendStrategy(BaseStrategy):
     def run(self):
         """运行策略"""
         try:
-            self.logger.info("启动强化学习趋势跟踪策略")
+            self.logger.info("启动PPO强化学习趋势跟踪策略")
             
             # 初始训练
             klines = self.trader.get_klines(interval=self.kline_interval, limit=self.training_lookback)
             if len(klines) >= self.training_lookback:
-                if self.train_model(klines):
-                    self.logger.info("初始模型训练完成")
+                if not self._load_model() or self.should_retrain():
+                    if self.train_model(klines):
+                        self.logger.info("初始模型训练完成")
             
             # 主循环
             while True:

@@ -50,21 +50,7 @@ class Trader:
                 self.logger = logging.getLogger(symbol)
             
             # 初始化交易所
-            self.exchange = ccxt.binanceusdm({
-                'apiKey': os.getenv('BINANCE_API_KEY'),
-                'secret': os.getenv('BINANCE_SECRET_KEY'),
-                'enableRateLimit': True,
-                'options': {
-                    'defaultType': 'future',
-                    'adjustForTimeDifference': True,
-                    'recvWindow': 5000
-                },
-                'proxies': {
-                    'http': config.PROXY_URL,
-                    'https': config.PROXY_URL
-                } if config.USE_PROXY else None,
-                'timeout': config.PROXY_TIMEOUT * 1000 if config.USE_PROXY else 30000,  # 毫秒
-            })
+            self.exchange = init_exchange()
             
             # 设置交易对
             self.symbol = symbol

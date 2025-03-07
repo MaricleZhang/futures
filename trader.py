@@ -71,9 +71,7 @@ class Trader:
             self.symbol_config = config.SYMBOL_CONFIGS.get(symbol, {})
             
             # 取消所有未完成的订单
-            if symbol:
-                self.cancel_all_orders()
-                
+            if symbol:                
                 # 设置持仓模式为单向持仓
                 self.set_position_mode(False)
                 

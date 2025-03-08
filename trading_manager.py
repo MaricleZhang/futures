@@ -2,12 +2,10 @@ import logging
 import threading
 import time
 from trader import Trader
-from strategies.short_term_rf_strategy import ShortTermRFStrategy
 from strategies.simple_trend_strategy import SimpleTrendStrategy
 from strategies.rl_strategy import RLTrendStrategy
 from strategies.trend_strategy_15m import MediumTrendStrategy
 from strategies.ppo_strategy import PPOTrendStrategy
-from strategies.medium_term_rf_strategy import MediumTermRFStrategy
 import config
 
 class TradingManager:
@@ -29,7 +27,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = RLTrendStrategy(trader)
+                strategy = MediumTrendStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")
@@ -62,7 +60,7 @@ class TradingManager:
                 
                 self.logger_info(symbol, position, current_price, signal)
                 
-                strategy.monitor_position()
+                # strategy.monitor_position()
                 if position and 'info' in position:
                     position_amount = float(position['info'].get('positionAmt', 0))
                     

@@ -56,8 +56,8 @@ class MediumTrendStrategy(BaseStrategy):
         
         # 交易控制参数
         self.max_position_hold_time = 720   # 最大持仓时间(分钟)
-        self.profit_target_pct = 0.015      # 目标利润率 1.5%
-        self.stop_loss_pct = 0.008          # 止损率 0.8%
+        self.profit_target_pct = 0.04      # 目标利润率 4%
+        self.stop_loss_pct = 0.01          # 止损率 1%
         self.max_trades_per_day = 4         # 每日最大交易次数
         
         # 交易状态

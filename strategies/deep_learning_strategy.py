@@ -193,6 +193,121 @@ class DeepLearningLSTMStrategy(BaseStrategy):
             self.logger.error(traceback.format_exc())
             return False
             
+    def monitor_position(self):
+        """监控当前持仓状态并管理风险
+        
+        该函数负责:
+        1. 检查当前持仓状态
+        2. 计算持仓盈亏
+        3. 执行止盈止损策略
+        4. 检查持仓时间是否超过最大限制
+        5. 获取并处理新的交易信号
+        """
+        try:
+            # 获取当前持仓信息
+            position = self.trader.get_position()
+            # 使用get_market_price而不是get_latest_price，以兼容MockTrader
+            current_price = self.trader.get_market_price()
+            
+            # 检查是否有持仓
+            if position and position['positionAmt'] != 0:
+                # 有持仓，检查是否需要平仓
+                position_size = float(position['positionAmt'])
+                entry_price = float(position['entryPrice'])
+                unrealized_pnl = float(position['unrealizedProfit'])
+                position_side = 'LONG' if position_size > 0 else 'SHORT'
+                
+                # 计算持仓时间
+                current_time = time.time()
+                if self.position_entry_time:
+                    hold_time_minutes = (current_time - self.position_entry_time) / 60
+                    
+                    # 计算盈亏百分比
+                    if position_side == 'LONG':
+                        pnl_pct = (current_price - entry_price) / entry_price
+                    else:  # SHORT
+                        pnl_pct = (entry_price - current_price) / entry_price
+                    
+                    self.logger.info(f"当前持仓: {position_side}, 持仓量: {position_size}, 入场价: {entry_price}, "  
+                                    f"当前价: {current_price}, 盈亏: {pnl_pct:.2%}, 持仓时间: {hold_time_minutes:.1f}分钟")
+                    
+                    # 止盈检查
+                    if pnl_pct >= self.profit_target_pct:
+                        self.logger.info(f"达到止盈条件 {pnl_pct:.2%} >= {self.profit_target_pct:.2%}, 平仓")
+                        self._close_position()
+                        return
+                    
+                    # 止损检查
+                    if pnl_pct <= -self.stop_loss_pct:
+                        self.logger.info(f"达到止损条件 {pnl_pct:.2%} <= -{self.stop_loss_pct:.2%}, 平仓")
+                        self._close_position()
+                        return
+                    
+                    # 最大持仓时间检查
+                    if hold_time_minutes >= self.max_position_hold_time:
+                        self.logger.info(f"达到最大持仓时间 {hold_time_minutes:.1f} >= {self.max_position_hold_time}, 平仓")
+                        self._close_position()
+                        return
+                else:
+                    # 如果有持仓但没有记录入场时间，则更新入场时间和价格
+                    self.position_entry_time = current_time
+                    self.position_entry_price = entry_price
+                    self.logger.info(f"更新持仓记录: {position_side}, 入场价: {entry_price}, 入场时间: {datetime.fromtimestamp(current_time)}")
+            else:
+                # 无持仓，检查是否有新信号
+                self.position_entry_time = None
+                self.position_entry_price = None
+                
+                # 检查是否需要重新训练模型
+                current_time = time.time()
+                if current_time - self.last_training_time > self.retraining_interval:
+                    self.logger.info("定期重新训练模型")
+                    self._retrain_model()
+                    self.last_training_time = current_time
+                
+                # 获取新的交易信号
+                self._check_trading_signal()
+                
+        except Exception as e:
+            self.logger.error(f"监控持仓出错: {str(e)}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+    
+    def _close_position(self):
+        """平仓操作"""
+        try:
+            position = self.trader.get_position()
+            if position and float(position['positionAmt']) != 0:
+                position_size = float(position['positionAmt'])
+                position_side = 'LONG' if position_size > 0 else 'SHORT'
+                
+                # 计算盈亏
+                entry_price = float(position['entryPrice'])
+                # 使用get_market_price而不是get_latest_price，以兼容MockTrader
+                current_price = self.trader.get_market_price()
+                if position_side == 'LONG':
+                    pnl_pct = (current_price - entry_price) / entry_price
+                else:  # SHORT
+                    pnl_pct = (entry_price - current_price) / entry_price
+                
+                # 执行平仓
+                if position_side == 'LONG':
+                    self.trader.sell(abs(position_size))
+                    self.logger.info(f"平多仓: 数量={abs(position_size)}, 盈亏={pnl_pct:.2%}")
+                else:  # SHORT
+                    self.trader.buy(abs(position_size))
+                    self.logger.info(f"平空仓: 数量={abs(position_size)}, 盈亏={pnl_pct:.2%}")
+                
+                # 重置持仓状态
+                self.position_entry_time = None
+                self.position_entry_price = None
+                self.last_action = 1  # 重置为观望状态
+                
+        except Exception as e:
+            self.logger.error(f"平仓操作失败: {str(e)}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+    
     def _initial_training(self):
         """初始训练"""
         try:
@@ -500,6 +615,68 @@ class DeepLearningLSTMStrategy(BaseStrategy):
             return True
         return False
         
+    def _check_trading_signal(self):
+        """检查并执行交易信号"""
+        try:
+            # 获取K线数据
+            klines = self.trader.get_klines(interval=self.kline_interval, limit=self.lookback_window + 50)
+            if not klines or len(klines) < self.lookback_window:
+                self.logger.warning(f"获取K线数据不足: {len(klines) if klines else 0} < {self.lookback_window}")
+                return
+            
+            # 生成交易信号
+            signal = self.generate_signal(klines)
+            
+            # 根据信号执行交易
+            current_price = self.trader.get_market_price()
+            
+            # 获取账户余额
+            balance = self.trader.get_balance()
+            available_balance = float(balance['free'])
+            
+            # 计算交易量
+            position_size = self._calculate_position_size(available_balance, current_price)
+            
+            if signal > 0:  # 买入信号
+                self.logger.info(f"生成买入信号, 当前价格: {current_price}, 交易量: {position_size}")
+                self.trader.buy(position_size)
+                self.position_entry_time = time.time()
+                self.position_entry_price = current_price
+                
+            elif signal < 0:  # 卖出信号
+                self.logger.info(f"生成卖出信号, 当前价格: {current_price}, 交易量: {position_size}")
+                self.trader.sell(position_size)
+                self.position_entry_time = time.time()
+                self.position_entry_price = current_price
+                
+            else:  # 观望信号
+                self.logger.info("生成观望信号, 不执行交易")
+                
+        except Exception as e:
+            self.logger.error(f"检查交易信号出错: {str(e)}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+    
+    def _calculate_position_size(self, available_balance, current_price):
+        """计算交易量"""
+        try:
+            # 使用可用余额的30%进行交易
+            trade_amount = available_balance * 0.3
+            
+            # 计算可交易的数量
+            position_size = trade_amount / current_price
+            
+            # 四舍五入到小数点3位
+            position_size = round(position_size, 3)
+            
+            return position_size
+            
+        except Exception as e:
+            self.logger.error(f"计算交易量出错: {str(e)}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+            return 0.001  # 返回最小交易量
+    
     def generate_signal(self, klines):
         """生成交易信号
         

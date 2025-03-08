@@ -46,7 +46,7 @@ class RLTrendStrategy(BaseStrategy):
         self.logger = self.get_logger()
         
         # K线设置
-        self.kline_interval = '3m'      # 3分钟K线
+        self.kline_interval = '5m'      # 5分钟K线
         self.check_interval = 60        # 检查信号间隔(秒)
         self.lookback_period = 100      # 计算指标所需的K线数量
         self.training_lookback = 500    # 训练所需K线数量
@@ -58,15 +58,15 @@ class RLTrendStrategy(BaseStrategy):
         self.gamma = 0.95              # 奖励折扣因子
         self.epsilon = 1.0             # 探索率初始值
         self.epsilon_min = 0.01        # 最小探索率
-        self.epsilon_decay = 0.995     # 探索率衰减速度
+        self.epsilon_decay = 0.998     # 探索率衰减速度
         self.learning_rate = 0.001     # 学习率
         self.update_target_freq = 10   # 目标网络更新频率
         self.memory_size = 2000        # 经验回放缓冲区大小
         
         # 风险控制参数
         self.max_position_hold_time = 120  # 最大持仓时间(分钟)
-        self.profit_target_pct = 0.5     # 目标利润率 50%
-        self.stop_loss_pct = 0.01       # 止损率 1%
+        self.profit_target_pct = 0.05     # 目标利润率 50%
+        self.stop_loss_pct = 0.02       # 止损率 1%
         self.max_trades_per_hour = 4       # 每小时最大交易次数
         
         # 交易状态

@@ -7,6 +7,7 @@ from strategies.simple_trend_strategy import SimpleTrendStrategy
 from strategies.rl_strategy import RLTrendStrategy
 from strategies.trend_strategy_15m import MediumTrendStrategy
 from strategies.ppo_strategy import PPOTrendStrategy
+from strategies.medium_term_rf_strategy import MediumTermRFStrategy
 import config
 
 class TradingManager:
@@ -28,7 +29,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = PPOTrendStrategy(trader)
+                strategy = RLTrendStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")
@@ -54,12 +55,12 @@ class TradingManager:
                 klines = trader.get_klines(symbol=symbol, interval=strategy.kline_interval, limit=strategy.training_lookback)
                 
                 # 生成交易信号
-                # signal = strategy.generate_signal(klines)
+                signal = strategy.generate_signal(klines)
                 current_price = trader.get_market_price(symbol)
                 position = trader.get_position(symbol)
                 position_amount = 0
                 
-                self.logger_info(symbol, position, current_price, 0)
+                self.logger_info(symbol, position, current_price, signal)
                 
                 strategy.monitor_position()
                 if position and 'info' in position:

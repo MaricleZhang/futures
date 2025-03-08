@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 import talib
@@ -595,3 +594,171 @@ class MediumTrendStrategy(BaseStrategy):
             self.logger.error(traceback.format_exc())
             return 0  # 发生错误时返回观望信号
             
+    def monitor_position(self):
+        """监控当前持仓，并根据策略决定是否平仓"""
+        try:
+            # 获取当前持仓
+            position = self.trader.get_position()
+            
+            # 如果没有持仓，检查是否有新的交易信号
+            if position is None or float(position['info'].get('positionAmt', 0)) == 0:
+                # 获取最新K线数据
+                klines = self.trader.get_klines(interval=self.kline_interval, limit=self.lookback_period)
+                
+                # 生成交易信号
+                signal = self.generate_signal(klines)
+                
+                # 获取当前市场价格
+                current_price = self.trader.get_market_price()
+                
+                # 根据信号执行交易
+                if signal == 1:  # 买入信号
+                    # 计算交易数量
+                    balance = self.trader.get_balance()
+                    available_balance = float(balance['free'])
+                    
+                    # 从config获取交易金额百分比
+                    symbol_config = self.trader.symbol_config
+                    trade_percent = symbol_config.get('trade_amount_percent', 50)
+                    
+                    # 计算交易金额
+                    trade_amount = (available_balance * trade_percent / 100) / current_price
+                    
+                    # 开多仓
+                    self.trader.open_long(amount=trade_amount)
+                    self.logger.info(f"开多仓 - 数量: {trade_amount:.6f}, 价格: {current_price}")
+                    
+                    # 记录开仓信息
+                    self.position_entry_time = time.time()
+                    self.position_entry_price = current_price
+                    
+                elif signal == -1:  # 卖出信号
+                    # 计算交易数量
+                    balance = self.trader.get_balance()
+                    available_balance = float(balance['free'])
+                    
+                    # 从config获取交易金额百分比
+                    symbol_config = self.trader.symbol_config
+                    trade_percent = symbol_config.get('trade_amount_percent', 50)
+                    
+                    # 计算交易金额
+                    trade_amount = (available_balance * trade_percent / 100) / current_price
+                    
+                    # 开空仓
+                    self.trader.open_short(amount=trade_amount)
+                    self.logger.info(f"开空仓 - 数量: {trade_amount:.6f}, 价格: {current_price}")
+                    
+                    # 记录开仓信息
+                    self.position_entry_time = time.time()
+                    self.position_entry_price = current_price
+            
+            # 如果有持仓，检查是否需要平仓
+            else:
+                position_amount = float(position['info'].get('positionAmt', 0))
+                entry_price = float(position['info'].get('entryPrice', 0))
+                current_price = self.trader.get_market_price()
+                position_side = "多" if position_amount > 0 else "空"
+                
+                # 计算持仓时间
+                current_time = time.time()
+                if self.position_entry_time is not None:
+                    holding_time_minutes = (current_time - self.position_entry_time) / 60
+                    
+                    # 检查最大持仓时间
+                    if holding_time_minutes >= self.max_position_hold_time:
+                        self.logger.info(f"持仓时间超过{self.max_position_hold_time}分钟，平仓")
+                        self.trader.close_position()
+                        return
+                
+                # 计算利润率
+                if position_side == "多":
+                    profit_rate = (current_price - entry_price) / entry_price
+                else:
+                    profit_rate = (entry_price - current_price) / entry_price
+                
+                # 检查止盈
+                if profit_rate >= self.profit_target_pct:
+                    self.logger.info(f"达到止盈条件，利润率: {profit_rate:.4%}，平仓")
+                    self.trader.close_position()
+                    return
+                
+                # 检查止损
+                if profit_rate <= -self.stop_loss_pct:
+                    self.logger.info(f"达到止损条件，亏损率: {profit_rate:.4%}，平仓")
+                    self.trader.close_position()
+                    return
+                
+                # 检查反转信号
+                klines = self.trader.get_klines(interval=self.kline_interval, limit=self.lookback_period)
+                indicators, _ = self.calculate_indicators(klines)
+                
+                if indicators is not None:
+                    # 获取最新指标
+                    latest_idx = len(indicators['trend_direction']) - 1
+                    trend_direction = indicators['trend_direction'].iloc[latest_idx]
+                    trend_score = indicators['trend_score'].iloc[latest_idx]
+                    rsi = indicators['rsi'].iloc[latest_idx]
+                    
+                    # 检查反转信号
+                    is_reversed, reversal_direction, _ = self.detect_reversal(klines)
+                    
+                    # 多仓反转条件
+                    if position_side == "多" and (
+                        (is_reversed and reversal_direction < 0) or  # 检测到向下反转
+                        trend_direction < 0 or                       # 趋势方向向下
+                        rsi > 75                                     # RSI超买
+                    ):
+                        self.logger.info("多仓趋势反转信号，平仓")
+                        self.trader.close_position()
+                        return
+                    
+                    # 空仓反转条件
+                    if position_side == "空" and (
+                        (is_reversed and reversal_direction > 0) or  # 检测到向上反转
+                        trend_direction > 0 or                       # 趋势方向向上
+                        rsi < 25                                     # RSI超卖
+                    ):
+                        self.logger.info("空仓趋势反转信号，平仓")
+                        self.trader.close_position()
+                        return
+                    
+                    # 增强的反转信号检测
+                    rapid_reversal = False
+                    
+                    # 检查快速反转条件
+                    if position_side == "多":
+                        if (trend_score < -0.3 and self.last_signal > 0) or \
+                           (indicators['macd_hist'].iloc[latest_idx] < 0 and indicators['macd_hist'].iloc[latest_idx-1] > 0):
+                            rapid_reversal = True
+                            
+                    elif position_side == "空":
+                        if (trend_score > 0.3 and self.last_signal < 0) or \
+                           (indicators['macd_hist'].iloc[latest_idx] > 0 and indicators['macd_hist'].iloc[latest_idx-1] < 0):
+                            rapid_reversal = True
+                    
+                    # 如果检测到快速反转，立即平仓
+                    if rapid_reversal:
+                        self.logger.info("检测到快速趋势反转，立即平仓")
+                        self.trader.close_position()
+                        return
+                    
+                    # 动态调整止损
+                    atr_value = indicators['atr'].iloc[latest_idx]
+                    current_volatility = atr_value / current_price
+                    
+                    # 根据波动率和趋势强度动态调整止损
+                    if abs(trend_score) < 0.2:  # 趋势减弱时收紧止损
+                        dynamic_stop_loss = min(self.stop_loss_pct * 0.7, current_volatility * 1.5)
+                    else:
+                        dynamic_stop_loss = min(self.stop_loss_pct, current_volatility * self.atr_multiplier)
+                    
+                    # 检查动态止损
+                    if profit_rate <= -dynamic_stop_loss:
+                        self.logger.info(f"触发动态止损，亏损率: {profit_rate:.4%}，平仓")
+                        self.trader.close_position()
+                        return
+            
+        except Exception as e:
+            self.logger.error(f"监控持仓失败: {str(e)}")
+            import traceback
+            self.logger.error(traceback.format_exc())

@@ -18,7 +18,7 @@ def test_proxy(proxy_url, timeout=10):
     测试代理连接是否可用
     """
     try:
-        response = requests.get('https://api.binance.com/api/v3/time', 
+        response = requests.get('https://api1.binance.com/api/v3/time', 
                               proxies={'http': proxy_url, 'https': proxy_url},
                               timeout=timeout)
         return response.status_code == 200
@@ -49,7 +49,7 @@ def init_exchange(max_retries=3, retry_delay=5):
         'options': {
             'defaultType': 'future',
             'adjustForTimeDifference': True,
-            'recvWindow': 5000
+            'recvWindow': 60000  # 增加到60秒，给予更大的时间窗口
         }
     }
     
@@ -81,17 +81,19 @@ def init_exchange(max_retries=3, retry_delay=5):
         try:
             # 测试API连接
             server_time = exchange.fetch_time()
-            time_diff = int(time.time() * 1000) - server_time
-            logger.info(f"服务器时间差: {time_diff}ms")
-            
-            # 设置市场类型
-            exchange.options['defaultType'] = 'future'
-            
-            # 同步服务器时间
-            server_time = exchange.fetch_time()
             local_time = int(time.time() * 1000)
             time_diff = server_time - local_time
             logger.info(f"服务器时间差: {time_diff} ms")
+            
+            # 如果时间差异过大，进行本地时间调整
+            if abs(time_diff) > 1000:  # 如果时间差超过1秒
+                logger.warning(f"检测到较大的时间差异: {time_diff}ms，正在调整...")
+                # 将交易所时间差异保存到exchange对象中，用于后续请求
+                exchange.options['timeDifference'] = time_diff
+                logger.info(f"已设置时间差异补偿: {time_diff}ms")
+            
+            # 设置市场类型
+            exchange.options['defaultType'] = 'future'
             
             # 测试API权限
             try:

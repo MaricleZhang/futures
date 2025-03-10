@@ -28,8 +28,8 @@ class BaseRFStrategy(BaseStrategy):
         self.max_depth = 8          # 树的最大深度
         self.min_samples_split = 20 # 分裂所需最小样本数
         self.min_samples_leaf = 10  # 叶节点最小样本数
-        self.confidence_threshold = 0.55  # 信号置信度阈值
-        self.prob_diff_threshold = 0.08   # 概率差异阈值
+        self.confidence_threshold = 0.45  # 信号置信度阈值
+        self.prob_diff_threshold = 0.2   # 概率差异阈值
         
         # K线设置 - 子类必须重写这些参数
         self.kline_interval = None  # K线周期
@@ -194,7 +194,12 @@ class BaseRFStrategy(BaseStrategy):
             # 获取预测
             prediction = np.argmax(probabilities)
             max_prob = max(probabilities)
+            if sell_prob - buy_prob > self.prob_diff_threshold:
+                return -1
+            if buy_prob - sell_prob > self.prob_diff_threshold:
+                return 1
             
+            return 0
             # 检查置信度
             if prediction != 0 and max_prob < self.confidence_threshold:  # 0是观望
                 self.logger.info(f"信号置信度({max_prob:.4f})低于阈值({self.confidence_threshold})")

@@ -6,6 +6,9 @@ from strategies.simple_trend_strategy import SimpleTrendStrategy
 from strategies.rl_strategy import RLTrendStrategy
 from strategies.trend_strategy_15m import MediumTrendStrategy
 from strategies.ppo_strategy import PPOTrendStrategy
+from strategies.swing_rf_strategy import SwingRFStrategy
+from strategies.short_term_rf_strategy import ShortTermRFStrategy
+from strategies.deep_learning_strategy import DeepLearningStrategy
 import config
 
 class TradingManager:
@@ -27,7 +30,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = MediumTrendStrategy(trader)
+                strategy = ShortTermRFStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")
@@ -68,23 +71,23 @@ class TradingManager:
                 trade_amount = (available_balance * symbol_config['trade_amount_percent'] / 100) / current_price
                 
                 # 根据信号执行交易
-                # if signal == 1:  # 买入信号
-                #     if position_amount < 0:  # 有空仓，先平空
-                #         trader.close_position(symbol)
-                #     if position_amount <= 0:  # 没有多仓时开多
-                #         trader.open_long(symbol, trade_amount)
-                # elif signal == -1:  # 卖出信号
-                #     if position_amount > 0:  # 有多仓，先平多
-                #         trader.close_position(symbol)
-                #     if position_amount >= 0:  # 没有空仓时开空
-                #         trader.open_short(symbol, trade_amount)
-                # elif signal == 2:  # 平仓信号
-                #     if abs(position_amount) > 0:  # 有持仓就平掉
-                #         trader.close_position(symbol)
+                if signal == 1:  # 买入信号
+                    if position_amount < 0:  # 有空仓，先平空
+                        trader.close_position(symbol)
+                    if position_amount <= 0:  # 没有多仓时开多
+                        trader.open_long(symbol, trade_amount)
+                elif signal == -1:  # 卖出信号
+                    if position_amount > 0:  # 有多仓，先平多
+                        trader.close_position(symbol)
+                    if position_amount >= 0:  # 没有空仓时开空
+                        trader.open_short(symbol, trade_amount)
+                elif signal == 2:  # 平仓信号
+                    if abs(position_amount) > 0:  # 有持仓就平掉
+                        trader.close_position(symbol)
 
-                # else:  # 观望信号
-                #     if abs(position_amount) > 0:  # 有持仓就平掉
-                #         trader.close_position(symbol)
+                else:  # 观望信号
+                    if abs(position_amount) > 0:  # 有持仓就平掉
+                        trader.close_position(symbol)
             except Exception as e:
                 logger.error(f"{symbol} 交易过程出错: {str(e)}")
                 time.sleep(10)  # 错误后等待较短时间

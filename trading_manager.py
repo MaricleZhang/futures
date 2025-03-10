@@ -2,11 +2,8 @@ import logging
 import threading
 import time
 from trader import Trader
-from strategies.rl_strategy import RLTrendStrategy
 from strategies.trend_strategy_15m import MediumTrendStrategy
-from strategies.ppo_strategy import PPOTrendStrategy
 from strategies.short_term_rf_strategy import ShortTermRFStrategy
-from strategies.cnn_strategy import CNNTrendStrategy
 import config
 
 class TradingManager:

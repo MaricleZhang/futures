@@ -18,7 +18,7 @@ def test_proxy(proxy_url, timeout=10):
     测试代理连接是否可用
     """
     try:
-        response = requests.get('https://api1.binance.com/api/v3/time', 
+        response = requests.get('https://api.binance.com/api/v3/time', 
                               proxies={'http': proxy_url, 'https': proxy_url},
                               timeout=timeout)
         return response.status_code == 200

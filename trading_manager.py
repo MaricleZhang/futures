@@ -3,7 +3,6 @@ import threading
 import time
 from trader import Trader
 from strategies.trend_strategy_15m import MediumTrendStrategy
-from strategies.short_term_rf_strategy import ShortTermRFStrategy
 import config
 
 class TradingManager:
@@ -25,7 +24,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = CNNTrendStrategy(trader)
+                strategy = MediumTrendStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")

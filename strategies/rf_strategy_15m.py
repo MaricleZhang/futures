@@ -42,7 +42,7 @@ class RF15mStrategy(BaseRFStrategy):
         self.min_samples_split = 15       # 分裂所需最小样本数
         self.min_samples_leaf = 8         # 叶节点最小样本数
         self.confidence_threshold = 0.43  # 信号置信度阈值
-        self.prob_diff_threshold = 0   # 概率差异阈值
+        self.prob_diff_threshold = 0.02   # 概率差异阈值
         
         # 风险控制参数
         self.max_position_hold_time = 480  # 最大持仓时间(分钟)，约8小时

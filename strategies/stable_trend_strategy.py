@@ -845,7 +845,7 @@ class StableTrendStrategy15m(BaseStrategy):
                 # 如果持仓方向与信号一致，则继续持有
                 if (position_side == "多" and trend_signal == 1) or (position_side == "空" and trend_signal == -1):
                     self.logger.info("信号与当前持仓方向一致，继续持有")
-                    return 0
+                    return trend_signal
             else:
                 # 信号不稳定，但如果当前持仓方向与趋势相反，仍然考虑平仓
                 if position_side == "多" and trend_score < -0.5:

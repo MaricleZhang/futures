@@ -112,7 +112,7 @@ def scan_for_trends(trader, min_consecutive_days=3, max_consecutive_days=7):
             # Get daily klines for the symbol
             klines = trader.exchange.fetch_ohlcv(
                 symbol=symbol,
-                timeframe='1d',
+                timeframe='15m',
                 limit=30  # Get enough data for analysis
             )
             

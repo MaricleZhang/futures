@@ -23,7 +23,7 @@ def main():
         
         # Step 2: Scan the market for trending pairs
         logger.info("Scanning market for trending pairs...")
-        trending_pairs = scan_for_trends(base_trader, min_consecutive_days=1, max_consecutive_days=3)
+        trending_pairs = scan_for_trends(base_trader, min_consecutive_days=1, max_consecutive_days=5)
         
         if not trending_pairs:
             logger.warning("No trending pairs found")
@@ -70,10 +70,10 @@ def main():
                 }
         
         # Step 5: Initialize trading manager with selected pairs
-        trading_manager = TradingManager()
+        # trading_manager = TradingManager()
         
-        # Step 6: Start trading
-        trading_manager.start_trading()
+        # # Step 6: Start trading
+        # trading_manager.start_trading()
         logger.info(f"Trading system started with {len(config.SYMBOLS)} pairs")
         
         # Step 7: Keep the main thread running

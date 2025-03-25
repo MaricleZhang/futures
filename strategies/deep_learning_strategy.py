@@ -1,6 +1,6 @@
 """
-深度学习趋势预测策略 - 15分钟时间框架改进版
-使用LSTM和CNN网络进行价格趋势预测，专注于减少过度拟合和提高预测准确性
+深度学习趋势预测策略 - 15分钟时间框架修复版
+修复预测缓存和模型多样性问题
 """
 import os
 import numpy as np
@@ -9,100 +9,241 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset, random_split
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler
 from datetime import datetime, timedelta
 import time
 import logging
 import random
 import talib
-import matplotlib.pyplot as plt
+import json
+import copy
 from strategies.base_strategy import BaseStrategy
 
 
-class LSTMWithAttention(nn.Module):
-    """
-    使用注意力机制的LSTM模型，减少过拟合并提高模型准确性
-    """
+# 设置不同的模型架构，增加多样性
+class LSTMModel(nn.Module):
+    """基础LSTM模型"""
     def __init__(self, input_dim, hidden_dim, num_layers, output_dim, dropout_rate=0.3):
-        super(LSTMWithAttention, self).__init__()
-        
+        super(LSTMModel, self).__init__()
         self.hidden_dim = hidden_dim
         self.num_layers = num_layers
         
-        # LSTM层
+        self.lstm = nn.LSTM(
+            input_size=input_dim,
+            hidden_size=hidden_dim,
+            num_layers=num_layers,
+            batch_first=True,
+            dropout=dropout_rate if num_layers > 1 else 0
+        )
+        
+        self.dropout = nn.Dropout(dropout_rate)
+        
+        self.fc = nn.Sequential(
+            nn.Linear(hidden_dim, output_dim)
+        )
+        
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(x.device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(x.device)
+        
+        lstm_out, _ = self.lstm(x, (h0, c0))
+        last_output = lstm_out[:, -1, :]
+        last_output = self.dropout(last_output)
+        output = self.fc(last_output)
+        
+        return output
+
+
+class BidirectionalLSTMModel(nn.Module):
+    """双向LSTM模型"""
+    def __init__(self, input_dim, hidden_dim, num_layers, output_dim, dropout_rate=0.3):
+        super(BidirectionalLSTMModel, self).__init__()
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        
         self.lstm = nn.LSTM(
             input_size=input_dim,
             hidden_size=hidden_dim,
             num_layers=num_layers,
             batch_first=True,
             dropout=dropout_rate if num_layers > 1 else 0,
-            bidirectional=True  # 使用双向LSTM捕获更多时序信息
+            bidirectional=True
         )
         
-        # 注意力机制
+        self.dropout = nn.Dropout(dropout_rate)
+        
+        self.fc = nn.Sequential(
+            nn.Linear(hidden_dim * 2, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout_rate),
+            nn.Linear(hidden_dim, output_dim)
+        )
+        
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers * 2, x.size(0), self.hidden_dim).to(x.device)
+        c0 = torch.zeros(self.num_layers * 2, x.size(0), self.hidden_dim).to(x.device)
+        
+        lstm_out, _ = self.lstm(x, (h0, c0))
+        last_output = lstm_out[:, -1, :]
+        last_output = self.dropout(last_output)
+        output = self.fc(last_output)
+        
+        return output
+
+
+class LSTMWithAttention(nn.Module):
+    """带注意力机制的LSTM模型"""
+    def __init__(self, input_dim, hidden_dim, num_layers, output_dim, dropout_rate=0.3):
+        super(LSTMWithAttention, self).__init__()
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        
+        self.lstm = nn.LSTM(
+            input_size=input_dim,
+            hidden_size=hidden_dim,
+            num_layers=num_layers,
+            batch_first=True,
+            dropout=dropout_rate if num_layers > 1 else 0,
+            bidirectional=True
+        )
+        
         self.attention = nn.Sequential(
-            nn.Linear(hidden_dim * 2, hidden_dim),  # *2是因为bidirectional
+            nn.Linear(hidden_dim * 2, hidden_dim),
             nn.Tanh(),
             nn.Linear(hidden_dim, 1),
             nn.Softmax(dim=1)
         )
         
-        # Dropout用于减少过拟合
         self.dropout = nn.Dropout(dropout_rate)
         
-        # 全连接层
         self.fc = nn.Sequential(
             nn.Linear(hidden_dim * 2, hidden_dim),
-            nn.LayerNorm(hidden_dim),  # 使用LayerNorm代替BatchNorm
-            nn.SiLU(),  # 使用SiLU(Swish)激活函数
+            nn.LayerNorm(hidden_dim),
+            nn.ReLU(),
             nn.Dropout(dropout_rate),
-            nn.Linear(hidden_dim, hidden_dim // 2),
-            nn.LayerNorm(hidden_dim // 2),
-            nn.SiLU(),
-            nn.Dropout(dropout_rate * 0.5),
-            nn.Linear(hidden_dim // 2, output_dim)
+            nn.Linear(hidden_dim, output_dim)
         )
         
     def forward(self, x):
-        # 初始化隐藏状态
-        h0 = torch.zeros(self.num_layers * 2, x.size(0), self.hidden_dim).to(x.device)  # *2是因为bidirectional
+        h0 = torch.zeros(self.num_layers * 2, x.size(0), self.hidden_dim).to(x.device)
         c0 = torch.zeros(self.num_layers * 2, x.size(0), self.hidden_dim).to(x.device)
         
-        # LSTM前向传播
-        lstm_out, _ = self.lstm(x, (h0, c0))  # lstm_out: [batch, seq_len, hidden_dim*2]
+        lstm_out, _ = self.lstm(x, (h0, c0))
         
-        # 应用注意力机制
-        attn_weights = self.attention(lstm_out)  # [batch, seq_len, 1]
-        context = torch.sum(attn_weights * lstm_out, dim=1)  # [batch, hidden_dim*2]
+        attention_weights = self.attention(lstm_out)
+        context = torch.sum(attention_weights * lstm_out, dim=1)
         
-        # 应用dropout
         context = self.dropout(context)
-        
-        # 全连接层预测
         output = self.fc(context)
         
         return output
 
 
-class EnhancedDeepLearningStrategy15m(BaseStrategy):
-    """EnhancedDeepLearningStrategy15m - 改进的深度学习趋势预测策略
+class CNNLSTMModel(nn.Module):
+    """CNN + LSTM混合模型"""
+    def __init__(self, input_dim, hidden_dim, num_layers, output_dim, seq_len=24, dropout_rate=0.3):
+        super(CNNLSTMModel, self).__init__()
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        self.seq_len = seq_len
+        
+        # 1D CNN层用于提取局部特征
+        self.cnn = nn.Sequential(
+            nn.Conv1d(input_dim, hidden_dim, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool1d(kernel_size=2, stride=1, padding=1),
+            nn.Conv1d(hidden_dim, hidden_dim, kernel_size=3, padding=1),
+            nn.ReLU()
+        )
+        
+        # LSTM层处理序列
+        self.lstm = nn.LSTM(
+            input_size=hidden_dim,
+            hidden_size=hidden_dim,
+            num_layers=num_layers,
+            batch_first=True,
+            dropout=dropout_rate if num_layers > 1 else 0
+        )
+        
+        self.dropout = nn.Dropout(dropout_rate)
+        
+        # 全连接层用于预测
+        self.fc = nn.Sequential(
+            nn.Linear(hidden_dim, hidden_dim//2),
+            nn.ReLU(),
+            nn.Dropout(dropout_rate),
+            nn.Linear(hidden_dim//2, output_dim)
+        )
+        
+    def forward(self, x):
+        # 输入形状变换: [batch, seq_len, features] -> [batch, features, seq_len]
+        x = x.permute(0, 2, 1)
+        
+        # CNN特征提取
+        cnn_out = self.cnn(x)
+        
+        # 形状变换回: [batch, seq_len, features]
+        lstm_in = cnn_out.permute(0, 2, 1)
+        
+        # LSTM处理
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(x.device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(x.device)
+        
+        lstm_out, _ = self.lstm(lstm_in, (h0, c0))
+        
+        # 只使用最后一个时间步
+        last_output = lstm_out[:, -1, :]
+        last_output = self.dropout(last_output)
+        
+        # 预测
+        output = self.fc(last_output)
+        
+        return output
+
+
+class GRUModel(nn.Module):
+    """GRU模型，通常比LSTM更简单，训练更快"""
+    def __init__(self, input_dim, hidden_dim, num_layers, output_dim, dropout_rate=0.3):
+        super(GRUModel, self).__init__()
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        
+        self.gru = nn.GRU(
+            input_size=input_dim,
+            hidden_size=hidden_dim,
+            num_layers=num_layers,
+            batch_first=True,
+            dropout=dropout_rate if num_layers > 1 else 0
+        )
+        
+        self.dropout = nn.Dropout(dropout_rate)
+        
+        self.fc = nn.Sequential(
+            nn.Linear(hidden_dim, hidden_dim//2),
+            nn.GELU(),  # 使用GELU激活函数
+            nn.Dropout(dropout_rate),
+            nn.Linear(hidden_dim//2, output_dim)
+        )
+        
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(x.device)
+        
+        gru_out, _ = self.gru(x, h0)
+        last_output = gru_out[:, -1, :]
+        last_output = self.dropout(last_output)
+        output = self.fc(last_output)
+        
+        return output
+
+
+class FixedEnhancedDeepLearningStrategy15m(BaseStrategy):
+    """FixedEnhancedDeepLearningStrategy15m - 修复版增强深度学习策略
     
-    使用LSTM、注意力机制和集成学习预测未来价格走势。
-    专注于减少过度拟合，提高预测准确性，并加入更多防护机制:
-    
-    改进：
-    1. 使用双向LSTM和注意力机制
-    2. 引入模型保存和加载功能
-    3. 动态调整预测阈值
-    4. 增加模型验证和评估
-    5. 加入异常值检测
-    6. 使用K折交叉验证
-    7. 多模型集成投票
-    8. 与技术分析结合确认信号
+    修复了预测总是相同的问题，并增加了模型多样性
     """
     
     def __init__(self, trader):
-        """初始化改进的深度学习趋势预测策略"""
+        """初始化修复版深度学习策略"""
         super().__init__(trader)
         self.logger = self.get_logger()
         
@@ -115,26 +256,27 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
         self.training_lookback = 1000     # 训练数据回溯期
         
         # 模型参数
-        self.input_dim = 30               # 输入特征维度（自动调整）
-        self.hidden_dim = 128             # 隐藏层维度 (增大以提高表达能力)
+        self.input_dim = 56               # 输入特征维度（自动调整）
+        self.hidden_dim = 128             # 隐藏层维度
         self.num_layers = 2               # LSTM层数
-        self.dropout_rate = 0.4           # Dropout比例 (加大以减少过拟合)
-        self.learning_rate = 0.0005       # 学习率 (减小以稳定训练)
-        self.batch_size = 64              # 批次大小 (加大以增加稳定性)
+        self.dropout_rate = 0.4           # Dropout比例
+        self.learning_rate = 0.001        # 学习率
+        self.batch_size = 64              # 批次大小
         self.num_epochs = 100             # 训练轮数
-        self.early_stop_patience = 15     # 早停耐心值 (加大以避免过早停止)
+        self.early_stop_patience = 15     # 早停耐心值
         self.weight_decay = 1e-4          # L2正则化权重
         
         # 集成学习参数
-        self.num_models = 5               # 集成模型数量 (增加以提高稳定性)
+        self.num_models = 5               # 集成模型数量
         self.models = []                  # 模型列表
-        self.voting_threshold = 0.6       # 投票阈值 (至少60%的模型同意才生成信号)
+        self.voting_threshold = 0.6       # 投票阈值
+        self.model_seeds = [42, 123, 456, 789, 101]  # 不同的随机种子增加模型多样性
         
         # 预测参数
-        self.min_confidence = 0.65        # 最小信心阈值
-        self.prediction_threshold = 0.003  # 预测变化率阈值 (0.3%)
+        self.min_confidence = 0.6         # 最小信心阈值
+        self.base_prediction_threshold = 0.003  # 基础预测变化率阈值
         self.adaptive_threshold = True    # 是否使用自适应阈值
-        self.max_prediction = 0.05        # 最大预测变化阈值 (防止极端预测)
+        self.max_prediction = 0.05        # 最大预测变化阈值
         
         # 持仓控制参数
         self.max_position_hold_time = 480  # 最大持仓时间(分钟)
@@ -147,18 +289,27 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
         # 内部状态
         self.is_trained = False           # 模型是否已训练
         self.last_training_time = 0       # 上次训练时间
-        self.retraining_interval = 3*3600  # 重新训练间隔(秒) (减少重训练频率)
-        self.scaler_x = None              # 特征缩放器
-        self.scaler_y = None              # 目标缩放器
+        self.retraining_interval = 3*3600  # 重新训练间隔(秒)
+        self.feature_scalers = {}         # 特征缩放器字典
+        self.target_scaler = None         # 目标缩放器
         self.last_prediction = None       # 上次预测结果
         self.position_entry_time = None   # 开仓时间
         self.position_entry_price = None  # 开仓价格
         self.max_profit_reached = 0       # 达到的最大利润
+        
+        # 预测历史跟踪
         self.prediction_history = []      # 预测历史
+        self.max_history_size = 20        # 最大历史记录数
+        self.prediction_consistency_threshold = 0.9  # 预测一致性阈值，超过则警告
+        self.confidence_adjustment_factor = 0.8     # 连续预测错误时的信任度调整因子
+        self.consecutive_wrong_predictions = 0      # 连续错误预测计数
+        self.max_consecutive_wrong = 3              # 最大允许连续错误预测
+        self.prediction_error_window = 5            # 用于计算预测准确率的窗口大小
+        self.prediction_accuracy = []               # 预测准确率历史
         
         # 数据增强和预处理参数
         self.use_data_augmentation = True  # 是否使用数据增强
-        self.noise_level = 0.0005         # 数据增强时添加的噪声级别 (减小噪声)
+        self.noise_level = 0.001          # 数据增强时添加的噪声级别
         self.validation_split = 0.2       # 验证集比例
         self.test_split = 0.1             # 测试集比例
         
@@ -168,13 +319,10 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
         self.save_models = True           # 是否保存模型
         self.save_predictions = True      # 是否保存预测结果
         
-        # 初始化模型
-        self._init_models()
-        
-        # 市场状态参数
-        self.market_state = "unknown"     # 市场状态
-        self.trend_strength = 0           # 趋势强度
-        self.current_trend = 0            # 当前趋势 (1: 上升, -1: 下降, 0: 中性)
+        # 动态阈值调整
+        self.threshold_history = []       # 阈值历史
+        self.threshold_adjustment_window = 10  # 阈值调整窗口
+        self.current_prediction_threshold = self.base_prediction_threshold  # 当前阈值
         
         # 设备设置
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -184,62 +332,118 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
         if self.save_models and not os.path.exists(self.model_save_path):
             os.makedirs(self.model_save_path)
             
+        # 初始化模型
+        self._init_models()
+        
+        # 市场状态参数
+        self.market_state = "unknown"     # 市场状态
+        self.trend_strength = 0           # 趋势强度
+        self.current_trend = 0            # 当前趋势 (1: 上升, -1: 下降, 0: 中性)
+            
     def _generate_model_filename(self, model_idx):
-        """生成模型文件名"""
+        """生成模型文件名，包含创建时间戳以避免缓存问题"""
         symbol = self.trader.symbol if self.trader.symbol else "unknown"
-        return f"{self.model_save_path}/{symbol}_model_{model_idx}.pth"
+        timestamp = int(time.time())
+        return f"{self.model_save_path}/{symbol}_model_{model_idx}_{timestamp}.pth"
             
     def _init_models(self):
-        """初始化模型，并尝试加载已保存的模型"""
+        """初始化不同架构的模型，增加多样性"""
         self.models = []
+        model_classes = [
+            LSTMModel,
+            BidirectionalLSTMModel,
+            LSTMWithAttention,
+            CNNLSTMModel,
+            GRUModel
+        ]
+        
         for i in range(self.num_models):
-            model = LSTMWithAttention(
-                input_dim=self.input_dim,
-                hidden_dim=self.hidden_dim,
-                num_layers=self.num_layers,
-                output_dim=self.prediction_horizon,
-                dropout_rate=self.dropout_rate
-            )
+            # 选择模型类型，确保使用不同架构
+            model_class = model_classes[i % len(model_classes)]
+            
+            # 为每个模型设置不同种子
+            torch.manual_seed(self.model_seeds[i])
+            np.random.seed(self.model_seeds[i])
+            random.seed(self.model_seeds[i])
+            
+            # 初始化模型，部分模型需要额外参数
+            if model_class == CNNLSTMModel:
+                model = model_class(
+                    input_dim=self.input_dim,
+                    hidden_dim=self.hidden_dim,
+                    num_layers=self.num_layers,
+                    output_dim=self.prediction_horizon,
+                    seq_len=self.input_window,
+                    dropout_rate=self.dropout_rate
+                )
+            else:
+                model = model_class(
+                    input_dim=self.input_dim,
+                    hidden_dim=self.hidden_dim,
+                    num_layers=self.num_layers,
+                    output_dim=self.prediction_horizon,
+                    dropout_rate=self.dropout_rate
+                )
             
             # 尝试加载已保存的模型
-            model_path = self._generate_model_filename(i)
-            if os.path.exists(model_path):
-                try:
-                    model.load_state_dict(torch.load(model_path, map_location=self.device))
-                    model.eval()  # 设置为评估模式
-                    self.is_trained = True
-                    self.logger.info(f"成功加载已保存的模型 {i+1}")
-                except Exception as e:
-                    self.logger.error(f"加载模型 {i+1} 失败: {str(e)}")
+            model_found = False
+            if os.path.exists(self.model_save_path):
+                for file_name in os.listdir(self.model_save_path):
+                    if f"{self.trader.symbol}_model_{i}_" in file_name and file_name.endswith(".pth"):
+                        try:
+                            model_path = os.path.join(self.model_save_path, file_name)
+                            model.load_state_dict(torch.load(model_path, map_location=self.device))
+                            model.eval()
+                            self.is_trained = True
+                            self.logger.info(f"成功加载模型 {i+1} (类型: {model_class.__name__}) 从 {file_name}")
+                            model_found = True
+                            break
+                        except Exception as e:
+                            self.logger.error(f"加载模型 {i+1} 失败: {str(e)}")
+            
+            if not model_found:
+                self.logger.info(f"初始化新模型 {i+1} (类型: {model_class.__name__})")
             
             self.models.append(model)
             
-        self.logger.info(f"初始化了 {self.num_models} 个预测模型")
+        self.logger.info(f"初始化了 {self.num_models} 个多样化预测模型")
         
     def _save_models(self):
-        """保存模型到文件"""
+        """保存模型到文件，使用新文件名避免缓存问题"""
         if not self.save_models:
             return
             
+        # 清理旧模型文件
+        if os.path.exists(self.model_save_path):
+            for file_name in os.listdir(self.model_save_path):
+                if f"{self.trader.symbol}_model_" in file_name and file_name.endswith(".pth"):
+                    try:
+                        os.remove(os.path.join(self.model_save_path, file_name))
+                    except Exception as e:
+                        self.logger.error(f"删除旧模型文件失败: {str(e)}")
+            
+        # 保存新模型
         for i, model in enumerate(self.models):
             try:
                 model_path = self._generate_model_filename(i)
                 torch.save(model.state_dict(), model_path)
-                self.logger.info(f"模型 {i+1} 已保存到 {model_path}")
+                self.logger.info(f"模型 {i+1} ({model.__class__.__name__}) 已保存到 {model_path}")
             except Exception as e:
                 self.logger.error(f"保存模型 {i+1} 失败: {str(e)}")
             
-    def _prepare_data(self, klines):
+    def _prepare_data(self, klines, force_recalculate=False):
         """
         准备深度学习模型所需的数据
         
         Args:
             klines (list): K线数据
+            force_recalculate (bool): 是否强制重新计算
             
         Returns:
             tuple: (特征DataFrame, 标签数组)
         """
         try:
+            start_time = time.time()
             # 转换K线数据为DataFrame
             df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
             df['datetime'] = pd.to_datetime(df['timestamp'], unit='ms')
@@ -271,6 +475,16 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
                 self.logger.info(f"特征数量: {X.shape[1]}, 样本数量: {X.shape[0]}")
                 self.logger.info(f"特征列: {', '.join(X.columns)}")
                 
+            # 如果特征数量与预期不符，更新input_dim
+            if X.shape[1] != self.input_dim:
+                old_dim = self.input_dim
+                self.input_dim = X.shape[1]
+                self.logger.info(f"更新输入维度: {old_dim} -> {self.input_dim}")
+                
+            elapsed_time = time.time() - start_time
+            if self.debug_mode and elapsed_time > 1.0:
+                self.logger.info(f"数据准备耗时: {elapsed_time:.2f}秒")
+                
             return X, y
             
         except Exception as e:
@@ -291,7 +505,7 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
         """
         # 记录当前每个步骤的特征数量
         self.logger.info("执行特征工程...")
-        feature_count = 0
+        start_time = time.time()
         
         # 创建特征列表
         features = pd.DataFrame(index=df.index)
@@ -407,14 +621,15 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
         # 删除NaN行
         features = features.dropna()
         
-        # 记录特征数量
-        self.logger.info(f"特征工程完成，共生成 {features.shape[1]} 个特征")
+        # 记录特征数量和处理时间
+        elapsed_time = time.time() - start_time
+        self.logger.info(f"特征工程完成，共生成 {features.shape[1]} 个特征 (耗时: {elapsed_time:.2f}秒)")
         
         return features
     
-    def _split_and_scale_data(self, X, y, is_training=True):
+    def _normalize_features(self, X, y=None, is_training=False):
         """
-        分割并缩放数据
+        标准化特征和目标
         
         Args:
             X (pandas.DataFrame): 特征
@@ -422,64 +637,88 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
             is_training (bool): 是否在训练
             
         Returns:
-            tuple: 分割和缩放后的数据
+            tuple: (标准化后的特征, 标准化后的目标)
         """
-        if is_training:
-            # 创建特征缩放器
-            self.scaler_x = StandardScaler()
-            X_scaled = self.scaler_x.fit_transform(X)
+        try:
+            # 对于每个特征列使用适当的缩放器
+            X_scaled = pd.DataFrame(index=X.index)
             
-            # 创建目标缩放器 (仅对目标进行MinMax缩放以保留符号)
-            self.scaler_y = MinMaxScaler(feature_range=(-1, 1))
-            y_scaled = self.scaler_y.fit_transform(y)
+            for column in X.columns:
+                if is_training or column not in self.feature_scalers:
+                    # 选择合适的缩放器
+                    if 'ratio' in column or 'norm' in column or 'diff' in column or 'position' in column:
+                        # 这些特征已经具有相对比例，使用MinMaxScaler
+                        scaler = MinMaxScaler(feature_range=(-1, 1))
+                    elif 'log_return' in column or 'pct_change' in column or 'roc' in column:
+                        # 这些特征可能有较大的异常值，使用RobustScaler
+                        scaler = RobustScaler()
+                    else:
+                        # 其他一般特征使用StandardScaler
+                        scaler = StandardScaler()
+                    
+                    # 训练缩放器
+                    self.feature_scalers[column] = scaler
+                    X_scaled[column] = scaler.fit_transform(X[column].values.reshape(-1, 1)).flatten()
+                else:
+                    # 使用已有的缩放器
+                    scaler = self.feature_scalers[column]
+                    X_scaled[column] = scaler.transform(X[column].values.reshape(-1, 1)).flatten()
             
-            # 划分训练集、验证集和测试集
-            total_samples = len(X_scaled)
-            test_size = int(total_samples * self.test_split)
-            val_size = int(total_samples * self.validation_split)
-            train_size = total_samples - test_size - val_size
-            
-            # 划分索引
-            indices = np.arange(total_samples)
-            train_indices = indices[:train_size]
-            val_indices = indices[train_size:train_size+val_size]
-            test_indices = indices[train_size+val_size:]
-            
-            # 划分数据
-            X_train, y_train = X_scaled[train_indices], y_scaled[train_indices]
-            X_val, y_val = X_scaled[val_indices], y_scaled[val_indices]
-            X_test, y_test = X_scaled[test_indices], y_scaled[test_indices]
-            
-            return X_train, y_train, X_val, y_val, X_test, y_test
-        else:
-            # 预测时只缩放特征
-            X_scaled = self.scaler_x.transform(X)
-            return X_scaled
+            # 对目标进行缩放
+            if y is not None and is_training:
+                self.target_scaler = MinMaxScaler(feature_range=(-1, 1))
+                y_scaled = self.target_scaler.fit_transform(y)
+                return X_scaled, y_scaled
+            elif y is not None:
+                y_scaled = self.target_scaler.transform(y)
+                return X_scaled, y_scaled
+            else:
+                return X_scaled
+                
+        except Exception as e:
+            self.logger.error(f"特征标准化失败: {str(e)}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+            if y is not None:
+                return X, y
+            else:
+                return X
     
     def _create_sequences(self, X, y=None, is_training=True):
         """
         创建序列数据用于LSTM模型
         
         Args:
-            X (numpy.ndarray): 特征数组
-            y (numpy.ndarray): 目标数组，仅在训练时需要
+            X (pandas.DataFrame): 特征数据
+            y (numpy.ndarray): 目标数据，仅在训练时需要
             is_training (bool): 是否为训练模式
             
         Returns:
             tuple: (X序列, y目标)或单个X序列
         """
+        # 转为numpy数组
+        X_array = X.values if hasattr(X, 'values') else X
+        
+        if X_array.shape[0] <= self.input_window:
+            self.logger.warning(f"数据长度 {X_array.shape[0]} 小于等于输入窗口大小 {self.input_window}")
+            
+            if is_training:
+                return np.array([]), np.array([])
+            else:
+                return np.array([])
+                
         sequences_X = []
         
         # 创建滑动窗口序列
-        for i in range(len(X) - self.input_window + 1):
-            sequences_X.append(X[i:i + self.input_window])
+        for i in range(len(X_array) - self.input_window + 1):
+            sequences_X.append(X_array[i:i + self.input_window])
             
         # 转换为numpy数组
         sequences_X = np.array(sequences_X)
         
         if is_training and y is not None:
             sequences_y = []
-            for i in range(len(X) - self.input_window + 1):
+            for i in range(len(X_array) - self.input_window + 1):
                 # 序列最后一个点的索引
                 target_idx = i + self.input_window - 1
                 if target_idx < len(y):
@@ -510,24 +749,10 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
         
         # 方法1: 添加微小高斯噪声
         noise_scale = self.noise_level
-        for _ in range(2):  # 生成2个噪声版本
+        for _ in range(1):  # 生成1个噪声版本
             noise = np.random.normal(0, noise_scale, X_seq.shape)
             noisy_X = X_seq + noise
             augmented_X.append(noisy_X)
-            augmented_y.append(y_seq)
-        
-        # 方法2: 时间抖动 (微小时间偏移)
-        jitter_indices = np.arange(X_seq.shape[0])
-        for _ in range(1):  # 生成1个时间抖动版本
-            jitter_X = np.empty_like(X_seq)
-            for i in range(X_seq.shape[1]):
-                # 随机选择相邻时间点
-                shift = np.random.randint(-1, 2, size=X_seq.shape[0])
-                for j in range(X_seq.shape[0]):
-                    idx = max(0, min(X_seq.shape[0]-1, j + shift[j]))
-                    jitter_X[j, i] = X_seq[idx, i]
-            
-            augmented_X.append(jitter_X)
             augmented_y.append(y_seq)
         
         # 连接所有增强数据
@@ -561,8 +786,8 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
             
             # 转换回原始比例计算指标
             y_pred = outputs.cpu().numpy()
-            y_pred_original = self.scaler_y.inverse_transform(y_pred)
-            y_true_original = self.scaler_y.inverse_transform(y_test)
+            y_pred_original = self.target_scaler.inverse_transform(y_pred)
+            y_true_original = self.target_scaler.inverse_transform(y_test)
             
             # 计算方向准确率 (预测正负符号是否正确)
             direction_accuracy = np.mean((y_pred_original[:, 0] > 0) == (y_true_original[:, 0] > 0))
@@ -585,36 +810,74 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
         """
         try:
             start_time = time.time()
-            self.logger.info("开始训练模型...")
+            self.logger.info(f"开始训练模型 (特征维度: {X.shape[1]}, 数据量: {X.shape[0]})")
             
-            # 分割并缩放数据
-            X_train, y_train, X_val, y_val, X_test, y_test = self._split_and_scale_data(X, y, is_training=True)
+            # 标准化特征和目标
+            X_scaled, y_scaled = self._normalize_features(X, y, is_training=True)
+            
+            # 划分训练集、验证集和测试集
+            total_samples = len(X_scaled)
+            test_size = int(total_samples * self.test_split)
+            val_size = int(total_samples * self.validation_split)
+            train_size = total_samples - test_size - val_size
+            
+            # 确保数据量足够
+            if train_size < 100 or val_size < 30 or test_size < 30:
+                self.logger.error(f"训练数据不足: 训练集={train_size}, 验证集={val_size}, 测试集={test_size}")
+                return False
+            
+            # 划分索引
+            all_indices = np.arange(total_samples)
+            
+            # 使用随机种子打乱索引
+            np.random.seed(42)
+            np.random.shuffle(all_indices)
+            
+            train_indices = all_indices[:train_size]
+            val_indices = all_indices[train_size:train_size+val_size]
+            test_indices = all_indices[train_size+val_size:]
+            
+            # 划分数据
+            X_train = X_scaled.iloc[train_indices]
+            y_train = y_scaled[train_indices]
+            X_val = X_scaled.iloc[val_indices]
+            y_val = y_scaled[val_indices]
+            X_test = X_scaled.iloc[test_indices]
+            y_test = y_scaled[test_indices]
             
             # 创建序列
             X_train_seq, y_train_seq = self._create_sequences(X_train, y_train, is_training=True)
             X_val_seq, y_val_seq = self._create_sequences(X_val, y_val, is_training=True)
             X_test_seq, y_test_seq = self._create_sequences(X_test, y_test, is_training=True)
             
+            if len(X_train_seq) == 0 or len(X_val_seq) == 0 or len(X_test_seq) == 0:
+                self.logger.error("序列化后的数据为空")
+                return False
+            
             self.logger.info(f"训练集大小: {X_train_seq.shape}, 验证集大小: {X_val_seq.shape}, 测试集大小: {X_test_seq.shape}")
             
-            # 数据增强
+            # 数据增强 (仅对训练集)
             X_train_aug, y_train_aug = self._data_augmentation(X_train_seq, y_train_seq)
-            
-            # 转换为PyTorch张量
-            X_train_tensor = torch.FloatTensor(X_train_aug)
-            y_train_tensor = torch.FloatTensor(y_train_aug)
-            X_val_tensor = torch.FloatTensor(X_val_seq)
-            y_val_tensor = torch.FloatTensor(y_val_seq)
-            
-            # 创建数据加载器
-            train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
-            train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
-            val_dataset = TensorDataset(X_val_tensor, y_val_tensor)
-            val_loader = DataLoader(val_dataset, batch_size=self.batch_size)
             
             # 训练每个模型
             for i, model in enumerate(self.models):
-                self.logger.info(f"训练模型 {i+1}/{len(self.models)}")
+                self.logger.info(f"训练模型 {i+1}/{len(self.models)} (类型: {model.__class__.__name__})")
+                
+                # 使用不同的随机种子
+                torch.manual_seed(self.model_seeds[i])
+                np.random.seed(self.model_seeds[i])
+                
+                # 转换为PyTorch张量
+                X_train_tensor = torch.FloatTensor(X_train_aug)
+                y_train_tensor = torch.FloatTensor(y_train_aug)
+                X_val_tensor = torch.FloatTensor(X_val_seq)
+                y_val_tensor = torch.FloatTensor(y_val_seq)
+                
+                # 创建数据加载器
+                train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
+                train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
+                val_dataset = TensorDataset(X_val_tensor, y_val_tensor)
+                val_loader = DataLoader(val_dataset, batch_size=self.batch_size)
                 
                 # 将模型移到设备
                 model = model.to(self.device)
@@ -669,7 +932,7 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
                     # 更新学习率
                     scheduler.step(val_loss)
                     
-                    # 每隔几个epoch打印一次训练情况
+                    # 每隔5个epoch打印一次训练情况
                     if (epoch+1) % 5 == 0 or epoch == 0 or epoch == self.num_epochs-1:
                         self.logger.info(f"模型 {i+1}, Epoch [{epoch+1}/{self.num_epochs}], "
                                       f"Train Loss: {train_loss:.6f}, Val Loss: {val_loss:.6f}")
@@ -678,11 +941,6 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
                     if val_loss < best_val_loss:
                         best_val_loss = val_loss
                         patience_counter = 0
-                        
-                        # 保存最佳模型状态
-                        if self.save_models:
-                            model_path = self._generate_model_filename(i)
-                            torch.save(model.state_dict(), model_path)
                     else:
                         patience_counter += 1
                         if patience_counter >= self.early_stop_patience:
@@ -701,6 +959,10 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
             self.last_training_time = time.time()
             training_duration = (time.time() - start_time) / 60
             self.logger.info(f"所有模型训练完成，耗时 {training_duration:.2f} 分钟")
+            
+            # 保存模型
+            self._save_models()
+            
             return True
             
         except Exception as e:
@@ -709,49 +971,69 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
             self.logger.error(traceback.format_exc())
             return False
     
-    def _get_adaptive_threshold(self, df, window=20):
+    def _get_adaptive_threshold(self, df):
         """
         计算自适应预测阈值，根据近期市场波动性调整
         
         Args:
             df (pandas.DataFrame): K线数据
-            window (int): 计算窗口
             
         Returns:
             float: 自适应阈值
         """
         try:
-            # 计算近期的价格波动
-            close_prices = df['close'].iloc[-window:]
-            returns = close_prices.pct_change().dropna()
+            # 计算近期ATR
+            high = df['high'].values[-20:]
+            low = df['low'].values[-20:]
+            close = df['close'].values[-20:]
             
-            # 使用ATR作为波动性指标
-            high = df['high'].iloc[-window:]
-            low = df['low'].iloc[-window:]
-            close = df['close'].iloc[-window:]
+            atr = talib.ATR(high, low, close, timeperiod=14)
+            atr_pct = atr[-1] / close[-1]
             
-            atr = talib.ATR(high.values, low.values, close.values, timeperiod=14)
-            atr_pct = atr[-1] / close.iloc[-1]
-            
-            # 计算自适应阈值: 基础阈值 + 市场波动因子
+            # 波动倍数，最小0.1，最大0.5
             volatility_factor = min(0.5, max(0.1, atr_pct * 0.5))
             
-            # 计算基于历史数据的阈值
-            base_threshold = self.prediction_threshold
-            adaptive_threshold = base_threshold * (1 + volatility_factor)
+            # 计算自适应阈值
+            adaptive_threshold = self.base_prediction_threshold * (1 + volatility_factor)
             
             # 确保阈值在合理范围内
             adaptive_threshold = min(0.01, max(0.001, adaptive_threshold))
             
-            if self.debug_mode:
-                self.logger.info(f"自适应阈值: {adaptive_threshold:.6f} (基础阈值: {base_threshold:.6f}, "
-                              f"波动因子: {volatility_factor:.4f}, ATR百分比: {atr_pct:.4f})")
+            self.logger.info(f"自适应阈值: {adaptive_threshold:.6f} (基础阈值: {self.base_prediction_threshold:.6f}, "
+                          f"波动因子: {volatility_factor:.4f}, ATR百分比: {atr_pct:.4f})")
                 
             return adaptive_threshold
             
         except Exception as e:
             self.logger.error(f"计算自适应阈值失败: {str(e)}")
-            return self.prediction_threshold
+            return self.base_prediction_threshold
+    
+    def _check_prediction_consistency(self, current_prediction, last_predictions):
+        """
+        检查当前预测与历史预测的一致性，防止模型预测卡住
+        
+        Args:
+            current_prediction: 当前预测值
+            last_predictions: 历史预测值列表
+            
+        Returns:
+            bool: 是否一致性过高（警告信号）
+        """
+        if not last_predictions or len(last_predictions) < 2:
+            return False
+            
+        # 比较当前预测和上一次预测
+        last_prediction = last_predictions[-1]['predictions']
+        
+        # 计算预测差异
+        diff = np.mean(np.abs(np.array(current_prediction) - np.array(last_prediction)))
+        
+        # 如果差异极小，认为预测卡住了
+        if diff < 0.0001:
+            self.logger.warning(f"预测差异极小: {diff:.8f}，可能存在预测缓存问题")
+            return True
+            
+        return False
     
     def _predict(self, X, df=None):
         """
@@ -762,73 +1044,130 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
             df (pandas.DataFrame): 原始K线数据，用于计算自适应阈值
             
         Returns:
-            tuple: (预测值, 预测置信度, 投票结果)
+            tuple: (预测值, 预测置信度, 投票结果, 自适应阈值)
         """
         try:
+            start_time = time.time()
+            
             if not self.is_trained or len(self.models) == 0:
-                return None, 0, []
+                self.logger.error("模型未训练，无法进行预测")
+                return None, 0, [], self.base_prediction_threshold
                 
-            # 使用相同的缩放器缩放特征
-            X_scaled = self._split_and_scale_data(X, None, is_training=False)
+            # 标准化特征
+            X_scaled = self._normalize_features(X)
             
             # 创建序列
             X_seq = self._create_sequences(X_scaled, is_training=False)
             
+            if len(X_seq) == 0:
+                self.logger.error("序列化数据为空，无法预测")
+                return None, 0, [], self.base_prediction_threshold
+                
             # 只取最后一个序列进行预测
-            if len(X_seq) > 0:
-                X_last = X_seq[-1:]
-                X_tensor = torch.FloatTensor(X_last).to(self.device)
+            X_last = X_seq[-1:]
+            X_tensor = torch.FloatTensor(X_last).to(self.device)
+            
+            # 收集所有模型的预测
+            all_predictions = []
+            model_predictions = []  # 保存每个模型的详细预测
+            
+            for i, model in enumerate(self.models):
+                # 将模型移到正确的设备
+                model = model.to(self.device)
+                model.eval()
                 
-                # 收集所有模型的预测
-                all_predictions = []
-                
-                for i, model in enumerate(self.models):
-                    model = model.to(self.device)
-                    model.eval()
+                with torch.no_grad():
+                    # 确保输入尺寸正确
+                    prediction = model(X_tensor)
                     
-                    with torch.no_grad():
-                        prediction = model(X_tensor)
-                        # 将预测转换回原始比例
-                        prediction_np = prediction.cpu().numpy()
-                        if self.scaler_y is not None:
-                            prediction_np = self.scaler_y.inverse_transform(prediction_np)
-                        all_predictions.append(prediction_np[0])
+                    # 将预测转换回原始比例
+                    prediction_np = prediction.cpu().numpy()
+                    if self.target_scaler is not None:
+                        prediction_np = self.target_scaler.inverse_transform(prediction_np)
+                        
+                    # 保存详细的单模型预测
+                    model_predictions.append({
+                        'model_idx': i,
+                        'model_type': model.__class__.__name__,
+                        'raw_prediction': prediction_np[0].tolist(),
+                    })
                     
-                    # 将模型移回CPU
-                    model = model.cpu()
+                    all_predictions.append(prediction_np[0])
                 
-                # 计算平均预测值
-                all_predictions = np.array(all_predictions)
-                avg_prediction = np.mean(all_predictions, axis=0)
-                
-                # 计算预测的标准差作为不确定性度量
-                std_prediction = np.std(all_predictions, axis=0)
-                
-                # 计算置信度 (置信度 = 1 / (1 + 标准差))
-                confidence = 1 / (1 + np.mean(std_prediction))
-                
-                # 对每个预测进行投票 (是否预测上涨)
-                votes = []
-                for pred in all_predictions:
-                    # 限制预测值在合理范围内
-                    pred = np.clip(pred, -self.max_prediction, self.max_prediction)
-                    votes.append(1 if np.mean(pred) > 0 else -1)
-                
-                # 计算自适应阈值
-                if self.adaptive_threshold and df is not None:
-                    threshold = self._get_adaptive_threshold(df)
-                else:
-                    threshold = self.prediction_threshold
-                
-                return avg_prediction, confidence, votes, threshold
-            else:
-                return None, 0, [], self.prediction_threshold
+                # 将模型移回CPU以节省内存
+                model = model.cpu()
+            
+            # 计算平均预测值和标准差
+            all_predictions = np.array(all_predictions)
+            avg_prediction = np.mean(all_predictions, axis=0)
+            std_prediction = np.std(all_predictions, axis=0)
+            
+            # 确保预测值在合理范围内
+            avg_prediction = np.clip(avg_prediction, -self.max_prediction, self.max_prediction)
+            
+            # 计算置信度 (方式1: 基于标准差)
+            confidence_std = 1 / (1 + np.mean(std_prediction) * 10)
+            
+            # 计算每个模型对未来趋势方向的投票
+            votes = []
+            for pred in all_predictions:
+                # 剪裁预测值到合理范围
+                pred = np.clip(pred, -self.max_prediction, self.max_prediction)
+                votes.append(1 if np.mean(pred) > 0 else -1)
+            
+            # 方式2: 根据一致性投票计算置信度
+            agreement_ratio = max(votes.count(1), votes.count(-1)) / len(votes)
+            confidence_vote = agreement_ratio
+            
+            # 综合计算置信度 (给投票一致性更高的权重)
+            confidence = 0.3 * confidence_std + 0.7 * confidence_vote
+            
+            # 计算自适应阈值
+            threshold = self._get_adaptive_threshold(df) if df is not None else self.base_prediction_threshold
+            
+            # 检查预测一致性
+            is_consistent = self._check_prediction_consistency(avg_prediction, self.prediction_history)
+            if is_consistent:
+                # 如果预测一致性过高，降低置信度
+                confidence *= 0.8
+                self.logger.warning(f"因预测一致性过高，降低置信度至 {confidence:.4f}")
+            
+            # 记录详细的预测信息
+            prediction_detail = {
+                'timestamp': time.time(),
+                'datetime': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'predictions': avg_prediction.tolist(),
+                'confidence': float(confidence),
+                'votes': votes,
+                'threshold': float(threshold),
+                'std_prediction': std_prediction.tolist(),
+                'model_predictions': model_predictions,
+                'elapsed_time': time.time() - start_time
+            }
+            
+            # 添加到预测历史
+            self.prediction_history.append(prediction_detail)
+            if len(self.prediction_history) > self.max_history_size:
+                self.prediction_history.pop(0)
+            
+            # 记录预测性能
+            if self.debug_mode:
+                self.logger.info(f"预测耗时: {prediction_detail['elapsed_time']:.4f}秒")
+                # 输出每个模型的预测
+                for i, model_pred in enumerate(model_predictions):
+                    model_type = model_pred['model_type']
+                    pred_values = np.array(model_pred['raw_prediction'])
+                    pred_avg = np.mean(pred_values)
+                    pred_dir = "买入" if pred_avg > 0 else "卖出"
+                    self.logger.info(f"模型 {i+1} ({model_type}) 预测: {pred_avg:.6f} ({pred_dir})")
+            
+            return avg_prediction, confidence, votes, threshold
                 
         except Exception as e:
             self.logger.error(f"预测失败: {str(e)}")
             import traceback
             self.logger.error(traceback.format_exc())
-            return None, 0, [], self.prediction_threshold
+            return None, 0, [], self.base_prediction_threshold
     
     def analyze_market_state(self, klines):
         """
@@ -868,10 +1207,6 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
             elif current_minus_di > current_plus_di and ema_fast[-1] < ema_slow[-1]:
                 trend = -1  # 下降趋势
                 
-            # 计算波动性
-            atr = talib.ATR(df['high'].values, df['low'].values, df['close'].values, timeperiod=14)
-            atr_pct = atr[-1] / df['close'].iloc[-1] if not np.isnan(atr[-1]) else 0
-            
             # 判断市场状态
             state = "unknown"
             if current_adx < 20:
@@ -900,7 +1235,6 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
                 "plus_di": current_plus_di,
                 "minus_di": current_minus_di,
                 "rsi": current_rsi,
-                "volatility": atr_pct,
                 "is_overbought": is_overbought,
                 "is_oversold": is_oversold
             }
@@ -908,6 +1242,56 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
         except Exception as e:
             self.logger.error(f"分析市场状态失败: {str(e)}")
             return {"state": "unknown", "trend": 0, "strength": 0}
+    
+    def validate_prediction_vs_reality(self, current_price, last_price, last_prediction):
+        """
+        将上一次的预测与实际价格变化对比，用于动态调整预测的可信度
+        
+        Args:
+            current_price (float): 当前价格
+            last_price (float): 上一次价格
+            last_prediction (dict): 上一次预测
+            
+        Returns:
+            bool: 预测是否与实际变化方向一致
+        """
+        if last_prediction is None:
+            return None
+            
+        # 计算实际变化率
+        actual_change = (current_price - last_price) / last_price
+        
+        # 获取上一次预测的平均变化率
+        predicted_change = np.mean(last_prediction.get('predictions', [0]))
+        
+        # 判断方向是否一致
+        actual_direction = 1 if actual_change > 0 else -1
+        predicted_direction = 1 if predicted_change > 0 else -1
+        
+        # 方向一致性
+        direction_match = actual_direction == predicted_direction
+        
+        # 更新计数器
+        if direction_match:
+            self.consecutive_wrong_predictions = 0
+        else:
+            self.consecutive_wrong_predictions += 1
+            self.logger.warning(f"预测方向与实际不符: 预测={predicted_change:.6f}, 实际={actual_change:.6f}, 连续错误次数={self.consecutive_wrong_predictions}")
+        
+        # 记录预测准确率
+        self.prediction_accuracy.append(direction_match)
+        if len(self.prediction_accuracy) > self.prediction_error_window:
+            self.prediction_accuracy.pop(0)
+        
+        # 计算近期预测准确率
+        recent_accuracy = sum(self.prediction_accuracy) / len(self.prediction_accuracy) if self.prediction_accuracy else 0.5
+        
+        # 记录对比信息
+        self.logger.info(f"预测 vs 实际: 预测方向={'上涨' if predicted_direction > 0 else '下跌'} ({predicted_change:.6f}), "
+                      f"实际方向={'上涨' if actual_direction > 0 else '下跌'} ({actual_change:.6f}), "
+                      f"方向{'一致' if direction_match else '不一致'}, 准确率={recent_accuracy:.2f}")
+        
+        return direction_match
     
     def train_model_if_needed(self, klines):
         """
@@ -921,7 +1305,15 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
         """
         # 如果模型未训练或者距离上次训练已经超过重训练间隔
         current_time = time.time()
-        if (not self.is_trained or 
+        
+        # 检查是否需要强制重训练
+        force_retrain = False
+        if self.consecutive_wrong_predictions >= self.max_consecutive_wrong:
+            self.logger.warning(f"连续 {self.consecutive_wrong_predictions} 次预测错误，强制重新训练模型")
+            force_retrain = True
+            self.consecutive_wrong_predictions = 0
+            
+        if (not self.is_trained or force_retrain or 
             current_time - self.last_training_time > self.retraining_interval):
             
             self.logger.info("开始训练深度学习模型...")
@@ -942,10 +1334,6 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
             # 训练模型
             result = self._train_model(X, y)
             
-            # 保存训练好的模型
-            if result and self.save_models:
-                self._save_models()
-                
             return result
         
         return False
@@ -961,6 +1349,8 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
             int: 交易信号，1(买入)，-1(卖出)，0(观望)
         """
         try:
+            start_time = time.time()
+            
             # 确保有足够的K线数据
             if len(klines) < self.lookback_period:
                 self.logger.warning(f"K线数据不足: {len(klines)} < {self.lookback_period}")
@@ -970,6 +1360,14 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
             df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
             for col in ['open', 'high', 'low', 'close', 'volume']:
                 df[col] = pd.to_numeric(df[col])
+            
+            # 获取当前价格和上一次价格
+            current_price = df['close'].iloc[-1]
+            last_price = df['close'].iloc[-2] if len(df) > 1 else current_price
+            
+            # 验证上一次预测准确性
+            if self.last_prediction:
+                self.validate_prediction_vs_reality(current_price, last_price, self.last_prediction)
             
             # 分析市场状态
             market_state = self.analyze_market_state(klines)
@@ -987,14 +1385,6 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
                 self.logger.error("预测数据准备失败")
                 return 0
                 
-            # 动态更新输入维度以匹配实际特征数
-            if self.input_dim != X.shape[1]:
-                self.input_dim = X.shape[1]
-                self.logger.info(f"调整输入维度为 {self.input_dim} 以匹配实际特征数")
-                # 重新初始化并重新训练模型
-                self._init_models()
-                self.train_model_if_needed(klines)
-                
             # 预测未来价格变化
             predictions, confidence, votes, threshold = self._predict(X, df)
             
@@ -1011,11 +1401,6 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
                 'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             }
             
-            # 添加到预测历史
-            self.prediction_history.append(self.last_prediction)
-            if len(self.prediction_history) > 50:  # 只保留最近50个预测
-                self.prediction_history.pop(0)
-            
             # 确定交易信号
             signal = 0
             
@@ -1027,21 +1412,28 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
             down_votes = votes.count(-1)
             vote_ratio = up_votes / len(votes) if up_votes > down_votes else -down_votes / len(votes)
             
+            # 如果连续预测错误，降低置信度
+            adjusted_confidence = confidence
+            if self.consecutive_wrong_predictions > 0:
+                adjustment_factor = self.confidence_adjustment_factor ** self.consecutive_wrong_predictions
+                adjusted_confidence *= adjustment_factor
+                self.logger.info(f"调整信心度: {confidence:.4f} -> {adjusted_confidence:.4f} (因连续 {self.consecutive_wrong_predictions} 次预测错误)")
+            
             # 综合考虑预测值、投票结果和置信度
-            if confidence >= self.min_confidence:
+            if adjusted_confidence >= self.min_confidence:
                 if avg_change > threshold and vote_ratio > self.voting_threshold:
                     signal = 1  # 买入信号
                     self.logger.info(f"生成买入信号 - 预测变化率: {avg_change:.6f} (阈值: {threshold:.6f}), "
-                                  f"置信度: {confidence:.4f}, 投票: {up_votes}:{down_votes}")
+                                  f"置信度: {adjusted_confidence:.4f}, 投票: {up_votes}:{down_votes}")
                 elif avg_change < -threshold and vote_ratio < -self.voting_threshold:
                     signal = -1  # 卖出信号
                     self.logger.info(f"生成卖出信号 - 预测变化率: {avg_change:.6f} (阈值: {threshold:.6f}), "
-                                  f"置信度: {confidence:.4f}, 投票: {up_votes}:{down_votes}")
+                                  f"置信度: {adjusted_confidence:.4f}, 投票: {up_votes}:{down_votes}")
                 else:
                     self.logger.info(f"预测变化不足或投票不一致 - 预测变化率: {avg_change:.6f} (阈值: {threshold:.6f}), "
-                                  f"置信度: {confidence:.4f}, 投票: {up_votes}:{down_votes}")
+                                  f"置信度: {adjusted_confidence:.4f}, 投票: {up_votes}:{down_votes}")
             else:
-                self.logger.info(f"预测置信度不足 - 预测变化率: {avg_change:.6f}, 置信度: {confidence:.4f}")
+                self.logger.info(f"预测置信度不足 - 预测变化率: {avg_change:.6f}, 调整后置信度: {adjusted_confidence:.4f} (原始置信度: {confidence:.4f})")
             
             # 考虑市场状态进行调整
             if signal != 0:
@@ -1059,18 +1451,22 @@ class EnhancedDeepLearningStrategy15m(BaseStrategy):
                         signal = 0
                 
                 # 3. 考虑超买超卖状态
-                if signal == 1 and market_state['is_overbought']:
-                    self.logger.info(f"市场处于超买状态 (RSI: {market_state['rsi']:.1f})，谨慎做多")
+                if signal == 1 and market_state.get('is_overbought', False):
+                    self.logger.info(f"市场处于超买状态 (RSI: {market_state.get('rsi', 0):.1f})，谨慎做多")
                     if abs(avg_change) < threshold * 2:
                         signal = 0
-                elif signal == -1 and market_state['is_oversold']:
-                    self.logger.info(f"市场处于超卖状态 (RSI: {market_state['rsi']:.1f})，谨慎做空")
+                elif signal == -1 and market_state.get('is_oversold', False):
+                    self.logger.info(f"市场处于超卖状态 (RSI: {market_state.get('rsi', 0):.1f})，谨慎做空")
                     if abs(avg_change) < threshold * 2:
                         signal = 0
             
             # 输出详细的预测信息
             self.logger.info(f"预测未来 {self.prediction_horizon} 个周期的价格变化率: {predictions}")
             self.logger.info(f"市场状态: {market_state['state']}, 趋势: {market_state['trend']}, 强度: {market_state['strength']:.2f}")
+            
+            elapsed_time = time.time() - start_time
+            if elapsed_time > 1.0:
+                self.logger.info(f"信号生成耗时: {elapsed_time:.2f}秒")
             
             return signal
             

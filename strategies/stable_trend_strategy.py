@@ -32,7 +32,7 @@ class StableTrendStrategy15m(BaseStrategy):
         self.logger = self.get_logger()
         
         # K线设置
-        self.kline_interval = '15m'       # 15分钟K线
+        self.kline_interval = '30m'       # 15分钟K线
         self.check_interval = 300         # 检查信号间隔(秒)
         self.lookback_period = 200        # 计算指标所需的K线数量
         self.training_lookback = 200      # 提供该属性以兼容TradingManager
@@ -45,7 +45,7 @@ class StableTrendStrategy15m(BaseStrategy):
         
         # 趋势强度参数
         self.adx_period = 14              # ADX周期
-        self.adx_trend_threshold = 25     # ADX趋势阈值，高于此值认为是明确趋势
+        self.adx_trend_threshold = 20     # ADX趋势阈值，高于此值认为是明确趋势
         self.adx_strong_threshold = 40    # ADX强趋势阈值
         
         # 动量指标参数
@@ -65,7 +65,7 @@ class StableTrendStrategy15m(BaseStrategy):
         
         # 共识参数
         self.min_consensus_threshold = 0.60  # 最小共识阈值
-        self.trend_consensus_threshold = 0.75  # 趋势市场共识阈值
+        self.trend_consensus_threshold = 0.2  # 趋势市场共识阈值
         self.range_consensus_threshold = 0.65  # 震荡市场共识阈值
         
         # 噪声过滤参数
@@ -222,7 +222,7 @@ class StableTrendStrategy15m(BaseStrategy):
             }
             self._last_analysis_time = current_time
             
-            self.logger.info(f"市场状态: {state}, 趋势方向: {trend_direction}, 趋势强度: {adx_value:.2f}, " +
+            self.logger.info(f"市场状态: {state}, 趋势方向: {trend_direction}, plus_di: {plus_di}, minus_di: {minus_di}, 趋势强度: {adx_value:.2f}, " +
                           f"趋势持续: {self.trend_duration}根K线")
             
             return self._last_analyzed_klines
@@ -801,6 +801,9 @@ class StableTrendStrategy15m(BaseStrategy):
         try:
             # 分析市场状态
             market_state = self.analyze_market_state(klines)
+            trend_direction = market_state['trend']
+
+            # return trend_direction
             
             # 计算趋势得分
             trend_result = self.calculate_trend_score(klines)
@@ -848,10 +851,10 @@ class StableTrendStrategy15m(BaseStrategy):
                     return trend_signal
             else:
                 # 信号不稳定，但如果当前持仓方向与趋势相反，仍然考虑平仓
-                if position_side == "多" and trend_score < -0.5:
+                if position_side == "多" and trend_score < -0.2:
                     self.logger.info("虽然信号不够稳定，但趋势明显向下，建议平多仓")
                     return -1
-                elif position_side == "空" and trend_score > 0.5:
+                elif position_side == "空" and trend_score > 0.2:
                     self.logger.info("虽然信号不够稳定，但趋势明显向上，建议平空仓")
                     return 1
                 

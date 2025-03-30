@@ -10,19 +10,16 @@ PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
 PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
+# 1000CHEEMSUSDT BMTUSDT API3USDT ARCUSDT TUTUSDT MUBARAKUSDT
+
 # 交易设置
-SYMBOLS = ['BMTUSDT']  # 支持多个交易对
+
+SYMBOLS = ['1000CHEEMSUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
-    # 'BTCUSDT': {
-    #     'leverage': 5,
-    #     'min_notional': 20,
-    #     'check_interval': 60,  # 交易检查间隔(秒)
-    #     'trade_amount_percent': 50,  # 每次交易使用的资金百分比
-    # },
-        'BMTUSDT': {
+        '1000CHEEMSUSDT': {
         'leverage': 5,
         'min_notional': 20,
-        'trade_amount_percent': 100,
+        'trade_amount_percent': 150,
         'check_interval': 60,  # 交易检查间隔(秒)
     },
     # 'ETHUSDT': {

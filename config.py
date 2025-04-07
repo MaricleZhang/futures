@@ -10,16 +10,18 @@ PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
 PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
-# 1000CHEEMSUSDT BMTUSDT API3USDT ARCUSDT TUTUSDT MUBARAKUSDT
+# 1000CHEEMSUSDT BMTUSDT API3USDT ARCUSDT TUTUSDT MUBARAKUSDT DOGEUSDT AUCTIONUSDT 1000PEPEUSDT EOSUSDT 1000SATSUSDT
+# GUNUSDT TNSRUSDT
+
 
 # 交易设置
 
-SYMBOLS = ['1000CHEEMSUSDT']  # 支持多个交易对
+SYMBOLS = ['TNSRUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
-        '1000CHEEMSUSDT': {
+        'TNSRUSDT': {
         'leverage': 5,
         'min_notional': 20,
-        'trade_amount_percent': 150,
+        'trade_amount_percent': 200,
         'check_interval': 60,  # 交易检查间隔(秒)
     },
     # 'ETHUSDT': {

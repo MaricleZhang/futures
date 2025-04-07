@@ -12,19 +12,12 @@ from utils.logger import Logger
 from backtest import Backtester
 
 # 导入所有策略
-from strategies.ppo_strategy import PPOTrendStrategy
-from strategies.rl_strategy import RLTrendStrategy
-from strategies.simple_trend_strategy import SimpleTrendStrategy
-from strategies.short_term_rf_strategy import ShortTermRFStrategy
-from strategies.trend_strategy_15m import MediumTrendStrategy
+from strategies.rl_strategy import RLTradingStrategy30m
+
 
 # 策略字典
 STRATEGIES = {
-    'ppo': PPOTrendStrategy,
-    'rl': RLTrendStrategy,
-    'simple': SimpleTrendStrategy,
-    'shortterm': ShortTermRFStrategy,
-    'medium': MediumTrendStrategy
+    'rl': RLTradingStrategy30m,
 }
 
 def parse_arguments():

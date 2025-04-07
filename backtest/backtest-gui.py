@@ -179,4 +179,4 @@ class BacktestGUI:
         
         # 日志文本框
         self.log_text = tk.Text(log_frame, wrap=tk.WORD)
-        self.log_text.pack(fill=tk.BOTH, expan
+        self.log_text.pack(fill=tk.BOTH, expand=True)

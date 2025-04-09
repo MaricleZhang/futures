@@ -1,6 +1,6 @@
 """
-深度学习趋势交易策略 - 30分钟时间框架
-使用深度学习模型预测价格趋势，专注于中长期趋势交易
+TST+ (Time Series Transformer Plus) Strategy - 30 minute timeframe
+Advanced transformer-based model for cryptocurrency price prediction
 """
 import numpy as np
 import pandas as pd
@@ -8,87 +8,94 @@ import talib
 from datetime import datetime, timedelta
 import time
 import logging
-import tempfile
 import os
-from strategies.base_strategy import BaseStrategy
 import tensorflow as tf
+from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import *
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import pickle
+from strategies.base_strategy import BaseStrategy
 
-class DeepLearningTrendStrategy30m(BaseStrategy):
-    """DeepLearningTrendStrategy30m - 深度学习趋势交易策略
+class TSTPlus30mStrategy(BaseStrategy):
+    """TSTPlus30mStrategy - Time Series Transformer Plus Strategy
     
-    基于30分钟K线的深度学习趋势预测策略，采用LSTM和CNN混合模型
-    识别市场趋势，并根据模型预测提供交易信号。
+    A transformer-based deep learning strategy for 30-minute timeframe trading.
+    Leverages advanced attention mechanisms to capture complex temporal patterns
+    and dependencies in cryptocurrency price movements.
     
-    特点:
-    1. 深度神经网络自动特征提取：无需人工设计技术指标
-    2. 时序特征处理：LSTM捕捉价格序列的时间依赖关系
-    3. 趋势强度感知：自适应调整趋势确认阈值
-    4. 自动调整参数：根据市场波动性调整模型参数
-    5. 实时训练和预测：定期根据最新数据更新模型
-    6. 集成多个模型：提高预测鲁棒性
+    Features:
+    1. Transformer architecture with self-attention for sequence modeling
+    2. Multi-head attention to capture different aspects of time series data
+    3. Feature-wise attention to focus on the most relevant technical indicators
+    4. Adaptive learning rate and regularization techniques
+    5. Advanced risk management with dynamic stop-loss and take-profit
     """
     
     def __init__(self, trader):
-        """初始化深度学习趋势交易策略"""
+        """Initialize the TST+ strategy"""
         super().__init__(trader)
         self.logger = self.get_logger()
         
-        # K线设置
-        self.kline_interval = '30m'      # 30分钟K线
-        self.check_interval = 300        # 检查信号间隔(秒)
-        self.lookback_period = 500       # 计算指标所需的K线数量
-        self.training_lookback = 1000    # 训练模型所需的K线数量
-        self.retraining_interval = 86400 # 模型重新训练间隔(秒)
+        # K-line settings
+        self.kline_interval = '15m'      # 30-minute timeframe
+        self.check_interval = 300        # Check signal interval (seconds)
+        self.lookback_period = 500       # Number of k-lines for indicators
+        self.training_lookback = 1500    # Number of k-lines for model training
+        self.retraining_interval = 86400 # Retraining interval (seconds)
         
-        # 模型设置
-        self.sequence_length = 30        # 输入序列长度
-        self.feature_count = 15          # 特征数量
-        self.model = None                # 深度学习模型
-        self.model_path = self._get_model_path()  # 模型保存路径
-        self.scaler = None               # 特征缩放器
-        self.last_training_time = 0      # 上次训练时间
-        self.min_confidence = 0.5       # 最小预测置信度
+        # Model parameters
+        self.sequence_length = 60        # Input sequence length
+        self.feature_count = 20          # Number of features
+        self.d_model = 64                # Transformer model dimension
+        self.num_heads = 4               # Number of attention heads
+        self.dropout_rate = 0.2          # Dropout rate
+        self.num_layers = 3              # Number of transformer layers
+        self.model = None                # The model instance
+        self.model_path = self._get_model_path()  # Model save path
+        self.scaler = None               # Feature scaler
+        self.last_training_time = 0      # Last training time
+        self.min_confidence = 0.6        # Minimum prediction confidence
         
-        # 趋势参数
-        self.trend_confirmation_window = 3  # 趋势确认窗口
-        self.market_state = "unknown"    # 市场状态
-        self.trend_strength = 0          # 趋势强度
-        self.current_trend = 0           # 当前趋势: 1(上升), -1(下降), 0(中性)
+        # Trend parameters
+        self.trend_confirmation_window = 3  # Trend confirmation window
+        self.market_state = "unknown"    # Market state
+        self.trend_strength = 0          # Trend strength
+        self.current_trend = 0           # Current trend: 1(up), -1(down), 0(neutral)
         
-        # 持仓控制参数
-        self.max_position_hold_time = 720  # 最大持仓时间(分钟)
-        self.stop_loss_pct = 0.03        # 止损比例 (3%)
-        self.take_profit_pct = 0.06      # 止盈比例 (6%)
-        self.trailing_stop = True        # 是否启用追踪止损
-        self.trailing_stop_activation = 0.03  # 激活追踪止损的利润百分比
-        self.trailing_stop_distance = 0.015   # 追踪止损距离百分比
+        # Position control parameters
+        self.max_position_hold_time = 720  # Maximum position hold time (minutes)
+        self.stop_loss_pct = 0.03        # Stop loss percentage (3%)
+        self.take_profit_pct = 0.05      # Take profit percentage (5%)
+        self.trailing_stop = True        # Enable trailing stop
+        self.trailing_stop_activation = 0.02  # Activate trailing stop at this profit
+        self.trailing_stop_distance = 0.01    # Trailing stop distance
         
-        # 历史信号记录
-        self.signal_history = []         # 最近的信号历史
-        self.max_signal_history = 20     # 保存的最大信号数量
-        self.last_signal_time = None     # 上次产生信号的时间
-        self.last_signal = 0             # 上次信号: 1(买入), -1(卖出), 0(观望)
+        # Signal history
+        self.signal_history = []         # Recent signal history
+        self.max_signal_history = 20     # Maximum number of signals to store
+        self.last_signal_time = None     # Last signal time
+        self.last_signal = 0             # Last signal: 1(buy), -1(sell), 0(neutral)
         
-        # 内部状态
-        self.position_entry_time = None  # 开仓时间
-        self.position_entry_price = None # 开仓价格
-        self.max_profit_reached = 0      # 达到的最大利润
+        # Internal state
+        self.position_entry_time = None  # Position entry time
+        self.position_entry_price = None # Position entry price
+        self.max_profit_reached = 0      # Maximum profit reached
         
-        # 初始化
+        # Initialize
         self._initialize_model()
         
     def _get_model_path(self):
-        """获取模型保存路径"""
-        # 创建模型存储目录
+        """Get model save path"""
+        # Create model directory
         model_dir = os.path.join(os.getcwd(), 'models')
         if not os.path.exists(model_dir):
             os.makedirs(model_dir)
         
-        # 创建特定于交易对的模型文件路径
-        model_path = os.path.join(model_dir, f'dl_trend_model_{self.trader.symbol}.h5')
-        scaler_path = os.path.join(model_dir, f'dl_trend_scaler_{self.trader.symbol}.pkl')
+        # Create specific model path for this trading pair
+        model_path = os.path.join(model_dir, f'tst_plus_model_{self.trader.symbol}.h5')
+        scaler_path = os.path.join(model_dir, f'tst_plus_scaler_{self.trader.symbol}.pkl')
         
         return {
             'model': model_path,
@@ -96,66 +103,80 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
         }
         
     def _initialize_model(self):
-        """初始化或加载深度学习模型"""
+        """Initialize or load the transformer model"""
         try:
-            # 检查是否存在预先训练好的模型
+            # Check if a pre-trained model exists
             if os.path.exists(self.model_path['model']):
-                self.logger.info(f"加载已存在的模型: {self.model_path['model']}")
+                self.logger.info(f"Loading existing model: {self.model_path['model']}")
                 self.model = tf.keras.models.load_model(self.model_path['model'])
                 
-                # 加载特征缩放器
+                # Load feature scaler
                 if os.path.exists(self.model_path['scaler']):
                     with open(self.model_path['scaler'], 'rb') as f:
                         self.scaler = pickle.load(f)
                 else:
-                    self.scaler = MinMaxScaler()
+                    self.scaler = MinMaxScaler(feature_range=(-1, 1))
             else:
-                # 创建新模型
-                self.logger.info("没有找到已训练的模型，创建新模型")
+                # Create new model
+                self.logger.info("No pre-trained model found, creating new model")
                 self._build_model()
                 
-                # 立即训练模型
+                # Immediately train the model
                 self._initial_training()
         except Exception as e:
-            self.logger.error(f"初始化模型失败: {str(e)}")
+            self.logger.error(f"Failed to initialize model: {str(e)}")
             import traceback
             self.logger.error(traceback.format_exc())
             
-            # 创建新模型作为备份
+            # Create new model as backup
             self._build_model()
-        
+    
     def _build_model(self):
-        """构建深度学习模型"""
+        """Build the TST+ model using TensorFlow's transformer components"""
         try:
-            # 设置随机种子以确保可重复性
+            # Set random seed for reproducibility
             tf.random.set_seed(42)
             
-            # 创建LSTM+CNN混合模型
-            model = tf.keras.models.Sequential([
-                # 输入层 [batch_size, sequence_length, features]
-                tf.keras.layers.Input(shape=(self.sequence_length, self.feature_count)),
-                
-                # 第一层LSTM - 捕捉时序特征
-                tf.keras.layers.LSTM(64, return_sequences=True),
-                tf.keras.layers.Dropout(0.2),
-                
-                # 应用1D卷积进行特征提取
-                tf.keras.layers.Conv1D(filters=32, kernel_size=3, padding='same', activation='relu'),
-                tf.keras.layers.MaxPooling1D(pool_size=2),
-                
-                # 第二层LSTM - 继续捕捉更高层次的时序关系
-                tf.keras.layers.LSTM(32),
-                tf.keras.layers.Dropout(0.2),
-                
-                # 全连接层
-                tf.keras.layers.Dense(16, activation='relu'),
-                tf.keras.layers.Dropout(0.2),
-                
-                # 输出层 - 使用softmax获取三个类别的概率(下跌、中性、上涨)
-                tf.keras.layers.Dense(3, activation='softmax')
-            ])
+            # Input layer
+            inputs = tf.keras.layers.Input(shape=(self.sequence_length, self.feature_count))
             
-            # 编译模型
+            # Dense projection to d_model
+            x = tf.keras.layers.Dense(self.d_model)(inputs)
+            
+            # Transformer Encoder blocks
+            for _ in range(self.num_layers):
+                # Multi-head attention
+                attention_output = tf.keras.layers.MultiHeadAttention(
+                    num_heads=self.num_heads,
+                    key_dim=self.d_model // self.num_heads
+                )(x, x)
+                
+                # Add & Norm
+                x = tf.keras.layers.LayerNormalization(epsilon=1e-6)(x + attention_output)
+                
+                # Feed Forward
+                ffn = tf.keras.Sequential([
+                    tf.keras.layers.Dense(self.d_model * 4, activation='relu'),
+                    tf.keras.layers.Dense(self.d_model)
+                ])
+                
+                # Add & Norm
+                x = tf.keras.layers.LayerNormalization(epsilon=1e-6)(x + ffn(x))
+            
+            # Global average pooling
+            x = tf.keras.layers.GlobalAveragePooling1D()(x)
+            
+            # Final layers
+            x = tf.keras.layers.Dense(64, activation='relu')(x)
+            x = tf.keras.layers.Dropout(self.dropout_rate)(x)
+            
+            # Output: 3 classes (up, neutral, down)
+            outputs = tf.keras.layers.Dense(3, activation='softmax')(x)
+            
+            # Create model
+            model = tf.keras.Model(inputs=inputs, outputs=outputs)
+            
+            # Compile model
             model.compile(
                 optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
                 loss='categorical_crossentropy',
@@ -163,22 +184,22 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
             )
             
             self.model = model
-            self.logger.info("深度学习模型构建成功")
+            self.logger.info("TST+ model built successfully")
             
-            # 创建特征缩放器
+            # Create feature scaler
             self.scaler = MinMaxScaler(feature_range=(-1, 1))
             
         except Exception as e:
-            self.logger.error(f"构建模型失败: {str(e)}")
+            self.logger.error(f"Failed to build model: {str(e)}")
             import traceback
             self.logger.error(traceback.format_exc())
     
     def _initial_training(self):
-        """初始模型训练"""
+        """Initial model training"""
         try:
-            self.logger.info("开始初始模型训练...")
+            self.logger.info("Starting initial model training...")
             
-            # 获取历史K线数据
+            # Get historical k-line data
             klines = self.trader.get_klines(
                 symbol=self.trader.symbol,
                 interval=self.kline_interval,
@@ -186,16 +207,16 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
             )
             
             if klines and len(klines) > 0:
-                self.logger.info(f"成功获取{len(klines)}根K线数据用于训练")
+                self.logger.info(f"Successfully got {len(klines)} k-lines for training")
                 
-                # 准备训练数据
+                # Prepare training data
                 X, y = self._prepare_training_data(klines)
                 
                 if X is not None and y is not None and len(X) > 0:
-                    # 训练模型
-                    self.logger.info(f"开始训练模型，样本数量: {len(X)}")
+                    # Train model
+                    self.logger.info(f"Starting model training, sample size: {len(X)}")
                     
-                    # 分批训练，避免内存问题
+                    # Batch training to avoid memory issues
                     history = self.model.fit(
                         X, y,
                         epochs=20,
@@ -211,103 +232,99 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
                         verbose=1
                     )
                     
-                    # 保存模型
+                    # Save model
                     self.model.save(self.model_path['model'])
                     
-                    # 保存缩放器
+                    # Save scaler
                     with open(self.model_path['scaler'], 'wb') as f:
                         pickle.dump(self.scaler, f)
                     
-                    self.logger.info("模型训练完成并保存")
+                    self.logger.info("Model training completed and saved")
                     
-                    # 记录训练时间
+                    # Record training time
                     self.last_training_time = time.time()
                 else:
-                    self.logger.error("准备训练数据失败")
+                    self.logger.error("Failed to prepare training data")
             else:
-                self.logger.error("获取训练数据失败")
+                self.logger.error("Failed to get training data")
                 
         except Exception as e:
-            self.logger.error(f"初始模型训练失败: {str(e)}")
+            self.logger.error(f"Initial model training failed: {str(e)}")
             import traceback
             self.logger.error(traceback.format_exc())
     
     def _prepare_dataframe(self, klines):
         """
-        将K线数据转换为DataFrame格式
+        Convert k-line data to DataFrame format
         
         Args:
-            klines (list): K线数据列表 [[timestamp, open, high, low, close, volume], ...]
+            klines (list): K-line data list [[timestamp, open, high, low, close, volume], ...]
             
         Returns:
-            pandas.DataFrame: 转换后的DataFrame
+            pandas.DataFrame: Converted DataFrame
         """
         try:
             if not isinstance(klines, list) or len(klines) < 50:
-                self.logger.error("K线数据为空或长度不足")
+                self.logger.error("K-line data is empty or insufficient")
                 return None
             
-            # 创建DataFrame
+            # Create DataFrame
             df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
             
-            # 转换数据类型
+            # Convert data types
             for col in ['open', 'high', 'low', 'close', 'volume']:
                 df[col] = pd.to_numeric(df[col], errors='coerce')
                 
-            # 添加时间列
+            # Add datetime column
             df['datetime'] = pd.to_datetime(df['timestamp'], unit='ms')
             
             return df
             
         except Exception as e:
-            self.logger.error(f"准备DataFrame失败: {str(e)}")
+            self.logger.error(f"Failed to prepare DataFrame: {str(e)}")
             return None
     
     def _engineer_features(self, df):
         """
-        特征工程 - 创建和计算模型输入特征
+        Feature engineering - Create and calculate model input features
         
         Args:
-            df (pandas.DataFrame): K线数据DataFrame
+            df (pandas.DataFrame): K-line data DataFrame
             
         Returns:
-            pandas.DataFrame: 计算好特征的DataFrame
+            pandas.DataFrame: DataFrame with calculated features
         """
         try:
-            # 复制原始数据，避免修改原始数据
+            # Copy original data
             features_df = df.copy()
             
-            # 1. 价格特征
-            # 归一化价格 (使用过去N根K线的最高价和最低价)
+            # 1. Price features
+            # Normalize price (using past N k-lines' high and low)
             window = 20
             features_df['price_norm'] = (features_df['close'] - features_df['low'].rolling(window=window).min()) / \
                               (features_df['high'].rolling(window=window).max() - features_df['low'].rolling(window=window).min())
             
-            # 收盘价与开盘价的差异
+            # Close-Open ratio
             features_df['close_open_ratio'] = features_df['close'] / features_df['open'] - 1
             
-            # 最高价与收盘价的比例
+            # High-Close ratio
             features_df['high_close_ratio'] = features_df['high'] / features_df['close'] - 1
             
-            # 最低价与收盘价的比例
+            # Low-Close ratio
             features_df['low_close_ratio'] = features_df['low'] / features_df['close'] - 1
             
-            # 2. 价格变化
-            # 计算不同周期的价格变化率
+            # 2. Price changes
+            # Calculate price change rates for different periods
             for period in [1, 3, 5, 10, 20]:
                 features_df[f'return_{period}'] = features_df['close'].pct_change(periods=period)
             
-            # 3. 技术指标
-            # 移动平均线
-            for period in [5, 10, 20, 50]:
+            # 3. Technical indicators
+            # Moving averages
+            for period in [5, 10, 20, 50, 100]:
                 features_df[f'ma_{period}'] = talib.SMA(features_df['close'].values, timeperiod=period)
                 features_df[f'ma_ratio_{period}'] = features_df['close'] / features_df[f'ma_{period}'] - 1
             
-            # RSI指标
-            features_df['rsi_14'] = talib.RSI(features_df['close'].values, timeperiod=14)
-            features_df['rsi_7'] = talib.RSI(features_df['close'].values, timeperiod=7)
-            
-            # MACD指标
+            # MACD
             macd, macdsignal, macdhist = talib.MACD(
                 features_df['close'].values, 
                 fastperiod=12, 
@@ -318,7 +335,11 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
             features_df['macdsignal'] = macdsignal
             features_df['macdhist'] = macdhist
             
-            # 布林带
+            # RSI
+            features_df['rsi_14'] = talib.RSI(features_df['close'].values, timeperiod=14)
+            features_df['rsi_7'] = talib.RSI(features_df['close'].values, timeperiod=7)
+            
+            # Bollinger Bands
             upper, middle, lower = talib.BBANDS(
                 features_df['close'].values,
                 timeperiod=20,
@@ -332,7 +353,7 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
             features_df['bb_width'] = (upper - lower) / middle
             features_df['bb_position'] = (features_df['close'] - lower) / (upper - lower)
             
-            # ADX - 趋势强度指标
+            # ADX - Trend strength indicator
             features_df['adx'] = talib.ADX(
                 features_df['high'].values,
                 features_df['low'].values,
@@ -340,7 +361,7 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
                 timeperiod=14
             )
             
-            # ATR - 波动率指标
+            # ATR - Volatility indicator
             features_df['atr'] = talib.ATR(
                 features_df['high'].values,
                 features_df['low'].values,
@@ -349,25 +370,25 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
             )
             features_df['atr_ratio'] = features_df['atr'] / features_df['close']
             
-            # 4. 成交量特征
-            # 归一化成交量
+            # 4. Volume features
+            # Normalize volume
             features_df['volume_norm'] = features_df['volume'] / features_df['volume'].rolling(window=20).max()
             
-            # 成交量变化
+            # Volume change
             features_df['volume_change'] = features_df['volume'].pct_change()
             
-            # OBV - 能量潮指标
+            # OBV - On-Balance Volume
             features_df['obv'] = talib.OBV(features_df['close'].values, features_df['volume'].values)
             features_df['obv_change'] = features_df['obv'].pct_change(periods=5)
             
-            # 5. 衍生特征
-            # 价格加速度 (二阶导数)
+            # 5. Derived features
+            # Price acceleration (second derivative)
             features_df['price_accel'] = features_df['close'].pct_change().pct_change()
             
-            # 波动率特征
+            # Volatility feature
             features_df['volatility'] = features_df['close'].pct_change().rolling(window=10).std()
             
-            # 趋势一致性 (价格方向与MA一致性)
+            # Trend consistency (price direction vs MA consistency)
             for period in [5, 20]:
                 ma_col = f'ma_{period}'
                 features_df[f'trend_consistency_{period}'] = (
@@ -378,74 +399,81 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
                     (features_df['close'].shift(1) < features_df[ma_col].shift(1))
                 ).astype(int)
             
-            # 丢弃有NaN值的行
+            # Drop NaN values
             features_df = features_df.dropna()
             
             return features_df
             
         except Exception as e:
-            self.logger.error(f"特征工程失败: {str(e)}")
+            self.logger.error(f"Feature engineering failed: {str(e)}")
             import traceback
             self.logger.error(traceback.format_exc())
             return df
     
     def _prepare_training_data(self, klines):
         """
-        准备模型训练数据
+        Prepare model training data
         
         Args:
-            klines (list): K线数据
+            klines (list): K-line data
             
         Returns:
-            tuple: (X, y) 特征矩阵和标签
+            tuple: (X, y) feature matrix and labels
         """
         try:
-            # 转换为DataFrame
+            # Convert to DataFrame
             df = self._prepare_dataframe(klines)
             if df is None:
                 return None, None
             
-            # 特征工程
+            # Feature engineering
             df = self._engineer_features(df)
             
-            # 生成标签 - 未来N根K线的价格变化
-            future_periods = 3  # 预测未来3根K线
-            # 1: 上涨(超过0.5%), 0: 盘整(±0.5%), -1: 下跌(超过-0.5%)
+            # Generate labels - future N k-lines' price change
+            future_periods = 3  # Predict future 3 k-lines
+            # 1: up (>0.5%), 0: neutral (±0.5%), -1: down (<-0.5%)
             future_returns = df['close'].pct_change(periods=future_periods).shift(-future_periods) * 100
             
-            # 生成三分类标签: 下跌(-1)、中性(0)、上涨(1)
+            # Generate 3-class labels: down(-1), neutral(0), up(1)
             labels = np.zeros(len(future_returns))
-            labels[future_returns > 0.5] = 1    # 上涨
-            labels[future_returns < -0.5] = 2   # 下跌 (使用2表示下跌，以便与模型输出对应)
+            labels[future_returns > 0.5] = 1    # Up
+            labels[future_returns < -0.5] = 2   # Down (use 2 for down to match model output)
             
-            # 删除没有未来标签的行
+            # Remove rows without future labels
             df = df.iloc[:-future_periods].copy()
             labels = labels[:-future_periods]
             
-            # 选择用于训练的特征
+            # Select feature columns
             feature_columns = [
                 'price_norm', 'close_open_ratio', 'high_close_ratio', 'low_close_ratio',
                 'return_1', 'return_5', 'return_10',
-                'ma_ratio_5', 'ma_ratio_20',
+                'ma_ratio_5', 'ma_ratio_20', 'ma_ratio_50',
                 'rsi_14', 'rsi_7',
-                'macdhist',
+                'macd', 'macdsignal', 'macdhist',
                 'bb_width', 'bb_position',
-                'atr_ratio'
+                'adx', 'atr_ratio',
+                'volume_norm'
             ]
             
-            # 检查特征列是否存在
+            # Check if feature columns exist
+            available_features = []
             for col in feature_columns:
-                if col not in df.columns:
-                    self.logger.error(f"特征列 '{col}' 不存在")
-                    return None, None
+                if col in df.columns:
+                    available_features.append(col)
+                else:
+                    self.logger.error(f"Feature column '{col}' does not exist")
             
-            # 提取特征
-            X_raw = df[feature_columns].values
+            if len(available_features) < 10:  # Require at least 10 features
+                self.logger.error(f"Not enough feature columns available: {len(available_features)}")
+                return None, None
             
-            # 特征缩放
+            # Extract features
+            X_raw = df[available_features].values
+            
+            # Feature scaling
             X_scaled = self.scaler.fit_transform(X_raw)
             
-            # 创建序列数据 (用于LSTM)
+            # Create sequence data (for the transformer)
             X_sequences = []
             y_sequences = []
             
@@ -453,91 +481,99 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
                 X_sequences.append(X_scaled[i:i+self.sequence_length])
                 y_sequences.append(labels[i+self.sequence_length-1])
             
-            # 转换为numpy数组
-            X = np.array(X_sequences)
-            y = np.array(y_sequences)
+            # Convert to numpy arrays
+            X = np.array(X_sequences, dtype=np.float32)
+            y = np.array(y_sequences, dtype=np.int32)
             
-            # 将标签转换为one-hot编码
+            # Convert labels to one-hot encoding
             y_onehot = tf.keras.utils.to_categorical(y, num_classes=3)
             
-            # 检查样本数量
+            # Check sample count
             if len(X) < 100:
-                self.logger.warning(f"样本数量过少: {len(X)}")
+                self.logger.warning(f"Too few samples: {len(X)}")
                 return None, None
             
-            self.logger.info(f"准备训练数据完成，特征形状: {X.shape}, 标签形状: {y_onehot.shape}")
+            self.logger.info(f"Training data preparation complete, feature shape: {X.shape}, label shape: {y_onehot.shape}")
+            self.feature_count = X.shape[2]  # Update feature count
             
             return X, y_onehot
             
         except Exception as e:
-            self.logger.error(f"准备训练数据失败: {str(e)}")
+            self.logger.error(f"Training data preparation failed: {str(e)}")
             import traceback
             self.logger.error(traceback.format_exc())
             return None, None
     
     def _prepare_prediction_data(self, klines):
         """
-        准备预测数据
+        Prepare prediction data
         
         Args:
-            klines (list): K线数据
+            klines (list): K-line data
             
         Returns:
-            numpy.ndarray: 用于预测的特征矩阵
+            numpy.ndarray: Feature matrix for prediction
         """
         try:
-            # 转换为DataFrame
+            # Convert to DataFrame
             df = self._prepare_dataframe(klines)
             if df is None:
                 return None
             
-            # 特征工程
+            # Feature engineering
             df = self._engineer_features(df)
             
-            # 选择用于预测的特征
+            # Select feature columns
             feature_columns = [
                 'price_norm', 'close_open_ratio', 'high_close_ratio', 'low_close_ratio',
                 'return_1', 'return_5', 'return_10',
-                'ma_ratio_5', 'ma_ratio_20',
+                'ma_ratio_5', 'ma_ratio_20', 'ma_ratio_50',
                 'rsi_14', 'rsi_7',
-                'macdhist',
+                'macd', 'macdsignal', 'macdhist',
                 'bb_width', 'bb_position',
-                'atr_ratio'
+                'adx', 'atr_ratio',
+                'volume_norm'
             ]
             
-            # 检查特征列是否存在
+            # Check if feature columns exist
+            available_features = []
             for col in feature_columns:
-                if col not in df.columns:
-                    self.logger.error(f"特征列 '{col}' 不存在")
-                    return None
+                if col in df.columns:
+                    available_features.append(col)
+                else:
+                    self.logger.warning(f"Feature column '{col}' does not exist")
             
-            # 提取最近的数据
-            X_raw = df[feature_columns].tail(self.sequence_length).values
-            
-            # 特征缩放 (使用已训练的缩放器)
-            X_scaled = self.scaler.transform(X_raw)
-            
-            # 检查数据长度是否足够
-            if len(X_scaled) < self.sequence_length:
-                self.logger.error(f"数据长度不足，需要{self.sequence_length}，实际{len(X_scaled)}")
+            if len(available_features) < 10:  # Require at least 10 features
+                self.logger.error(f"Not enough feature columns available: {len(available_features)}")
                 return None
             
-            # 创建单个样本 (用于LSTM)
+            # Extract the most recent data
+            X_raw = df[available_features].tail(self.sequence_length).values
+            
+            # Feature scaling (using trained scaler)
+            X_scaled = self.scaler.transform(X_raw)
+            
+            # Check if data length is sufficient
+            if len(X_scaled) < self.sequence_length:
+                self.logger.error(f"Insufficient data length, need {self.sequence_length}, got {len(X_scaled)}")
+                return None
+            
+            # Create single sample (for model input)
             X = np.array([X_scaled[-self.sequence_length:]])
             
             return X
             
         except Exception as e:
-            self.logger.error(f"准备预测数据失败: {str(e)}")
+            self.logger.error(f"Prediction data preparation failed: {str(e)}")
             import traceback
             self.logger.error(traceback.format_exc())
             return None
     
     def should_retrain(self):
-        """检查是否需要重新训练模型"""
+        """Check if model retraining is needed"""
         current_time = time.time()
         
-        # 如果模型没有训练过或者时间超过重训间隔，则需要重新训练
+        # If model never trained or time exceeds retraining interval, retrain
         if self.last_training_time == 0 or (current_time - self.last_training_time) > self.retraining_interval:
             return True
         
@@ -545,21 +581,21 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
     
     def analyze_market_state(self, klines):
         """
-        分析市场状态
+        Analyze market state
         
         Args:
-            klines (list): K线数据
+            klines (list): K-line data
             
         Returns:
-            dict: 市场状态信息
+            dict: Market state information
         """
         try:
-            # 转换为DataFrame
+            # Convert to DataFrame
             df = self._prepare_dataframe(klines)
             if df is None:
                 return {"state": "unknown", "trend": 0, "strength": 0}
             
-            # 计算ADX指标 - 趋势强度
+            # Calculate ADX indicator - Trend strength
             high = df['high'].values
             low = df['low'].values
             close = df['close'].values
@@ -568,42 +604,42 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
             plus_di = talib.PLUS_DI(high, low, close, timeperiod=14)
             minus_di = talib.MINUS_DI(high, low, close, timeperiod=14)
             
-            # 获取最近值
+            # Get recent values
             current_adx = adx[-1]
             current_plus_di = plus_di[-1]
             current_minus_di = minus_di[-1]
             
-            # 确定趋势方向
+            # Determine trend direction
             trend_direction = 0
             if current_plus_di > current_minus_di and current_plus_di > 20:
-                trend_direction = 1  # 上升趋势
+                trend_direction = 1  # Up trend
             elif current_minus_di > current_plus_di and current_minus_di > 20:
-                trend_direction = -1  # 下降趋势
+                trend_direction = -1  # Down trend
             
-            # 确定市场状态
+            # Determine market state
             state = "unknown"
             if current_adx >= 30:
-                state = "trend"  # 强趋势市场
+                state = "trend"  # Strong trend
             elif current_adx >= 20:
-                state = "trend"  # 趋势市场
+                state = "trend"  # Trend
             else:
-                state = "range"  # 震荡市场
+                state = "range"  # Range-bound market
             
-            # 计算波动率
+            # Calculate volatility
             atr = talib.ATR(high, low, close, timeperiod=14)
             current_price = close[-1]
-            volatility = (atr[-1] / current_price) * 100  # 波动率百分比
+            volatility = (atr[-1] / current_price) * 100  # Volatility percentage
             
-            # 计算成交量变化
+            # Calculate volume change
             volume = df['volume'].values
-            volume_change = (volume[-1] / volume[-21:-1].mean() - 1) * 100  # 相对于前20根K线的平均成交量的变化百分比
+            volume_change = (volume[-1] / volume[-21:-1].mean() - 1) * 100  # Volume change percentage relative to 20-bar average
             
-            # 更新内部状态
+            # Update internal state
             self.market_state = state
             self.current_trend = trend_direction
             self.trend_strength = min(100, float(current_adx))
             
-            # 返回市场状态信息
+            # Return market state info
             market_state = {
                 "state": state,
                 "trend": trend_direction,
@@ -615,38 +651,38 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
                 "volume_change": float(volume_change)
             }
             
-            self.logger.info(f"市场状态: {state}, 趋势方向: {trend_direction}, "
-                          f"趋势强度: {current_adx:.2f}, 波动率: {volatility:.2f}%, "
-                          f"成交量变化: {volume_change:.2f}%")
+            self.logger.info(f"Market state: {state}, trend: {trend_direction}, "
+                          f"strength: {current_adx:.2f}, volatility: {volatility:.2f}%, "
+                          f"volume change: {volume_change:.2f}%")
             
             return market_state
             
         except Exception as e:
-            self.logger.error(f"分析市场状态失败: {str(e)}")
+            self.logger.error(f"Market state analysis failed: {str(e)}")
             import traceback
             self.logger.error(traceback.format_exc())
             return {"state": "unknown", "trend": 0, "strength": 0}
     
     def generate_signal(self, klines):
         """
-        生成交易信号
+        Generate trading signal
         
         Args:
-            klines (list): K线数据
+            klines (list): K-line data
             
         Returns:
-            int: 交易信号，1(买入)，-1(卖出)，0(观望)
+            int: Trading signal, 1(buy), -1(sell), 0(neutral)
         """
         try:
-            # 检查模型是否已训练
+            # Check if model is initialized
             if self.model is None:
-                self.logger.error("模型未初始化，无法生成信号")
+                self.logger.error("Model not initialized, cannot generate signal")
                 return 0
             
-            # 检查是否需要重新训练
+            # Check if retraining is needed
             if self.should_retrain():
-                self.logger.info("模型需要重新训练")
-                # 获取更多的历史数据进行训练
+                self.logger.info("Model needs retraining")
+                # Get more historical data for training
                 training_klines = self.trader.get_klines(
                     symbol=self.trader.symbol,
                     interval=self.kline_interval,
@@ -656,7 +692,7 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
                 if training_klines and len(training_klines) > 0:
                     X, y = self._prepare_training_data(training_klines)
                     if X is not None and y is not None:
-                        # 在现有模型基础上继续训练
+                        # Continue training on existing model
                         self.model.fit(
                             X, y,
                             epochs=5,
@@ -672,226 +708,229 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
                             verbose=1
                         )
                         
-                        # 保存更新后的模型
+                        # Save updated model
                         self.model.save(self.model_path['model'])
                         
-                        # 更新训练时间
+                        # Update training time
                         self.last_training_time = time.time()
-                        self.logger.info("模型重新训练完成")
+                        self.logger.info("Model retraining completed")
             
-            # 准备预测数据
+            # Prepare prediction data
             X = self._prepare_prediction_data(klines)
             if X is None:
-                self.logger.error("准备预测数据失败")
+                self.logger.error("Failed to prepare prediction data")
                 return 0
             
-            # 获取模型预测
-            predictions = self.model.predict(X)
-            probabilities = predictions[0]  # 获取第一个样本的预测概率
+            # Get model prediction
+            predictions = self.model.predict(X, verbose=0)
+            probabilities = predictions[0]  # Get first sample's prediction probabilities
             
-            # 提取各类别的概率
-            down_prob = probabilities[2]    # 下跌概率 (索引2)
-            neutral_prob = probabilities[1]  # 中性概率 (索引1)
-            up_prob = probabilities[0]    # 上涨概率 (索引0)
+            # Extract class probabilities
+            up_prob = probabilities[0]    # Up probability (index 0)
+            neutral_prob = probabilities[1]  # Neutral probability (index 1)
+            down_prob = probabilities[2]    # Down probability (index 2)
             
-            self.logger.info(f"预测概率: 上涨={up_prob:.4f}, 中性={neutral_prob:.4f}, 下跌={down_prob:.4f}")
+            self.logger.info(f"Prediction probabilities: up={up_prob:.4f}, neutral={neutral_prob:.4f}, down={down_prob:.4f}")
             
-            # 分析市场状态
+            # Analyze market state
             market_state = self.analyze_market_state(klines)
             
-            # 调整预测置信度阈值
+            # Adjust prediction confidence threshold
             confidence_threshold = self.min_confidence
             
-            # 在强趋势市场中降低置信度要求
+            # Lower confidence requirement in strong trend markets
             if market_state['state'] == "trend" and market_state['strength'] > 40:
                 confidence_threshold = max(0.55, self.min_confidence - 0.1)
             
-            # 在高波动市场中提高置信度要求
+            # Increase confidence requirement in high volatility markets
             if market_state.get('volatility', 0) > 2.0:
                 confidence_threshold = min(0.75, self.min_confidence + 0.1)
             
-            # 确定交易信号
+            # Determine trading signal
+            signal = 0  # Default to neutral
+            
+            # Check for strong up signal
             if up_prob > down_prob:
-                prediction = 1  # 买入信号
+                signal = 1  # Buy signal
+                
+            # Check for strong down signal
             elif down_prob > up_prob:
-                prediction = -1  # 卖出信号
-            else:
-                prediction = 0  # 观望信号
+                signal = -1  # Sell signal
             
-            # 信号验证和趋势确认
-            if prediction != 0:
-                # 检查预测与市场趋势是否一致
-                if prediction * market_state['trend'] < 0 and market_state['strength'] > 30:
-                    self.logger.info(f"预测信号与当前趋势方向相反，谨慎对待")
+            # Signal verification and trend confirmation
+            if signal != 0:
+                # Check if prediction is against market trend
+                if signal * market_state['trend'] < 0 and market_state['strength'] > 30:
+                    self.logger.info(f"Prediction signal is against current trend direction, be cautious")
                     
-                    # 如果趋势很强，则不与趋势作对
+                    # If trend is very strong, don't go against it
                     if market_state['strength'] > 50:
-                        self.logger.info("当前趋势很强，不与趋势作对，修改信号为观望")
-                        prediction = 0
+                        self.logger.info("Current trend is very strong, not going against it, changing signal to neutral")
+                        signal = 0
             
-            # 记录信号历史
-            if prediction != 0:
+            # Record signal history
+            if signal != 0:
                 self.signal_history.append({
                     'time': datetime.now(),
-                    'signal': prediction,
+                    'signal': signal,
                     'up_prob': float(up_prob),
                     'down_prob': float(down_prob),
                     'market_state': market_state['state']
                 })
                 
-                # 限制历史记录长度
+                # Limit history size
                 if len(self.signal_history) > self.max_signal_history:
                     self.signal_history.pop(0)
                 
                 self.last_signal_time = datetime.now()
-                self.last_signal = prediction
+                self.last_signal = signal
             
-            return prediction
+            return signal
             
         except Exception as e:
-            self.logger.error(f"生成信号失败: {str(e)}")
+            self.logger.error(f"Failed to generate signal: {str(e)}")
             import traceback
             self.logger.error(traceback.format_exc())
             return 0
     
     def monitor_position(self):
-        """监控当前持仓，并根据策略决定是否平仓"""
+        """Monitor current position and decide whether to close it based on strategy"""
         try:
-            # 获取当前持仓
+            # Get current position
             position = self.trader.get_position()
             
-            # 如果没有持仓，检查是否有新的交易信号
+            # If no position, check for new trading signal
             if position is None or float(position['info'].get('positionAmt', 0)) == 0:
-                # 获取最新K线数据
+                # Get latest k-line data
                 klines = self.trader.get_klines(interval=self.kline_interval, limit=self.lookback_period)
                 
-                # 生成交易信号
+                # Generate trading signal
                 signal = self.generate_signal(klines)
                 
-                # 获取当前市场价格
+                # Get current market price
                 current_price = self.trader.get_market_price()
                 
-                # 根据信号执行交易
-                if signal == 1:  # 买入信号
-                    # 计算交易数量
+                # Execute trade based on signal
+                if signal == 1:  # Buy signal
+                    # Calculate trade amount
                     balance = self.trader.get_balance()
                     available_balance = float(balance['free'])
                     
-                    # 从config获取交易金额百分比
+                    # Get trade amount percentage from config
                     symbol_config = self.trader.symbol_config
                     trade_percent = symbol_config.get('trade_amount_percent', 50)
                     
-                    # 计算交易金额
+                    # Calculate trade amount
                     trade_amount = (available_balance * trade_percent / 100) / current_price
                     
-                    # 开多仓
+                    # Open long position
                     self.trader.open_long(amount=trade_amount)
-                    self.logger.info(f"开多仓 - 数量: {trade_amount:.6f}, 价格: {current_price}")
+                    self.logger.info(f"Open long position - Amount: {trade_amount:.6f}, Price: {current_price}")
                     
-                    # 记录开仓信息
+                    # Record entry information
                     self.position_entry_time = time.time()
                     self.position_entry_price = current_price
                     self.max_profit_reached = 0
                     
-                elif signal == -1:  # 卖出信号
-                    # 计算交易数量
+                elif signal == -1:  # Sell signal
+                    # Calculate trade amount
                     balance = self.trader.get_balance()
                     available_balance = float(balance['free'])
                     
-                    # 从config获取交易金额百分比
+                    # Get trade amount percentage from config
                     symbol_config = self.trader.symbol_config
                     trade_percent = symbol_config.get('trade_amount_percent', 50)
                     
-                    # 计算交易金额
+                    # Calculate trade amount
                     trade_amount = (available_balance * trade_percent / 100) / current_price
                     
-                    # 开空仓
+                    # Open short position
                     self.trader.open_short(amount=trade_amount)
-                    self.logger.info(f"开空仓 - 数量: {trade_amount:.6f}, 价格: {current_price}")
+                    self.logger.info(f"Open short position - Amount: {trade_amount:.6f}, Price: {current_price}")
                     
-                    # 记录开仓信息
+                    # Record entry information
                     self.position_entry_time = time.time()
                     self.position_entry_price = current_price
                     self.max_profit_reached = 0
             
-            # 如果有持仓，检查是否需要平仓
+            # If position exists, check if it should be closed
             else:
                 position_amount = float(position['info'].get('positionAmt', 0))
                 entry_price = float(position['info'].get('entryPrice', 0))
                 current_price = self.trader.get_market_price()
-                position_side = "多" if position_amount > 0 else "空"
+                position_side = "long" if position_amount > 0 else "short"
                 
-                # 计算持仓时间
+                # Calculate holding time
                 current_time = time.time()
                 if self.position_entry_time is not None:
                     holding_time_minutes = (current_time - self.position_entry_time) / 60
                     
-                    # 检查最大持仓时间
+                    # Check maximum position hold time
                     if holding_time_minutes >= self.max_position_hold_time:
-                        self.logger.info(f"持仓时间超过{self.max_position_hold_time}分钟，平仓")
+                        self.logger.info(f"Position held for over {self.max_position_hold_time} minutes, closing")
                         self.trader.close_position()
                         return
                 
-                # 计算利润率
-                if position_side == "多":
+                # Calculate profit rate
+                if position_side == "long":
                     profit_rate = (current_price - entry_price) / entry_price
                 else:
                     profit_rate = (entry_price - current_price) / entry_price
                 
-                # 更新最大利润记录
+                # Update maximum profit reached
                 if profit_rate > self.max_profit_reached:
                     self.max_profit_reached = profit_rate
                 
-                # 检查止盈
+                # Check take profit
                 if profit_rate >= self.take_profit_pct:
-                    self.logger.info(f"达到止盈条件，利润率: {profit_rate:.4%}，平仓")
+                    self.logger.info(f"Take profit condition met, profit rate: {profit_rate:.4%}, closing position")
                     self.trader.close_position()
                     return
                 
-                # 检查止损
+                # Check stop loss
                 if profit_rate <= -self.stop_loss_pct:
-                    self.logger.info(f"达到止损条件，亏损率: {profit_rate:.4%}，平仓")
+                    self.logger.info(f"Stop loss condition met, loss rate: {profit_rate:.4%}, closing position")
                     self.trader.close_position()
                     return
                 
-                # 检查追踪止损
+                # Check trailing stop
                 if self.trailing_stop and profit_rate >= self.trailing_stop_activation:
-                    # 计算回撤比例
+                    # Calculate drawdown percentage
                     drawdown = self.max_profit_reached - profit_rate
                     
-                    # 如果回撤超过追踪止损距离，平仓止盈
+                    # If drawdown exceeds trailing stop distance, close position for profit
                     if drawdown >= self.trailing_stop_distance:
-                        self.logger.info(f"触发追踪止损，最大利润: {self.max_profit_reached:.4%}, " +
-                                      f"当前利润: {profit_rate:.4%}, 回撤: {drawdown:.4%}")
+                        self.logger.info(f"Trailing stop triggered, max profit: {self.max_profit_reached:.4%}, " +
+                                      f"current profit: {profit_rate:.4%}, drawdown: {drawdown:.4%}")
                         self.trader.close_position()
                         return
                 
-                # 获取最新趋势预测，检查趋势是否反转
+                # Get latest trend prediction, check if trend reversed
                 klines = self.trader.get_klines(interval=self.kline_interval, limit=self.lookback_period)
                 signal = self.generate_signal(klines)
                 
-                # 如果趋势明显反转，考虑平仓
-                if position_side == "多" and signal == -1:
-                    self.logger.info("趋势预测反转为下跌，平多仓")
+                # If trend clearly reversed, consider closing the position
+                if position_side == "long" and signal == -1:
+                    self.logger.info("Trend prediction reversed to down, closing long position")
                     self.trader.close_position()
                     return
-                elif position_side == "空" and signal == 1:
-                    self.logger.info("趋势预测反转为上涨，平空仓")
+                elif position_side == "short" and signal == 1:
+                    self.logger.info("Trend prediction reversed to up, closing short position")
                     self.trader.close_position()
                     return
                 
         except Exception as e:
-            self.logger.error(f"监控持仓失败: {str(e)}")
+            self.logger.error(f"Position monitoring failed: {str(e)}")
             import traceback
             self.logger.error(traceback.format_exc())
     
     def run(self):
-        """运行策略"""
-        self.logger.info("启动深度学习趋势交易策略")
+        """Run strategy"""
+        self.logger.info("Starting TST+ strategy")
         
-        # 初始训练或加载模型
+        # Initialize or load model
         if self.model is None:
             self._initialize_model()
         
-        # 运行父类的run方法
+        # Run parent class's run method
         super().run()

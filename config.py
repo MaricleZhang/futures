@@ -11,17 +11,17 @@ PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
 # 1000CHEEMSUSDT BMTUSDT API3USDT ARCUSDT TUTUSDT MUBARAKUSDT DOGEUSDT AUCTIONUSDT 1000PEPEUSDT EOSUSDT 1000SATSUSDT
-# GUNUSDT TNSRUSDT PARTIUSDT DUSDT GASUSDT
+# GUNUSDT TNSRUSDT PARTIUSDT DUSDT GASUSDT JELLYJELLYUSDT TAOUSDT AEROUSDT EOSUSDT TONUSDT REDUSDT
 
 
 # 交易设置
 
-SYMBOLS = ['BMTUSDT']  # 支持多个交易对
+SYMBOLS = ['REDUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
-        'BMTUSDT': {
+        'REDUSDT': {
         'leverage': 5,
-        'min_notional': 20,
-        'trade_amount_percent': 200,
+        'min_notional': 10,
+        'trade_amount_percent': 300,
         'check_interval': 60,  # 交易检查间隔(秒)
     },
     # 'ETHUSDT': {

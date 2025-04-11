@@ -36,7 +36,7 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
         self.logger = self.get_logger()
         
         # K线设置
-        self.kline_interval = '30m'      # 30分钟K线
+        self.kline_interval = '15m'      # 30分钟K线
         self.check_interval = 300        # 检查信号间隔(秒)
         self.lookback_period = 500       # 计算指标所需的K线数量
         self.training_lookback = 1000    # 训练模型所需的K线数量
@@ -617,7 +617,9 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
             
             self.logger.info(f"市场状态: {state}, 趋势方向: {trend_direction}, "
                           f"趋势强度: {current_adx:.2f}, 波动率: {volatility:.2f}%, "
-                          f"成交量变化: {volume_change:.2f}%")
+                          f"成交量变化: {volume_change:.2f}%, "
+                          f"当前Plus DI: {current_plus_di:.2f}, "
+                          f"当前Minus DI: {current_minus_di:.2f}")
             
             return market_state
             
@@ -729,6 +731,11 @@ class DeepLearningTrendStrategy30m(BaseStrategy):
                         self.logger.info("当前趋势很强，不与趋势作对，修改信号为观望")
                         prediction = 0
             
+            if market_state['trend'] == prediction: 
+                return prediction
+            else:
+                self.logger.info(f"预测信号与当前趋势方向相反，谨慎对待")
+                return 0
             # 记录信号历史
             if prediction != 0:
                 self.signal_history.append({

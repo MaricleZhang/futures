@@ -757,6 +757,9 @@ class TSTPlus30mStrategy(BaseStrategy):
             elif down_prob > up_prob:
                 signal = -1  # Sell signal
             
+            # if market_state['trend'] != signal:
+            #     self.logger.info(f"预测信号与当前趋势不一致")
+            #     return 0
             # Signal verification and trend confirmation
             if signal != 0:
                 # Check if prediction is against market trend

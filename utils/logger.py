@@ -14,6 +14,8 @@ class CustomFormatter(logging.Formatter):
         # 如果name中包含USDT，则移除
         if record.name and 'USDT' in record.name:
             record.name = record.name.replace('USDT', '')
+        if record.name and 'USDC' in record.name:
+            record.name = record.name.replace('USDC', '')
         return super().format(record)
 
 class ColoredFormatter(logging.Formatter):

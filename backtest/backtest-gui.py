@@ -16,19 +16,13 @@ from utils.logger import Logger
 from backtest import Backtester
 
 # 导入所有策略
-from strategies.ppo_strategy import PPOTrendStrategy
-from strategies.rl_strategy import RLTrendStrategy
-from strategies.simple_trend_strategy import SimpleTrendStrategy
-from strategies.short_term_rf_strategy import ShortTermRFStrategy
-from strategies.trend_strategy_15m import MediumTrendStrategy
+from strategies.trend_strategy import SimpleTrendStrategy15m
+from strategies.multi_timeframe_di_adx_strategy import MultiTimeframeDIADXStrategy
 
 # 策略字典
 STRATEGIES = {
-    'PPO趋势跟踪策略': PPOTrendStrategy,
-    'RL趋势跟踪策略': RLTrendStrategy,
-    '简化趋势跟踪策略': SimpleTrendStrategy,
-    '短线随机森林策略': ShortTermRFStrategy,
-    '中期趋势策略': MediumTrendStrategy
+    '简化趋势跟踪策略': SimpleTrendStrategy15m,
+    '多周期DIADX策略': MultiTimeframeDIADXStrategy,
 }
 
 # 时间周期选项

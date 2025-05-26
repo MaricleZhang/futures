@@ -706,7 +706,7 @@ if __name__ == "__main__":
     logger = Logger.get_logger()
     
     # 导入策略类
-from strategies.rl_strategy import RLTradingStrategy30m
+from strategies.trend_strategy import SimpleTrendStrategy15m
 
 def main():
     """回测系统入口函数"""
@@ -715,7 +715,7 @@ def main():
     
     # 设置回测参数
     symbol = 'PIPPINUSDT'  # 交易对
-    strategy_class = RLTradingStrategy30m  # 策略类
+    strategy_class = SimpleTrendStrategy15m  # 策略类
     start_date = '2024-02-01'  # 开始日期
     end_date = '2024-02-15'    # 结束日期
     timeframe = '5m'           # K线周期

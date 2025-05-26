@@ -48,7 +48,7 @@ class MultiTimeframeDIADXStrategy(BaseStrategy):
         # Indicator parameters
         self.adx_period = 14  # ADX period
         self.di_period = 14   # DI period
-        self.adx_threshold = 25  # ADX threshold for trend strength
+        self.adx_threshold = 20  # ADX threshold for trend strength
         self.adx_strong_threshold = 40  # Strong trend threshold
         
         # Trend consensus parameters
@@ -57,8 +57,8 @@ class MultiTimeframeDIADXStrategy(BaseStrategy):
         
         # Position management parameters
         self.max_position_hold_time = 240  # Maximum position hold time (minutes)
-        self.stop_loss_pct = 0.02  # Stop loss percentage (2%)
-        self.take_profit_pct = 0.04  # Take profit percentage (4%)
+        self.stop_loss_pct = 0.10  # Stop loss percentage (10%)
+        self.take_profit_pct = 2.0  # Take profit percentage (90%)
         self.trailing_stop = True  # Enable trailing stop
         self.trailing_stop_activation = 0.015  # Activate trailing stop at 1.5% profit
         self.trailing_stop_distance = 0.008  # Trailing stop distance (0.8%)
@@ -360,7 +360,9 @@ class MultiTimeframeDIADXStrategy(BaseStrategy):
             elif position_side == "short" and analysis["trend"] == 1 and analysis["confidence"] > 0.8:
                 signal = 1  # Exit short position
                 self.logger.info("Strong counter-trend signal, recommending exit of short position")
-            
+            if analysis["market_state"] == "range":
+                signal = 0
+                self.logger.info("Market is in a range, recommending neutral position")
             return signal
             
         except Exception as e:

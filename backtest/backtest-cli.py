@@ -14,11 +14,13 @@ from utils.logger import Logger
 from backtest.backtest_system import Backtester, MockTrader
 
 # 导入所有策略
-from strategies.rl_strategy import RLTradingStrategy30m
+from strategies.trend_strategy import SimpleTrendStrategy15m
+from strategies.multi_timeframe_di_adx_strategy import MultiTimeframeDIADXStrategy
 
 # 策略字典
 STRATEGIES = {
-    'rl': RLTradingStrategy30m,
+    'simple_trend': SimpleTrendStrategy15m,
+    'multi_timeframe_di_adx': MultiTimeframeDIADXStrategy,
 }
 
 def parse_arguments():

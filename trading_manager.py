@@ -3,10 +3,11 @@ import threading
 import time
 from trader import Trader
 from strategies.stable_trend_strategy import StableTrendStrategy15m
-from strategies.deep_learning_strategy import DeepLearningStrategy30m
-from strategies.deep_learning_strategy30 import DeepLearningTrendStrategy30m
-from strategies.tst_plus_strategy import TSTPlus30mStrategy
-
+from strategies.trend_strategy import SimpleTrendStrategy15m
+from strategies.multi_timeframe_di_adx_strategy import MultiTimeframeDIADXStrategy
+from strategies.strategy_module import DirectionalIndexStrategy15m
+from strategies.diadx_strategy import DIADXTrendStrategy15m
+from strategies.adx_multi_strategy import ADXMultiTimeframeStrategy
 import config
 
 class TradingManager:
@@ -28,7 +29,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = TSTPlus30mStrategy(trader)
+                strategy = DirectionalIndexStrategy15m(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")

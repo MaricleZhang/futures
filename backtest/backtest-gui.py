@@ -16,12 +16,12 @@ from utils.logger import Logger
 from backtest import Backtester
 
 # 导入所有策略
-from strategies.trend_strategy import SimpleTrendStrategy15m
+from strategies.strategy_module import DirectionalIndexStrategy15m
 from strategies.multi_timeframe_di_adx_strategy import MultiTimeframeDIADXStrategy
 
 # 策略字典
 STRATEGIES = {
-    '简化趋势跟踪策略': SimpleTrendStrategy15m,
+    'DI变化率策略': DirectionalIndexStrategy15m,
     '多周期DIADX策略': MultiTimeframeDIADXStrategy,
 }
 

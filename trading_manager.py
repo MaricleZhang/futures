@@ -2,12 +2,8 @@ import logging
 import threading
 import time
 from trader import Trader
-from strategies.trend_strategy import SimpleTrendStrategy15m
 from strategies.multi_timeframe_di_adx_strategy import MultiTimeframeDIADXStrategy
-from strategies.strategy_module import DirectionalIndexStrategy15m
-from strategies.diadx_strategy import DIADXTrendStrategy15m
-from strategies.adx_multi_strategy import ADXMultiTimeframeStrategy
-from strategies.enhanced_di_adx_strategy import EnhancedDIADXStrategy15m
+from strategies.deep_learning_strategy_15m import DeepLearningStrategy15m
 from utils.logger import Logger
 import config
 

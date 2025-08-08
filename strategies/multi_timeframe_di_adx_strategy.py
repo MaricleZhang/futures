@@ -30,6 +30,9 @@ class MultiTimeframeDIADXStrategy(BaseStrategy):
         super().__init__(trader)
         self.logger = self.get_logger()
         
+        # 添加缺失的 kline_interval 属性
+        self.kline_interval = '5m'  # 使用主要时间框架作为默认间隔
+        
         # Timeframes to analyze
         self.timeframes = ['1m', '3m', '5m', '15m']
         self.timeframe_weights = {
@@ -48,7 +51,7 @@ class MultiTimeframeDIADXStrategy(BaseStrategy):
         # Indicator parameters
         self.adx_period = 14  # ADX period
         self.di_period = 14   # DI period
-        self.adx_threshold = 20  # ADX threshold for trend strength
+        self.adx_threshold = 12  # ADX threshold for trend strength
         self.adx_strong_threshold = 40  # Strong trend threshold
         
         # Trend consensus parameters

@@ -34,3 +34,18 @@ class BaseStrategy(ABC):
     def stop(self):
         """停止策略"""
         pass
+    
+    @abstractmethod
+    def monitor_position(self):
+        """监控持仓并执行交易逻辑"""
+        pass
+    
+    @abstractmethod
+    def generate_signal(self, klines=None):
+        """根据策略逻辑生成交易信号
+        Args:
+            klines: K线数据
+        Returns:
+            int: 信号值 (1=买入, -1=卖出, 2=平仓, 0=观望)
+        """
+        pass

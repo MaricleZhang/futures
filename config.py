@@ -3,7 +3,7 @@
 """
 
 # 代理设置
-USE_PROXY = True  # 是否使用代理
+USE_PROXY = False  # 是否使用代理
 PROXY_URL = 'http://127.0.0.1:7890'  # 代理地址
 PROXY_TIMEOUT = 10  # 代理超时时间（秒）
 PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
@@ -13,24 +13,19 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 # 1000CHEEMSUSDT BMTUSDT API3USDT ARCUSDT TUTUSDT MUBARAKUSDT DOGEUSDT AUCTIONUSDT  EOSUSDT 1000SATSUSDT
 # GUNUSDT TNSRUSDT PARTIUSDT DUSDT GASUSDT JELLYJELLYUSDT TAOUSDT AEROUSDT EOSUSDT TONUSDT REDUSDT ROSEUSDT
 # BNBUSDT BTCDOMUSDT XRPUSDC DUSDT GASUSDT BABYUSDT  AVAAIUSDT NKNUSDT PAXGUSDT VOXELUSDT
- # BTCUSDC SOLUSDC 1000PEPEUSDC AINIMEUSDT ARBUSDC
-
+ # BTCUSDC SOLUSDC 1000PEPEUSDC AINIMEUSDT ARBUSDC SQDUSDT SPKUSDT  FUSDT SAHARAUSDT UNIUSDC PROVEUSDT 
+# XNYUSDT
 # 交易设置
 
-SYMBOLS = ['ARBUSDC']  # 支持多个交易对
+
+SYMBOLS = ['ENAUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
-        'ARBUSDC': {
+        'ENAUSDT': {
         'leverage':10,
-        'min_notional': 10,
-        'trade_amount_percent': 200,
-        'check_interval': 60,  # 交易检查间隔(秒)
-    },
-    # 'ETHUSDT': {
-    #     'leverage': 2,
-    #     'min_notional': 20,
-    #     'trade_amount_percent': 50,
-    #     'check_interval': 60,  # 交易检查间隔(秒)
-    # }
+        'min_notional': 20,
+        'trade_amount_percent': 200,  # 降低单次交易比例适应深度学习策略
+        'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒)
+    }
 }
 DEFAULT_LEVERAGE = 5  # 默认杠杆倍数
 MARGIN_TYPE = 'CROSSED'  # 保证金模式：CROSSED(全仓) ISOLATED(逐仓)

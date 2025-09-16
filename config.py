@@ -3,7 +3,7 @@
 """
 
 # 代理设置
-USE_PROXY = False  # 是否使用代理
+USE_PROXY = True  # 是否使用代理
 PROXY_URL = 'http://127.0.0.1:7890'  # 代理地址
 PROXY_TIMEOUT = 10  # 代理超时时间（秒）
 PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
@@ -14,16 +14,16 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 # GUNUSDT TNSRUSDT PARTIUSDT DUSDT GASUSDT JELLYJELLYUSDT TAOUSDT AEROUSDT EOSUSDT TONUSDT REDUSDT ROSEUSDT
 # BNBUSDT BTCDOMUSDT XRPUSDC DUSDT GASUSDT BABYUSDT  AVAAIUSDT NKNUSDT PAXGUSDT VOXELUSDT
  # BTCUSDC SOLUSDC 1000PEPEUSDC AINIMEUSDT ARBUSDC SQDUSDT SPKUSDT  FUSDT SAHARAUSDT UNIUSDC PROVEUSDT 
-# XNYUSDT
+# XNYUSDT  AIOTUSDT ARIAUSST
 # 交易设置
 
 
-SYMBOLS = ['ENAUSDT']  # 支持多个交易对
+SYMBOLS = ['ENAUSDC']  # 支持多个交易对
 SYMBOL_CONFIGS = {
-        'ENAUSDT': {
+    'ENAUSDC': {
         'leverage':10,
         'min_notional': 20,
-        'trade_amount_percent': 200,  # 降低单次交易比例适应深度学习策略
+        'trade_amount_percent': 100,  # 降低单次交易比例适应深度学习策略
         'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒)
     }
 }

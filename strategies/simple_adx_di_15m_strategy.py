@@ -46,7 +46,7 @@ class SimpleADXDIStrategy15m(BaseStrategy):
         # Trend Thresholds
         self.adx_min_threshold = 18  # Minimum ADX for trend confirmation
         self.adx_strong_threshold = 40  # Strong trend threshold
-        self.di_diff_threshold = 12  # Minimum difference between +DI and -DI
+        self.di_diff_threshold = 8  # Minimum difference between +DI and -DI
         
         # Position Management
         self.max_position_hold_time = 720  # 12 hours maximum hold time

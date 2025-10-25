@@ -3,6 +3,7 @@ import threading
 import time
 from trader import Trader
 from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
+from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
 from utils.logger import Logger
 import config
 
@@ -25,7 +26,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = SimpleADXDIStrategy15m(trader)
+                strategy = DeepSeekTradingStrategy(trader)
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")

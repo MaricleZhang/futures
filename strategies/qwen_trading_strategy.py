@@ -1,8 +1,8 @@
 """
-DeepSeek AI Trading Strategy for Short-term Trading
-Uses DeepSeek API to predict price trends based on technical indicators and market data
+Qwen AI Trading Strategy for Short-term Trading
+Uses Qwen API (通义千问) to predict price trends based on technical indicators and market data
 
-File: strategies/deepseek_trading_strategy.py
+File: strategies/qwen_trading_strategy.py
 """
 import numpy as np
 import pandas as pd
@@ -14,13 +14,13 @@ import requests
 import json
 from strategies.base_strategy import BaseStrategy
 
-class DeepSeekTradingStrategy(BaseStrategy):
+class QwenTradingStrategy(BaseStrategy):
     """
-    DeepSeek AI-powered short-term trading strategy
+    Qwen AI-powered short-term trading strategy
     
     Strategy Logic:
     1. Collects multiple technical indicators (RSI, MACD, Bollinger Bands, etc.)
-    2. Sends market data to DeepSeek API for trend prediction
+    2. Sends market data to Qwen API for trend prediction
     3. Combines AI prediction with traditional indicators for confirmation
     4. Executes trades based on high-confidence signals
     
@@ -30,24 +30,24 @@ class DeepSeekTradingStrategy(BaseStrategy):
     - Hold: Low confidence or conflicting signals
     """
     
-    def __init__(self, trader, deepseek_api_key=None):
-        """Initialize the DeepSeek trading strategy
+    def __init__(self, trader, qwen_api_key=None):
+        """Initialize the Qwen trading strategy
         
         Args:
             trader: Trader instance
-            deepseek_api_key: DeepSeek API key (optional, can be set from environment)
+            qwen_api_key: Qwen API key (optional, can be set from environment)
         """
         super().__init__(trader)
         self.logger = self.get_logger()
         
         # API Configuration
-        self.deepseek_api_key = deepseek_api_key or self._get_api_key()
-        self.deepseek_api_url = "https://api.deepseek.com/v1/chat/completions"
-        self.model = "deepseek-chat"
+        self.qwen_api_key = qwen_api_key or self._get_api_key()
+        self.qwen_api_url = "https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation"
+        self.model = "qwen3-max"  # 可选: qwen-turbo, qwen-plus, qwen-max
         
         # Timeframe configuration (短线交易使用较短时间框架)
-        self.kline_interval = '15m'  # 15分钟K线
-        self.check_interval = 300  # 每5分钟检查一次（减少检查频率）
+        self.kline_interval = '15m'  # 5分钟K线
+        self.check_interval = 180  # 每3分钟检查一次
         self.lookback_period = 100  # 分析用的K线数量
         self.training_lookback = 100  # 与TradingManager兼容
         
@@ -62,7 +62,7 @@ class DeepSeekTradingStrategy(BaseStrategy):
         self.volume_ma_period = 20
         
         # Trading Parameters
-        self.min_confidence = 0.65  # 提高最小信号置信度到65%，减少噪音信号
+        self.min_confidence = 0.60  # 最小信号置信度（60%）
         self.stop_loss_pct = 0.015  # 1.5% 止损
         self.take_profit_pct = 0.045  # 4.5% 止盈
         self.max_position_hold_time = 360  # 6小时最大持仓时间（分钟）
@@ -80,29 +80,25 @@ class DeepSeekTradingStrategy(BaseStrategy):
         self.last_signal_time = None
         self.last_ai_prediction = None
         
-        # Signal Stability Control
-        self.min_signal_hold_time = 900  # 信号最小持续时间15分钟（秒）
-        self.signal_change_cooldown = 600  # 信号切换冷却时间10分钟（秒）
-        self.last_signal_change_time = 0  # 上次信号切换时间
-        self.signal_confirmation_count = 0  # 连续确认计数
-        self.min_confirmation_count = 2  # 需要连续确认的次数
-        
-        # Rate Limiting
+        # Rate Limiting and Retry Configuration
         self.min_time_between_api_calls = 10  # 最小API调用间隔（秒）
         self.last_api_call_time = 0
+        self.api_timeout = 30  # API超时时间（秒）
+        self.max_retries = 2  # 最大重试次数
+        self.retry_delay = 5  # 重试间隔（秒）
         
-        self.logger.info("DeepSeek Trading Strategy initialized for 5m timeframe")
-        self.logger.info(f"API Key configured: {bool(self.deepseek_api_key)}")
+        self.logger.info("Qwen Trading Strategy initialized for 5m timeframe")
+        self.logger.info(f"API Key configured: {bool(self.qwen_api_key)}")
     
     def _get_api_key(self):
-        """Get DeepSeek API key from environment or config"""
+        """Get Qwen API key from environment or config"""
         import os
         from dotenv import load_dotenv
         load_dotenv()
         
-        api_key = os.getenv('DEEPSEEK_API_KEY')
+        api_key = os.getenv('QWEN_API_KEY')
         if not api_key:
-            self.logger.warning("DeepSeek API key not found. Strategy will work in limited mode.")
+            self.logger.warning("Qwen API key not found. Strategy will work in limited mode.")
         return api_key
     
     def calculate_technical_indicators(self, df):
@@ -190,7 +186,7 @@ class DeepSeekTradingStrategy(BaseStrategy):
     
     def prepare_market_analysis(self, indicators):
         """
-        Prepare market analysis text for DeepSeek API
+        Prepare market analysis text for Qwen API
         
         Args:
             indicators (dict): Technical indicators
@@ -274,9 +270,9 @@ class DeepSeekTradingStrategy(BaseStrategy):
             history.append(f"  {i}前: {price:.6f}")
         return "\n".join(history)
     
-    def query_deepseek_prediction(self, market_analysis):
+    def query_qwen_prediction(self, market_analysis):
         """
-        Query DeepSeek API for price prediction
+        Query Qwen API for price prediction
         
         Args:
             market_analysis (str): Formatted market analysis
@@ -290,46 +286,32 @@ class DeepSeekTradingStrategy(BaseStrategy):
             self.logger.debug("Rate limit: using cached prediction")
             return self.last_ai_prediction
         
-        if not self.deepseek_api_key:
+        if not self.qwen_api_key:
             self.logger.warning("No API key available, using fallback logic")
             return self._fallback_prediction(market_analysis)
         
         try:
             headers = {
-                "Authorization": f"Bearer {self.deepseek_api_key}",
+                "Authorization": f"Bearer {self.qwen_api_key}",
                 "Content-Type": "application/json"
             }
             
-            prompt = f"""你是一位专业的加密货币短线交易分析师。请基于以下市场数据分析，预测未来15-45分钟的价格趋势。
+            prompt = f"""你是一位专业的加密货币短线交易分析师。请基于以下市场数据分析，预测未来5-30分钟的价格趋势。
 
 {market_analysis}
 
-**核心分析原则**：
-1. **趋势优先**：首先识别当前主要趋势方向，短期波动不应违背主趋势
-2. **价格行为验证**：技术指标必须与实际价格走势一致，如果冲突则以价格行为为准
-3. **多重确认**：至少需要2-3个指标同向确认才给出明确信号
-4. **保守操作**：宁可错过机会也不要在不确定时强行交易
-
-**具体指引**：
-- 当短期趋势明显上升时，不要轻易给出"震荡偏跌"信号
-- 当短期趋势明显下降时，不要轻易给出"震荡偏涨"信号
-- 震荡偏向信号需要至少75%置信度，且要有明确的技术支撑
-- 如果价格连续上涨但某些指标显示超买，优先考虑"震荡"而非"偏跌"
-- 置信度评估要考虑信号的一致性，指标冲突时应降低置信度
-
-**置信度标准**：
-- 90%+: 多个强势指标同向，趋势非常明确
-- 75-89%: 主要指标同向，有少量分歧
-- 65-74%: 指标基本同向，但存在一定不确定性
-- 50-64%: 信号混合，建议观望
-- <50%: 信号不明确或冲突严重
+**重要指引**：
+- 即使在震荡市场，如果技术指标显示某个方向的概率略高（>55%），也应该给出相应的交易建议
+- "震荡偏涨"应该建议"轻仓买入"；"震荡偏跌"应该建议"轻仓卖出"
+- 只在完全无法判断方向时才建议"观望"
+- 置信度应该反映你对方向判断的把握程度
 
 请提供:
 1. 趋势预测: 上涨/下跌/震荡/震荡偏涨/震荡偏跌
-2. 置信度: 0-100的数值（严格按照上述标准）
+2. 置信度: 0-100的数值（>55即可给出交易建议）
 3. 建议操作: 买入/卖出/轻仓买入/轻仓卖出/观望
 4. 关键支撑/阻力位
-5. 分析推理和风险提示
+5. 风险提示
 
 请用JSON格式回复:
 {{
@@ -338,38 +320,69 @@ class DeepSeekTradingStrategy(BaseStrategy):
     "action": "买入/卖出/轻仓买入/轻仓卖出/观望",
     "support_level": 价格,
     "resistance_level": 价格,
-    "reasoning": "详细说明分析逻辑和指标一致性",
-    "risk_warning": "具体的风险点和注意事项"
+    "reasoning": "简短说明原因",
+    "risk_warning": "风险提示"
 }}"""
 
             payload = {
                 "model": self.model,
-                "messages": [
-                    {
-                        "role": "system",
-                        "content": "你是一位经验丰富的加密货币短线交易分析师，具有以下特质：1）严格遵循趋势分析原则，不会在明显趋势中给出相反信号；2）重视价格行为和成交量确认；3）保守谨慎，只在高确定性时给出交易建议；4）善于识别真实突破和假突破；5）注重风险控制，避免频繁交易。"
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ],
-                "temperature": 0.3,
-                "max_tokens": 800
+                "input": {
+                    "messages": [
+                        {
+                            "role": "system",
+                            "content": "你是一位经验丰富的加密货币短线交易分析师，具有以下特质：1）严格遵循趋势分析原则，不会在明显趋势中给出相反信号；2）重视价格行为和成交量确认；3）保守谨慎，只在高确定性时给出交易建议；4）善于识别真实突破和假突破；5）注重风险控制，避免频繁交易。"
+                        },
+                        {
+                            "role": "user",
+                            "content": prompt
+                        }
+                    ]
+                },
+                "parameters": {
+                    "result_format": "message",
+                    "temperature": 0.3,
+                    "max_tokens": 800
+                }
             }
             
-            response = requests.post(
-                self.deepseek_api_url,
-                headers=headers,
-                json=payload,
-                timeout=15
-            )
+            # 尝试API调用，带重试机制
+            response = None
+            for attempt in range(self.max_retries + 1):
+                try:
+                    self.logger.debug(f"Qwen API调用尝试 {attempt + 1}/{self.max_retries + 1}")
+                    response = requests.post(
+                        self.qwen_api_url,
+                        headers=headers,
+                        json=payload,
+                        timeout=self.api_timeout
+                    )
+                    break  # 成功则跳出重试循环
+                except requests.Timeout:
+                    if attempt < self.max_retries:
+                        self.logger.warning(f"Qwen API超时，{self.retry_delay}秒后重试 ({attempt + 1}/{self.max_retries})")
+                        time.sleep(self.retry_delay)
+                    else:
+                        self.logger.error(f"Qwen API超时，已重试{self.max_retries}次，使用备用策略")
+                        return self._fallback_prediction(market_analysis)
+                except Exception as e:
+                    if attempt < self.max_retries:
+                        self.logger.warning(f"Qwen API调用失败: {str(e)}，{self.retry_delay}秒后重试")
+                        time.sleep(self.retry_delay)
+                    else:
+                        self.logger.error(f"Qwen API调用失败，已重试{self.max_retries}次: {str(e)}")
+                        return self._fallback_prediction(market_analysis)
             
             self.last_api_call_time = current_time
             
-            if response.status_code == 200:
+            if response and response.status_code == 200:
                 result = response.json()
-                content = result['choices'][0]['message']['content']
+                
+                # Qwen API 响应格式
+                if 'output' in result and 'choices' in result['output']:
+                    content = result['output']['choices'][0]['message']['content']
+                else:
+                    self.logger.error(f"Unexpected Qwen API response format: {result}")
+                    return self._fallback_prediction(market_analysis)
                 
                 # Parse JSON response
                 try:
@@ -398,11 +411,13 @@ class DeepSeekTradingStrategy(BaseStrategy):
                         
                         # 震荡偏涨/偏跌也应该产生信号（但需要较高置信度）
                         if '震荡偏涨' in pred_text or '偏涨' in pred_text:
-                            if confidence >= 0.60:  # 震荡市场需要更高置信度
+                            if confidence >= 0.65:  # 提高震荡偏涨的置信度要求
                                 signal = 1
                                 self.logger.info(f"震荡偏涨信号被激活，置信度: {confidence:.0%}")
                         elif '震荡偏跌' in pred_text or '偏跌' in pred_text:
-                            if confidence >= 0.60:
+                            # 震荡偏跌需要更高的置信度，特别是在上升趋势中
+                            required_confidence = 0.70  # 基础要求70%
+                            if confidence >= required_confidence:
                                 signal = -1
                                 self.logger.info(f"震荡偏跌信号被激活，置信度: {confidence:.0%}")
                         elif '上涨' in pred_text and confidence >= 0.65:
@@ -421,7 +436,7 @@ class DeepSeekTradingStrategy(BaseStrategy):
                     }
                     
                     self.last_ai_prediction = result_dict
-                    self.logger.info(f"DeepSeek预测: {prediction['prediction']}, "
+                    self.logger.info(f"Qwen预测: {prediction['prediction']}, "
                                    f"置信度: {prediction['confidence']}%, "
                                    f"建议: {prediction['action']}")
                     self.logger.debug(f"分析原因: {prediction.get('reasoning', '')}")
@@ -429,18 +444,15 @@ class DeepSeekTradingStrategy(BaseStrategy):
                     return result_dict
                     
                 except json.JSONDecodeError as e:
-                    self.logger.error(f"Failed to parse DeepSeek response: {str(e)}")
+                    self.logger.error(f"Failed to parse Qwen response: {str(e)}")
                     self.logger.debug(f"Response content: {content}")
                     return self._fallback_prediction(market_analysis)
             else:
-                self.logger.error(f"DeepSeek API error: {response.status_code} - {response.text}")
+                self.logger.error(f"Qwen API error: {response.status_code if response else 'No response'} - {response.text if response else 'Connection failed'}")
                 return self._fallback_prediction(market_analysis)
                 
-        except requests.Timeout:
-            self.logger.error("DeepSeek API timeout")
-            return self._fallback_prediction(market_analysis)
         except Exception as e:
-            self.logger.error(f"Error querying DeepSeek: {str(e)}")
+            self.logger.error(f"Unexpected error in Qwen API call: {str(e)}")
             return self._fallback_prediction(market_analysis)
     
     def _fallback_prediction(self, market_analysis):
@@ -448,19 +460,49 @@ class DeepSeekTradingStrategy(BaseStrategy):
         Fallback prediction logic when API is unavailable
         Uses traditional technical analysis
         """
-        self.logger.info("Using fallback technical analysis")
+        self.logger.info("使用备用技术分析策略")
         
-        # This will be filled by the technical indicator analysis
-        # For now, return neutral
-        return {
-            'signal': 0,
-            'confidence': 0.5,
-            'prediction': '观望',
-            'reasoning': '使用技术指标分析',
-            'support': None,
-            'resistance': None,
-            'risk_warning': 'API不可用，使用备用分析'
-        }
+        try:
+            # 从市场分析文本中提取关键指标进行简单判断
+            signal = 0
+            confidence = 0.4
+            prediction = '观望'
+            reasoning = '基于技术指标的简化分析'
+            
+            # 简单的技术指标判断逻辑
+            if 'RSI' in market_analysis:
+                if 'RSI: 超卖' in market_analysis or 'RSI较低' in market_analysis:
+                    signal = 1
+                    confidence = 0.6
+                    prediction = '轻仓买入'
+                    reasoning = 'RSI显示超卖，可能反弹'
+                elif 'RSI: 超买' in market_analysis or 'RSI较高' in market_analysis:
+                    signal = -1
+                    confidence = 0.6
+                    prediction = '轻仓卖出'
+                    reasoning = 'RSI显示超买，可能回调'
+            
+            return {
+                'signal': signal,
+                'confidence': confidence,
+                'prediction': prediction,
+                'reasoning': reasoning,
+                'support': None,
+                'resistance': None,
+                'risk_warning': 'API不可用，使用简化技术分析'
+            }
+            
+        except Exception as e:
+            self.logger.error(f"备用分析也失败: {str(e)}")
+            return {
+                'signal': 0,
+                'confidence': 0.3,
+                'prediction': '观望',
+                'reasoning': '系统异常，建议观望',
+                'support': None,
+                'resistance': None,
+                'risk_warning': '系统异常，请检查'
+            }
     
     def generate_signal(self, klines=None):
         """
@@ -502,7 +544,7 @@ class DeepSeekTradingStrategy(BaseStrategy):
                 return 0
             
             # Get AI prediction
-            ai_prediction = self.query_deepseek_prediction(market_analysis)
+            ai_prediction = self.query_qwen_prediction(market_analysis)
             if ai_prediction is None:
                 return 0
             
@@ -514,9 +556,10 @@ class DeepSeekTradingStrategy(BaseStrategy):
             ai_signal = ai_prediction['signal']
             confidence = ai_prediction['confidence']
             
+            return ai_signal
+            
             # Only trade if confidence is high enough
             if confidence >= self.min_confidence:
-                return ai_signal
                 # AI and technical indicators agree (strongest signal)
                 if ai_signal == tech_signal and tech_signal != 0:
                     final_signal = ai_signal
@@ -532,10 +575,18 @@ class DeepSeekTradingStrategy(BaseStrategy):
                     final_signal = tech_signal
                     self.logger.info(f"📊 Technical-led signal: {tech_signal}, "
                                    f"AI confidence={confidence:.2%}")
-                # Conflicting signals (AI and technical disagree)
+                # Conflicting signals (AI and technical disagree) - 需要更仔细的分析
                 elif ai_signal != 0 and tech_signal != 0 and ai_signal != tech_signal:
-                    self.logger.info(f"⚠️ Conflicting signals - AI: {ai_signal}, "
-                                   f"Technical: {tech_signal}, holding position")
+                    # 在明显趋势中，如果AI信号与趋势相反，优先考虑技术指标
+                    recent_prices = indicators['close'][-5:]
+                    price_trend = 1 if recent_prices[-1] > recent_prices[0] else -1
+                    
+                    if price_trend == tech_signal and price_trend != ai_signal:
+                        self.logger.info(f"⚠️ AI信号({ai_signal})与明显趋势({price_trend})冲突，采用技术信号({tech_signal})")
+                        final_signal = tech_signal
+                    else:
+                        self.logger.info(f"⚠️ Conflicting signals - AI: {ai_signal}, "
+                                       f"Technical: {tech_signal}, holding position")
                 # Both neutral (market unclear)
                 else:
                     if ai_signal == 0 and tech_signal == 0:

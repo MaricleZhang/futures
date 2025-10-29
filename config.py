@@ -14,17 +14,17 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 # GUNUSDT TNSRUSDT PARTIUSDT DUSDT GASUSDT JELLYJELLYUSDT TAOUSDT AEROUSDT EOSUSDT TONUSDT REDUSDT ROSEUSDT
 # BNBUSDT BTCDOMUSDT XRPUSDC DUSDT GASUSDT BABYUSDT  AVAAIUSDT NKNUSDT PAXGUSDT VOXELUSDT
  # BTCUSDC SOLUSDC 1000PEPEUSDC AINIMEUSDT ARBUSDC SQDUSDT SPKUSDT  FUSDT SAHARAUSDT UNIUSDC PROVEUSDT 
-# XNYUSDT  AIOTUSDT ARIAUSST
+# XNYUSDT  AIOTUSDT ARIAUSST IMXUSDT WUSDT 
 # 交易设置
 
 
-SYMBOLS = ['ENAUSDC']  # 支持多个交易对
+SYMBOLS = ['TURTLEUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
-    'ENAUSDC': {
+    'TURTLEUSDT': {
         'leverage':10,
         'min_notional': 20,
-        'trade_amount_percent': 100,  # 降低单次交易比例适应深度学习策略
-        'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒)
+        'trade_amount_percent': 50,  # 降低单次交易比例适应深度学习策略
+        'check_interval': 180,  # 调整为15分钟策略的检查间隔(秒)
     }
 }
 DEFAULT_LEVERAGE = 5  # 默认杠杆倍数

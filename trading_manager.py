@@ -4,6 +4,7 @@ import time
 from trader import Trader
 from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
 from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
+from strategies.qwen_trading_strategy import QwenTradingStrategy
 from utils.logger import Logger
 import config
 
@@ -128,6 +129,15 @@ class TradingManager:
                 self.symbol_loggers[symbol].info(f"关闭 {symbol} 所有持仓")
             except Exception as e:
                 self.symbol_loggers[symbol].error(f"关闭 {symbol} 持仓失败: {str(e)}")
+        
+        # 清理策略资源
+        for symbol, strategy in self.strategies.items():
+            try:
+                if hasattr(strategy, 'cleanup'):
+                    strategy.cleanup()
+                    self.symbol_loggers[symbol].info(f"清理 {symbol} 策略资源成功")
+            except Exception as e:
+                self.symbol_loggers[symbol].error(f"清理 {symbol} 策略资源失败: {str(e)}")
 
     def logger_info(self, symbol, position, current_price, signal=0):
         """记录交易信息到日志

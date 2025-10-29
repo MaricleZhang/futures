@@ -12,7 +12,10 @@ import time
 import logging
 import requests
 import json
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from strategies.base_strategy import BaseStrategy
+import config
 
 class DeepSeekTradingStrategy(BaseStrategy):
     """
@@ -44,6 +47,21 @@ class DeepSeekTradingStrategy(BaseStrategy):
         self.deepseek_api_key = deepseek_api_key or self._get_api_key()
         self.deepseek_api_url = "https://api.deepseek.com/v1/chat/completions"
         self.model = "deepseek-chat"
+        
+        # Configure HTTP session with retry strategy
+        self.session = requests.Session()
+        retry_strategy = Retry(
+            total=3,  # 总重试次数
+            backoff_factor=1,  # 重试间隔倍数
+            status_forcelist=[429, 500, 502, 503, 504],  # 需要重试的HTTP状态码
+            allowed_methods=["POST"]  # 允许重试的HTTP方法
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        self.session.mount("http://", adapter)
+        self.session.mount("https://", adapter)
+        
+        # Timeout configuration
+        self.api_timeout = (10, 30)  # (连接超时, 读取超时) 秒
         
         # Timeframe configuration (短线交易使用较短时间框架)
         self.kline_interval = '15m'  # 15分钟K线
@@ -88,11 +106,38 @@ class DeepSeekTradingStrategy(BaseStrategy):
         self.min_confirmation_count = 2  # 需要连续确认的次数
         
         # Rate Limiting
-        self.min_time_between_api_calls = 10  # 最小API调用间隔（秒）
+        self.min_time_between_api_calls = getattr(config, 'DEEPSEEK_API_MIN_INTERVAL', 10)  # 最小API调用间隔（秒）
         self.last_api_call_time = 0
+        
+        # Configure HTTP session with retry strategy
+        self.session = requests.Session()
+        retry_strategy = Retry(
+            total=getattr(config, 'DEEPSEEK_API_RETRY_COUNT', 3),  # 总重试次数
+            backoff_factor=getattr(config, 'DEEPSEEK_API_RETRY_BACKOFF', 1),  # 重试间隔倍数
+            status_forcelist=[429, 500, 502, 503, 504],  # 需要重试的HTTP状态码
+            allowed_methods=["POST"]  # 允许重试的HTTP方法
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        self.session.mount("http://", adapter)
+        self.session.mount("https://", adapter)
+        
+        # Timeout configuration
+        connect_timeout = getattr(config, 'DEEPSEEK_API_CONNECT_TIMEOUT', 10)
+        read_timeout = getattr(config, 'DEEPSEEK_API_READ_TIMEOUT', 30)
+        self.api_timeout = (connect_timeout, read_timeout)  # (连接超时, 读取超时) 秒
         
         self.logger.info("DeepSeek Trading Strategy initialized for 5m timeframe")
         self.logger.info(f"API Key configured: {bool(self.deepseek_api_key)}")
+        self.logger.info(f"API timeout configured: {self.api_timeout} seconds")
+    
+    def cleanup(self):
+        """清理资源，关闭HTTP会话"""
+        try:
+            if hasattr(self, 'session'):
+                self.session.close()
+                self.logger.info("HTTP session closed")
+        except Exception as e:
+            self.logger.error(f"Error closing session: {str(e)}")
     
     def _get_api_key(self):
         """Get DeepSeek API key from environment or config"""
@@ -358,11 +403,11 @@ class DeepSeekTradingStrategy(BaseStrategy):
                 "max_tokens": 800
             }
             
-            response = requests.post(
+            response = self.session.post(
                 self.deepseek_api_url,
                 headers=headers,
                 json=payload,
-                timeout=15
+                timeout=self.api_timeout
             )
             
             self.last_api_call_time = current_time
@@ -436,11 +481,23 @@ class DeepSeekTradingStrategy(BaseStrategy):
                 self.logger.error(f"DeepSeek API error: {response.status_code} - {response.text}")
                 return self._fallback_prediction(market_analysis)
                 
-        except requests.Timeout:
+        except requests.exceptions.ConnectTimeout:
+            self.logger.error("DeepSeek API connection timeout - 无法连接到服务器")
+            return self._fallback_prediction(market_analysis)
+        except requests.exceptions.ReadTimeout:
+            self.logger.error("DeepSeek API read timeout - 服务器响应超时")
+            return self._fallback_prediction(market_analysis)
+        except requests.exceptions.Timeout:
             self.logger.error("DeepSeek API timeout")
             return self._fallback_prediction(market_analysis)
+        except requests.exceptions.ConnectionError as e:
+            self.logger.error(f"DeepSeek API connection error: {str(e)}")
+            return self._fallback_prediction(market_analysis)
+        except requests.exceptions.RequestException as e:
+            self.logger.error(f"DeepSeek API request error: {str(e)}")
+            return self._fallback_prediction(market_analysis)
         except Exception as e:
-            self.logger.error(f"Error querying DeepSeek: {str(e)}")
+            self.logger.error(f"Unexpected error querying DeepSeek: {str(e)}")
             return self._fallback_prediction(market_analysis)
     
     def _fallback_prediction(self, market_analysis):

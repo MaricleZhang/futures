@@ -53,6 +53,13 @@ DEFAULT_KLINE_LIMIT = 100  # 默认K线获取数量
 API_TIMEOUT = 10000  # API超时时间(毫秒)
 ENABLE_RATE_LIMIT = True  # 是否启用频率限制
 
+# DeepSeek API设置
+DEEPSEEK_API_CONNECT_TIMEOUT = 10  # DeepSeek API连接超时(秒)
+DEEPSEEK_API_READ_TIMEOUT = 30     # DeepSeek API读取超时(秒)
+DEEPSEEK_API_RETRY_COUNT = 3       # DeepSeek API重试次数
+DEEPSEEK_API_RETRY_BACKOFF = 1     # DeepSeek API重试间隔倍数
+DEEPSEEK_API_MIN_INTERVAL = 10     # DeepSeek API最小调用间隔(秒)
+
 # AI策略设置
 AI_KLINES_LIMIT = 1000  # AI分析所需的K线数量
 MIN_KLINES_FOR_AI = 500  # AI分析所需的最小K线数量

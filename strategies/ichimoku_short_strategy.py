@@ -49,6 +49,7 @@ class IchimokuShortStrategy(BaseStrategy):
         self.kline_interval = '15m'      # 使用15分钟K线（短线交易）
         self.check_interval = 300        # 每5分钟检查一次
         self.lookback_period = 100       # 需要至少100根K线来计算指标
+        self.training_lookback = self.lookback_period  # 与TradingManager兼容
 
         # Ichimoku参数（标准参数）
         self.tenkan_period = 9           # 转换线周期
@@ -252,6 +253,7 @@ class IchimokuShortStrategy(BaseStrategy):
                 bearish_score += 0.5
                 details.append("✗ 滞后线在价格下方")
 
+        self.logger.info(f"上涨score: {bullish_score}, 下跌score: {bearish_score}")
         # ==================== 决定最终信号 ====================
         if bullish_score > bearish_score and bullish_score >= self.min_confidence_score:
             signal = 1
@@ -292,16 +294,8 @@ class IchimokuShortStrategy(BaseStrategy):
                 self.logger.warning(f"K线数据不足: {len(klines) if klines else 0} < {self.senkou_span_b_period + self.displacement}")
                 return 0
 
-            # 准备DataFrame
-            df = pd.DataFrame(klines, columns=[
-                'timestamp', 'open', 'high', 'low', 'close', 'volume',
-                'close_time', 'quote_volume', 'trades', 'taker_buy_base',
-                'taker_buy_quote', 'ignore'
-            ])
-
-            # 转换数据类型
-            for col in ['open', 'high', 'low', 'close', 'volume']:
-                df[col] = pd.to_numeric(df[col], errors='coerce')
+            # 准备DataFrame（统一为6列）
+            df = self._klines_to_df(klines)
 
             # 计算Ichimoku指标
             indicators = self.calculate_ichimoku_indicators(df)
@@ -385,14 +379,7 @@ class IchimokuShortStrategy(BaseStrategy):
 
             # 获取当前价格和ATR
             klines = self.trader.get_klines(symbol, self.kline_interval, self.lookback_period)
-            df = pd.DataFrame(klines, columns=[
-                'timestamp', 'open', 'high', 'low', 'close', 'volume',
-                'close_time', 'quote_volume', 'trades', 'taker_buy_base',
-                'taker_buy_quote', 'ignore'
-            ])
-
-            for col in ['open', 'high', 'low', 'close']:
-                df[col] = pd.to_numeric(df[col], errors='coerce')
+            df = self._klines_to_df(klines)
 
             indicators = self.calculate_ichimoku_indicators(df)
             current_price = indicators['close'][-1]
@@ -429,14 +416,7 @@ class IchimokuShortStrategy(BaseStrategy):
 
             # 获取当前价格和ATR
             klines = self.trader.get_klines(symbol, self.kline_interval, self.lookback_period)
-            df = pd.DataFrame(klines, columns=[
-                'timestamp', 'open', 'high', 'low', 'close', 'volume',
-                'close_time', 'quote_volume', 'trades', 'taker_buy_base',
-                'taker_buy_quote', 'ignore'
-            ])
-
-            for col in ['open', 'high', 'low', 'close']:
-                df[col] = pd.to_numeric(df[col], errors='coerce')
+            df = self._klines_to_df(klines)
 
             indicators = self.calculate_ichimoku_indicators(df)
             current_price = indicators['close'][-1]
@@ -558,3 +538,14 @@ class IchimokuShortStrategy(BaseStrategy):
         self.highest_price = None
         self.lowest_price = None
         self.last_signal = 0
+
+    # 统一K线到DataFrame（兼容6/12列：截取前6列）
+    def _klines_to_df(self, klines):
+        if not klines or len(klines[0]) < 6:
+            raise ValueError(f"K线数据格式不正确，列数={0 if not klines else len(klines[0])}")
+        base_cols = ['timestamp', 'open', 'high', 'low', 'close', 'volume']
+        df = pd.DataFrame([k[:6] for k in klines], columns=base_cols)
+        for col in ['open', 'high', 'low', 'close', 'volume']:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+        df['timestamp'] = pd.to_numeric(df['timestamp'], errors='coerce')
+        return df

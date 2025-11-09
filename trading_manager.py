@@ -5,6 +5,7 @@ from trader import Trader
 from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
 from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
 from strategies.qwen_trading_strategy import QwenTradingStrategy
+from strategies.ichimoku_short_strategy import IchimokuShortStrategy
 from utils.logger import Logger
 import config
 
@@ -27,7 +28,7 @@ class TradingManager:
                 self.symbol_loggers[symbol] = symbol_logger
                 
                 trader = Trader(symbol)
-                strategy = DeepSeekTradingStrategy(trader)
+                strategy = IchimokuShortStrategy(trader)  # 使用Ichimoku云图短线策略
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")

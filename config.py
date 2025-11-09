@@ -67,6 +67,10 @@ AI_TRADE_AMOUNT_PERCENT = 100  # AI交易金额占可用余额的百分比
 AI_TRAIN_INTERVAL = 60  # AI模型训练间隔（分钟）
 AI_MIN_TRADE_INTERVAL = 5  # AI最小交易间隔（分钟）
 
+# 策略选择配置
+# 可选策略: 'deepseek', 'qwen', 'simple_adx_di', 'kama_roc_adx'
+STRATEGY_TYPE = 'kama_roc_adx'
+
 # AI策略配置
 DEFAULT_CHECK_INTERVAL = 300  # AI策略检查间隔(秒)
 RSI_PERIOD = 14

@@ -5,6 +5,7 @@ from trader import Trader
 from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
 from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
 from strategies.qwen_trading_strategy import QwenTradingStrategy
+from strategies.kama_roc_adx_strategy import KAMARocAdxStrategy
 from utils.logger import Logger
 import config
 
@@ -25,9 +26,24 @@ class TradingManager:
                 # 为每个交易对创建独立的logger
                 symbol_logger = logging.getLogger(f'{symbol}')
                 self.symbol_loggers[symbol] = symbol_logger
-                
+
                 trader = Trader(symbol)
-                strategy = DeepSeekTradingStrategy(trader)
+
+                # 根据配置选择策略
+                strategy_type = getattr(config, 'STRATEGY_TYPE', 'deepseek').lower()
+                if strategy_type == 'kama_roc_adx':
+                    strategy = KAMARocAdxStrategy(trader)
+                    symbol_logger.info(f"使用 KAMA-ROC-ADX 策略")
+                elif strategy_type == 'simple_adx_di':
+                    strategy = SimpleADXDIStrategy15m(trader)
+                    symbol_logger.info(f"使用 Simple ADX-DI 策略")
+                elif strategy_type == 'qwen':
+                    strategy = QwenTradingStrategy(trader)
+                    symbol_logger.info(f"使用 Qwen AI 策略")
+                else:  # 默认使用 deepseek
+                    strategy = DeepSeekTradingStrategy(trader)
+                    symbol_logger.info(f"使用 DeepSeek AI 策略")
+
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
                 symbol_logger.info(f"初始化 {symbol} 交易器和策略成功")

@@ -4,7 +4,6 @@ import time
 from trader import Trader
 from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
 from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
-from strategies.qwen_trading_strategy import QwenTradingStrategy
 from strategies.kama_roc_adx_strategy import KAMARocAdxStrategy
 from utils.logger import Logger
 import config

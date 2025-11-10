@@ -18,13 +18,31 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 # 交易设置
 
 
-SYMBOLS = ['TURTLEUSDT']  # 支持多个交易对
+SYMBOLS = ['STABLEUSDT', 'ATUSDT', 'HBARUSDC', 'UNIUSDC']  # 支持多个交易对
 SYMBOL_CONFIGS = {
-    'TURTLEUSDT': {
-        'leverage':10,
+    'STABLEUSDT': {
+        'leverage':5,
         'min_notional': 20,
-        'trade_amount_percent': 50,  # 降低单次交易比例适应深度学习策略
-        'check_interval': 180,  # 调整为15分钟策略的检查间隔(秒)
+        'trade_amount_percent': 100,  # 降低单次交易比例适应深度学习策略
+        'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒)
+    },
+    'ATUSDT': {
+        'leverage':5,
+        'min_notional': 20,
+        'trade_amount_percent': 200,  # 降低单次交易比例适应深度学习策略
+        'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒)
+    },
+    'HBARUSDC': {
+        'leverage':5,
+        'min_notional': 20,
+        'trade_amount_percent': 150,  # 降低单次交易比例适应深度学习策略
+        'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
+    },
+    'UNIUSDC': {
+        'leverage':5,
+        'min_notional': 20,
+        'trade_amount_percent': 300,  # 降低单次交易比例适应深度学习策略
+        'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
     }
 }
 DEFAULT_LEVERAGE = 5  # 默认杠杆倍数

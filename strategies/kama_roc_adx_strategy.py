@@ -35,7 +35,7 @@ class KAMARocAdxStrategy(BaseStrategy):
         # Timeframe configuration
         self.kline_interval = '15m'  # 15-minute timeframe
         self.check_interval = 300  # Check every 5 minutes (300 seconds)
-        self.lookback_period = 100  # Number of candles for analysis
+        self.lookback_period = 50  # Number of candles for analysis
         self.training_lookback = 100  # For compatibility with TradingManager
 
         # KAMA Parameters

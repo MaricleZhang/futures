@@ -221,7 +221,7 @@ class PCATrendPredictionStrategy(BaseStrategy):
 
             # Remove rows with NaN values
             feature_matrix = feature_matrix.replace([np.inf, -np.inf], np.nan)
-            feature_matrix = feature_matrix.fillna(method='ffill').fillna(0)
+            feature_matrix = feature_matrix.ffill().fillna(0)
 
             return feature_matrix
 

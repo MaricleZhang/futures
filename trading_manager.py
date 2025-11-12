@@ -6,6 +6,7 @@ from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
 from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
 from strategies.kama_roc_adx_strategy import KAMARocAdxStrategy
 from strategies.pca_trend_prediction_strategy import PCATrendPredictionStrategy
+from strategies.advanced_short_term_trend_strategy import AdvancedShortTermTrendStrategy
 from utils.logger import Logger
 import config
 
@@ -40,6 +41,9 @@ class TradingManager:
                 elif strategy_type == 'pca_trend':
                     strategy = PCATrendPredictionStrategy(trader)
                     symbol_logger.info(f"使用 PCA 趋势预测策略")
+                elif strategy_type == 'advanced_short_term':
+                    strategy = AdvancedShortTermTrendStrategy(trader)
+                    symbol_logger.info(f"使用高级短线趋势策略")
                 else:  # 默认使用 deepseek
                     strategy = DeepSeekTradingStrategy(trader)
                     symbol_logger.info(f"使用 DeepSeek AI 策略")

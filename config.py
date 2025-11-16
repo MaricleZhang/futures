@@ -18,12 +18,12 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 # 交易设置
 
 
-SYMBOLS = ['HBARUSDC', 'UNIUSDC','RESOLVUSDT','JCTUSDT']  # 支持多个交易对
+SYMBOLS = ['HBARUSDC','UNIUSDC','ZECUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
     'HBARUSDC': {
         'leverage':10,
         'min_notional': 20,
-        'trade_amount_percent': 150,  # 降低单次交易比例适应深度学习策略
+        'trade_amount_percent': 300,  # 降低单次交易比例适应深度学习策略
         'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
     },
     'UNIUSDC': {
@@ -32,16 +32,10 @@ SYMBOL_CONFIGS = {
         'trade_amount_percent': 200,  # 降低单次交易比例适应深度学习策略
         'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
     },
-    'RESOLVUSDT': {
+    'ZECUSDT': {
         'leverage':10,
         'min_notional': 20,
         'trade_amount_percent': 200,  # 降低单次交易比例适应深度学习策略
-        'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
-    },
-    'JCTUSDT': {
-        'leverage':10,
-        'min_notional': 20,
-        'trade_amount_percent': 100,  # 降低单次交易比例适应深度学习策略
         'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
     }
 }
@@ -87,7 +81,7 @@ AI_MIN_TRADE_INTERVAL = 5  # AI最小交易间隔（分钟）
 
 # 策略选择配置
 # 可选策略: 'deepseek', 'qwen', 'simple_adx_di', 'kama_roc_adx', 'pca_trend'
-STRATEGY_TYPE = 'pca_trend'
+STRATEGY_TYPE = 'advanced_short_term'
 
 # AI策略配置
 DEFAULT_CHECK_INTERVAL = 300  # AI策略检查间隔(秒)

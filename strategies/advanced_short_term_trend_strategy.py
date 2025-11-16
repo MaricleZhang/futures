@@ -57,6 +57,7 @@ class AdvancedShortTermTrendStrategy(BaseStrategy):
         self.kline_interval = '15m'         # K线周期：15分钟（短线）
         self.check_interval = 300           # 检查间隔：5分钟（300秒）
         self.lookback_period = 100          # 回看周期：100根K线
+        self.training_lookback = self.lookback_period
 
         # === EMA 指标参数 ===
         self.ema_fast_period = 8            # 快速EMA周期
@@ -74,8 +75,8 @@ class AdvancedShortTermTrendStrategy(BaseStrategy):
 
         # === ADX 和 DI 参数 ===
         self.adx_period = 14                # ADX周期
-        self.adx_threshold = 25             # ADX阈值（趋势强度）
-        self.adx_strong = 35                # 强趋势阈值
+        self.adx_threshold = 18             # ADX阈值（趋势强度）
+        self.adx_strong = 30                # 强趋势阈值
 
         # === KAMA 参数 ===
         self.kama_period = 30               # KAMA周期
@@ -225,7 +226,7 @@ class AdvancedShortTermTrendStrategy(BaseStrategy):
         if ema_fast > ema_slow:
             ema_score = 15 if ema_diff_pct > 0.5 else 10
             bull_score += ema_score
-            details['ema'] = f"多头+{ema_score}分 (快线>{slowline}, 差值{ema_diff_pct:.2f}%)"
+            details['ema'] = f"多头+{ema_score}分 (快线>慢线, 差值{ema_diff_pct:.2f}%)"
         elif ema_fast < ema_slow:
             ema_score = 15 if ema_diff_pct < -0.5 else 10
             bear_score += ema_score
@@ -371,11 +372,15 @@ class AdvancedShortTermTrendStrategy(BaseStrategy):
                 return 0
 
             # 转换为DataFrame
-            df = pd.DataFrame(klines, columns=[
-                'timestamp', 'open', 'high', 'low', 'close', 'volume',
-                'close_time', 'quote_volume', 'trades', 'taker_buy_base',
-                'taker_buy_quote', 'ignore'
-            ])
+            row_len = len(klines[0]) if klines and len(klines) > 0 else 0
+            if row_len >= 12:
+                df = pd.DataFrame(klines, columns=[
+                    'timestamp', 'open', 'high', 'low', 'close', 'volume',
+                    'close_time', 'quote_volume', 'trades', 'taker_buy_base',
+                    'taker_buy_quote', 'ignore'
+                ])
+            else:
+                df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
 
             # 转换数据类型
             for col in ['open', 'high', 'low', 'close', 'volume']:

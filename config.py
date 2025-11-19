@@ -18,12 +18,12 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 # 交易设置
 
 
-SYMBOLS = ['HBARUSDC', 'UNIUSDC','RESOLVUSDT']  # 支持多个交易对
+SYMBOLS = ['HBARUSDC', 'UNIUSDC','SOLUSDC']  # 支持多个交易对
 SYMBOL_CONFIGS = {
     'HBARUSDC': {
         'leverage':10,
         'min_notional': 20,
-        'trade_amount_percent': 150,  # 降低单次交易比例适应深度学习策略
+        'trade_amount_percent': 300,  # 降低单次交易比例适应深度学习策略
         'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
     },
     'UNIUSDC': {
@@ -32,16 +32,10 @@ SYMBOL_CONFIGS = {
         'trade_amount_percent': 200,  # 降低单次交易比例适应深度学习策略
         'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
     },
-    'RESOLVUSDT': {
+    'SOLUSDC': {
         'leverage':10,
         'min_notional': 20,
         'trade_amount_percent': 200,  # 降低单次交易比例适应深度学习策略
-        'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
-    },
-    'BANKUSDT': {
-        'leverage':10,
-        'min_notional': 20,
-        'trade_amount_percent': 100,  # 降低单次交易比例适应深度学习策略
         'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
     }
 }

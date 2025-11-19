@@ -18,30 +18,24 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 # 交易设置
 
 
-SYMBOLS = ['HBARUSDC', 'UNIUSDC','RESOLVUSDT']  # 支持多个交易对
+SYMBOLS = ['ENAUSDC']  # 支持多个交易对
 SYMBOL_CONFIGS = {
-    'HBARUSDC': {
-        'leverage':10,
-        'min_notional': 20,
-        'trade_amount_percent': 150,  # 降低单次交易比例适应深度学习策略
-        'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
-    },
-    'UNIUSDC': {
+    'ENAUSDC': {
         'leverage':10,
         'min_notional': 20,
         'trade_amount_percent': 200,  # 降低单次交易比例适应深度学习策略
         'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
     },
-    'RESOLVUSDT': {
+    'SOLUSDC': {
         'leverage':10,
         'min_notional': 20,
         'trade_amount_percent': 200,  # 降低单次交易比例适应深度学习策略
         'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
     },
-    'BANKUSDT': {
+    'ZECUSDT': {
         'leverage':10,
         'min_notional': 20,
-        'trade_amount_percent': 100,  # 降低单次交易比例适应深度学习策略
+        'trade_amount_percent': 200,  # 降低单次交易比例适应深度学习策略
         'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
     }
 }
@@ -86,8 +80,35 @@ AI_TRAIN_INTERVAL = 60  # AI模型训练间隔（分钟）
 AI_MIN_TRADE_INTERVAL = 5  # AI最小交易间隔（分钟）
 
 # 策略选择配置
-# 可选策略: 'deepseek', 'simple_adx_di', 'kama_roc_adx'
-STRATEGY_TYPE = 'kama_roc_adx'
+# 可选策略: 'deepseek', 'simple_adx_di', 'kama_roc_adx', 'advanced_short_term', 'candlestick_pattern'
+STRATEGY_TYPE = 'candlestick_pattern'
+
+# K线形态策略配置
+PATTERN_STRATEGY_CONFIG = {
+    'kline_interval': '15m',           # K线周期
+    'lookback_period': 100,            # 回溯周期
+    'check_interval': 300,             # 检查间隔(秒)
+    'min_probability': 0.50,           # 最小交易概率阈值
+    'min_confidence': 0.60,            # 最小置信度
+    'enable_auto_trade': True,         # 是否自动交易
+    'weights': {                       # 各因素权重
+        'pattern': 0.40,               # 形态权重
+        'trend': 0.30,                 # 趋势权重
+        'momentum': 0.20,              # 动量权重
+        'volume': 0.10                 # 成交量权重
+    },
+    'pattern_weights': {               # 各形态的权重
+        'hammer': 0.8,
+        'inverted_hammer': 0.75,
+        'hanging_man': 0.8,
+        'shooting_star': 0.75,
+        'engulfing': 0.9,
+        'doji': 0.5,
+        'three_white_soldiers': 0.85,
+        'three_black_crows': 0.85,
+    }
+}
+
 
 # AI策略配置
 DEFAULT_CHECK_INTERVAL = 300  # AI策略检查间隔(秒)

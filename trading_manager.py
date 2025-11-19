@@ -5,6 +5,8 @@ from trader import Trader
 from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
 from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
 from strategies.kama_roc_adx_strategy import KAMARocAdxStrategy
+from strategies.advanced_short_term_strategy import AdvancedShortTermStrategy
+from strategies.candlestick_pattern_strategy import CandlestickPatternStrategy
 from utils.logger import Logger
 import config
 
@@ -36,9 +38,16 @@ class TradingManager:
                 elif strategy_type == 'simple_adx_di':
                     strategy = SimpleADXDIStrategy15m(trader)
                     symbol_logger.info(f"使用 Simple ADX-DI 策略")
+                elif strategy_type == 'advanced_short_term':
+                    strategy = AdvancedShortTermStrategy(trader)
+                    symbol_logger.info(f"使用 Advanced Short Term 策略")  
+                elif strategy_type == 'candlestick_pattern':
+                    strategy = CandlestickPatternStrategy(trader)
+                    symbol_logger.info(f"使用 K线形态概率策略")
                 else:  # 默认使用 deepseek
                     strategy = DeepSeekTradingStrategy(trader)
                     symbol_logger.info(f"使用 DeepSeek AI 策略")
+
 
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy
@@ -79,24 +88,24 @@ class TradingManager:
                 # 计算交易数量
                 trade_amount = (available_balance * symbol_config['trade_amount_percent'] / 100) / current_price
                 
-                # 根据信号执行交易
-                if signal == 1:  # 买入信号
-                    if position_amount < 0:  # 有空仓，先平空
-                        trader.close_position(symbol)
-                    if position_amount <= 0:  # 没有多仓时开多
-                        trader.open_long(symbol, trade_amount)
-                elif signal == -1:  # 卖出信号
-                    if position_amount > 0:  # 有多仓，先平多
-                        trader.close_position(symbol)
-                    if position_amount >= 0:  # 没有空仓时开空
-                        trader.open_short(symbol, trade_amount)
-                elif signal == 2:  # 平仓信号
-                    if abs(position_amount) > 0:  # 有持仓就平掉
-                        trader.close_position(symbol)
+                # # 根据信号执行交易
+                # if signal == 1:  # 买入信号
+                #     if position_amount < 0:  # 有空仓，先平空
+                #         trader.close_position(symbol)
+                #     if position_amount <= 0:  # 没有多仓时开多
+                #         trader.open_long(symbol, trade_amount)
+                # elif signal == -1:  # 卖出信号
+                #     if position_amount > 0:  # 有多仓，先平多
+                #         trader.close_position(symbol)
+                #     if position_amount >= 0:  # 没有空仓时开空
+                #         trader.open_short(symbol, trade_amount)
+                # elif signal == 2:  # 平仓信号
+                #     if abs(position_amount) > 0:  # 有持仓就平掉
+                #         trader.close_position(symbol)
 
-                else:  # 观望信号
-                    if abs(position_amount) > 0:  # 有持仓就平掉
-                        trader.close_position(symbol)
+                # else:  # 观望信号
+                #     if abs(position_amount) > 0:  # 有持仓就平掉
+                #         trader.close_position(symbol)
             except Exception as e:
                 logger.error(f"{symbol} 交易过程出错: {str(e)}")
                 time.sleep(10)  # 错误后等待较短时间

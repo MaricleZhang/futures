@@ -47,7 +47,7 @@ class KAMARocAdxStrategy(BaseStrategy):
 
         # ADX Parameters
         self.adx_period = 14  # Standard ADX period
-        self.adx_min_threshold = 20  # Minimum ADX for trend confirmation
+        self.adx_min_threshold = 16  # Minimum ADX for trend confirmation
         self.adx_strong_threshold = 35  # Strong trend threshold
 
         # Additional Filters

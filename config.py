@@ -23,7 +23,7 @@ SYMBOL_CONFIGS = {
     'ETHUSDC': {
         'leverage':10,
         'min_notional': 20,
-        'trade_amount_percent': 200,  # 降低单次交易比例适应深度学习策略
+        'trade_amount_percent': 300,  # 降低单次交易比例适应深度学习策略
         'check_interval': 60,  # 调整为15分钟策略的检查间隔(秒) 
     },
     'ZECUSDT': {
@@ -75,7 +75,7 @@ AI_MIN_TRADE_INTERVAL = 5  # AI最小交易间隔（分钟）
 
 # 策略选择配置
 # 可选策略: 'deepseek', 'simple_adx_di', 'kama_roc_adx', 'advanced_short_term', 'candlestick_pattern'
-STRATEGY_TYPE = 'kama_roc_adx'
+STRATEGY_TYPE = 'simple_adx_di'
 
 # K线形态策略配置
 PATTERN_STRATEGY_CONFIG = {

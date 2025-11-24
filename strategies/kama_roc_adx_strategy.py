@@ -6,7 +6,7 @@ File: strategies/kama_roc_adx_strategy.py
 """
 import numpy as np
 import pandas as pd
-import talib
+import pandas_ta_classic as ta
 from datetime import datetime
 import time
 import logging
@@ -91,17 +91,18 @@ class KAMARocAdxStrategy(BaseStrategy):
             close = df['close'].values
 
             # Calculate KAMA - Kaufman's Adaptive Moving Average
-            kama = talib.KAMA(close, timeperiod=self.kama_period)
+            kama = ta.kama(pd.Series(close), length=self.kama_period).values
 
             # Calculate ROC - Rate of Change
-            roc = talib.ROC(close, timeperiod=self.roc_period)
+            roc = ta.roc(pd.Series(close), length=self.roc_period).values
 
             # Calculate ADX - Average Directional Index
-            adx = talib.ADX(high, low, close, timeperiod=self.adx_period)
+            adx_df = ta.adx(pd.Series(high), pd.Series(low), pd.Series(close), length=self.adx_period)
+            adx = adx_df[f'ADX_{self.adx_period}'].values
 
             # Calculate +DI and -DI for additional analysis
-            plus_di = talib.PLUS_DI(high, low, close, timeperiod=self.adx_period)
-            minus_di = talib.MINUS_DI(high, low, close, timeperiod=self.adx_period)
+            plus_di = adx_df[f'DMP_{self.adx_period}'].values
+            minus_di = adx_df[f'DMN_{self.adx_period}'].values
 
             # Calculate KAMA slope (rate of change of KAMA)
             kama_slope = np.zeros_like(kama)

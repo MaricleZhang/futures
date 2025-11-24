@@ -6,7 +6,7 @@ File: strategies/advanced_short_term_strategy.py
 """
 import numpy as np
 import pandas as pd
-import talib
+import pandas_ta_classic as ta
 from datetime import datetime
 import time
 import logging
@@ -113,32 +113,41 @@ class AdvancedShortTermStrategy(BaseStrategy):
             close = df['close'].values
             
             # 1. EMA - Exponential Moving Averages
-            ema_fast = talib.EMA(close, timeperiod=self.ema_fast)
-            ema_medium = talib.EMA(close, timeperiod=self.ema_medium)
-            ema_slow = talib.EMA(close, timeperiod=self.ema_slow)
+            ema_fast = ta.ema(pd.Series(close), length=self.ema_fast).values
+            ema_medium = ta.ema(pd.Series(close), length=self.ema_medium).values
+            ema_slow = ta.ema(pd.Series(close), length=self.ema_slow).values
             
             # 2. MACD - Moving Average Convergence Divergence
-            macd, macd_signal, macd_hist = talib.MACD(
-                close,
-                fastperiod=self.macd_fast,
-                slowperiod=self.macd_slow,
-                signalperiod=self.macd_signal
+            macd_df = ta.macd(
+                pd.Series(close),
+                fast=self.macd_fast,
+                slow=self.macd_slow,
+                signal=self.macd_signal
             )
+            # MACD columns: MACD_12_26_9, MACDs_12_26_9, MACDh_12_26_9
+            macd_col = f'MACD_{self.macd_fast}_{self.macd_slow}_{self.macd_signal}'
+            signal_col = f'MACDs_{self.macd_fast}_{self.macd_slow}_{self.macd_signal}'
+            hist_col = f'MACDh_{self.macd_fast}_{self.macd_slow}_{self.macd_signal}'
+            
+            macd = macd_df[macd_col].values
+            macd_signal = macd_df[signal_col].values
+            macd_hist = macd_df[hist_col].values
             
             # 3. ROC - Rate of Change
-            roc = talib.ROC(close, timeperiod=self.roc_period)
+            roc = ta.roc(pd.Series(close), length=self.roc_period).values
             
             # 4. ADX - Average Directional Index
-            adx = talib.ADX(high, low, close, timeperiod=self.adx_period)
+            adx_df = ta.adx(pd.Series(high), pd.Series(low), pd.Series(close), length=self.adx_period)
+            adx = adx_df[f'ADX_{self.adx_period}'].values
             
             # 5. +DI - Positive Directional Indicator
-            plus_di = talib.PLUS_DI(high, low, close, timeperiod=self.adx_period)
+            plus_di = adx_df[f'DMP_{self.adx_period}'].values
             
             # 6. -DI - Negative Directional Indicator
-            minus_di = talib.MINUS_DI(high, low, close, timeperiod=self.adx_period)
+            minus_di = adx_df[f'DMN_{self.adx_period}'].values
             
             # 7. KAMA - Kaufman Adaptive Moving Average
-            kama = talib.KAMA(close, timeperiod=self.kama_period)
+            kama = ta.kama(pd.Series(close), length=self.kama_period).values
             
             # Calculate KAMA slope
             kama_slope = np.zeros_like(kama)
@@ -147,7 +156,7 @@ class AdvancedShortTermStrategy(BaseStrategy):
                     kama_slope[i] = (kama[i] - kama[i-1]) / kama[i-1]
             
             # 8. MOM - Momentum
-            mom = talib.MOM(close, timeperiod=self.mom_period)
+            mom = ta.mom(pd.Series(close), length=self.mom_period).values
             
             return {
                 'ema_fast': ema_fast,

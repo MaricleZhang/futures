@@ -7,7 +7,7 @@ File: strategies/simple_adx_di_strategy_15m.py
 import re
 import numpy as np
 import pandas as pd
-import talib
+import pandas_ta_classic as ta
 from datetime import datetime
 import time
 import logging
@@ -84,9 +84,17 @@ class SimpleADXDIStrategy15m(BaseStrategy):
             close = df['close'].values
             
             # Calculate indicators
-            adx = talib.ADX(high, low, close, timeperiod=self.adx_period)
-            plus_di = talib.PLUS_DI(high, low, close, timeperiod=self.di_period)
-            minus_di = talib.MINUS_DI(high, low, close, timeperiod=self.di_period)
+            # Calculate indicators using pandas-ta
+            # ADX returns a DataFrame with columns: ADX_14, DMP_14, DMN_14
+            adx_df = ta.adx(pd.Series(high), pd.Series(low), pd.Series(close), length=self.adx_period)
+            
+            if adx_df is None or adx_df.empty:
+                return None
+                
+            # Extract values
+            adx = adx_df[f'ADX_{self.adx_period}'].values
+            plus_di = adx_df[f'DMP_{self.adx_period}'].values
+            minus_di = adx_df[f'DMN_{self.adx_period}'].values
             
             return {
                 'adx': adx,

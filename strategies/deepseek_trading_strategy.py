@@ -6,7 +6,7 @@ File: strategies/deepseek_trading_strategy.py
 """
 import numpy as np
 import pandas as pd
-import talib
+import pandas_ta_classic as ta
 from datetime import datetime
 import time
 import logging
@@ -168,42 +168,57 @@ class DeepSeekTradingStrategy(BaseStrategy):
             volume = df['volume'].values
             
             # RSI (Relative Strength Index)
-            rsi = talib.RSI(close, timeperiod=self.rsi_period)
+            rsi = ta.rsi(pd.Series(close), length=self.rsi_period).values
             
             # MACD
-            macd, macd_signal, macd_hist = talib.MACD(
-                close, 
-                fastperiod=self.macd_fast,
-                slowperiod=self.macd_slow, 
-                signalperiod=self.macd_signal
+            macd_df = ta.macd(
+                pd.Series(close), 
+                fast=self.macd_fast,
+                slow=self.macd_slow, 
+                signal=self.macd_signal
             )
+            macd_col = f'MACD_{self.macd_fast}_{self.macd_slow}_{self.macd_signal}'
+            signal_col = f'MACDs_{self.macd_fast}_{self.macd_slow}_{self.macd_signal}'
+            hist_col = f'MACDh_{self.macd_fast}_{self.macd_slow}_{self.macd_signal}'
+            
+            macd = macd_df[macd_col].values
+            macd_signal = macd_df[signal_col].values
+            macd_hist = macd_df[hist_col].values
             
             # Bollinger Bands
-            bb_upper, bb_middle, bb_lower = talib.BBANDS(
-                close, 
-                timeperiod=self.bb_period,
-                nbdevup=self.bb_std,
-                nbdevdn=self.bb_std
+            bb_df = ta.bbands(
+                pd.Series(close), 
+                length=self.bb_period,
+                std=self.bb_std
             )
+            # BB columns: BBL_20_2.0, BBM_20_2.0, BBU_20_2.0
+            bb_lower = bb_df[f'BBL_{self.bb_period}_{float(self.bb_std)}'].values
+            bb_middle = bb_df[f'BBM_{self.bb_period}_{float(self.bb_std)}'].values
+            bb_upper = bb_df[f'BBU_{self.bb_period}_{float(self.bb_std)}'].values
             
             # ATR (Average True Range)
-            atr = talib.ATR(high, low, close, timeperiod=self.atr_period)
+            atr = ta.atr(pd.Series(high), pd.Series(low), pd.Series(close), length=self.atr_period).values
             
             # Moving Averages
-            ema_fast = talib.EMA(close, timeperiod=10)
-            ema_slow = talib.EMA(close, timeperiod=30)
+            ema_fast = ta.ema(pd.Series(close), length=10).values
+            ema_slow = ta.ema(pd.Series(close), length=30).values
             
             # Volume indicators
-            volume_ma = talib.SMA(volume, timeperiod=self.volume_ma_period)
+            volume_ma = ta.sma(pd.Series(volume), length=self.volume_ma_period).values
             
             # Stochastic Oscillator
-            slowk, slowd = talib.STOCH(high, low, close)
+            # talib defaults: fastk_period=5, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0
+            stoch_df = ta.stoch(pd.Series(high), pd.Series(low), pd.Series(close), k=5, d=3, smooth_k=3)
+            # STOCH columns: STOCHk_5_3_3, STOCHd_5_3_3
+            slowk = stoch_df['STOCHk_5_3_3'].values
+            slowd = stoch_df['STOCHd_5_3_3'].values
             
             # ADX (Average Directional Index)
-            adx = talib.ADX(high, low, close, timeperiod=14)
+            adx_df = ta.adx(pd.Series(high), pd.Series(low), pd.Series(close), length=14)
+            adx = adx_df['ADX_14'].values
             
             # Price momentum
-            momentum = talib.MOM(close, timeperiod=10)
+            momentum = ta.mom(pd.Series(close), length=10).values
             
             # Calculate BB width (volatility indicator)
             bb_width = (bb_upper - bb_lower) / bb_middle * 100

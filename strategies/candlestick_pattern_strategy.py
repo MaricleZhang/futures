@@ -6,7 +6,7 @@ File: strategies/candlestick_pattern_strategy.py
 """
 import numpy as np
 import pandas as pd
-import talib
+import pandas_ta_classic as ta
 from datetime import datetime
 import time
 import logging
@@ -91,29 +91,50 @@ class CandlestickPatternStrategy(BaseStrategy):
             volume = df['volume'].values
             
             # 趋势指标
-            ema_fast = talib.EMA(close, timeperiod=self.ema_fast)
-            ema_mid = talib.EMA(close, timeperiod=self.ema_mid)
-            ema_slow = talib.EMA(close, timeperiod=self.ema_slow)
-            macd, macd_signal, macd_hist = talib.MACD(
-                close, 
-                fastperiod=self.macd_fast,
-                slowperiod=self.macd_slow,
-                signalperiod=self.macd_signal
+            ema_fast = ta.ema(pd.Series(close), timeperiod=self.ema_fast).values
+            ema_mid = ta.ema(pd.Series(close), timeperiod=self.ema_mid).values
+            ema_slow = ta.ema(pd.Series(close), timeperiod=self.ema_slow).values
+            
+            macd_df = ta.macd(
+                pd.Series(close), 
+                fast=self.macd_fast,
+                slow=self.macd_slow,
+                signal=self.macd_signal
             )
-            adx = talib.ADX(high, low, close, timeperiod=self.adx_period)
-            plus_di = talib.PLUS_DI(high, low, close, timeperiod=self.adx_period)
-            minus_di = talib.MINUS_DI(high, low, close, timeperiod=self.adx_period)
+            macd_col = f'MACD_{self.macd_fast}_{self.macd_slow}_{self.macd_signal}'
+            signal_col = f'MACDs_{self.macd_fast}_{self.macd_slow}_{self.macd_signal}'
+            hist_col = f'MACDh_{self.macd_fast}_{self.macd_slow}_{self.macd_signal}'
+            
+            macd = macd_df[macd_col].values
+            macd_signal = macd_df[signal_col].values
+            macd_hist = macd_df[hist_col].values
+            
+            adx_df = ta.adx(pd.Series(high), pd.Series(low), pd.Series(close), length=self.adx_period)
+            adx = adx_df[f'ADX_{self.adx_period}'].values
+            plus_di = adx_df[f'DMP_{self.adx_period}'].values
+            minus_di = adx_df[f'DMN_{self.adx_period}'].values
             
             # 动量指标
-            rsi = talib.RSI(close, timeperiod=self.rsi_period)
-            stoch_k, stoch_d = talib.STOCH(high, low, close)
+            rsi = ta.rsi(pd.Series(close), length=self.rsi_period).values
+            
+            # talib defaults for STOCH are 5, 3, 3. pandas-ta defaults are 14, 3, 3.
+            # Assuming we want to keep similar behavior to default talib if not specified otherwise, 
+            # but here no params were passed to talib.STOCH, so it used 5, 3, 0, 3, 0.
+            # Let's use k=5, d=3, smooth_k=3 for pandas-ta to be close.
+            stoch_df = ta.stoch(pd.Series(high), pd.Series(low), pd.Series(close), k=5, d=3, smooth_k=3)
+            stoch_k = stoch_df['STOCHk_5_3_3'].values
+            stoch_d = stoch_df['STOCHd_5_3_3'].values
             
             # 波动率指标
-            atr = talib.ATR(high, low, close, timeperiod=self.atr_period)
-            upper_bb, middle_bb, lower_bb = talib.BBANDS(close, timeperiod=20)
+            atr = ta.atr(pd.Series(high), pd.Series(low), pd.Series(close), length=self.atr_period).values
+            
+            bb_df = ta.bbands(pd.Series(close), length=20, std=2.0)
+            upper_bb = bb_df['BBU_20_2.0'].values
+            middle_bb = bb_df['BBM_20_2.0'].values
+            lower_bb = bb_df['BBL_20_2.0'].values
             
             # 成交量指标
-            avg_volume = talib.SMA(volume, timeperiod=20)
+            avg_volume = ta.sma(pd.Series(volume), length=20).values
             
             return {
                 'ema_fast': ema_fast,

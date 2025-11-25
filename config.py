@@ -3,7 +3,7 @@
 """
 
 # 代理设置
-USE_PROXY = False  # 是否使用代理
+USE_PROXY = True  # 是否使用代理
 PROXY_URL = 'http://127.0.0.1:7890'  # 代理地址
 PROXY_TIMEOUT = 10  # 代理超时时间（秒）
 PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
@@ -74,8 +74,8 @@ AI_TRAIN_INTERVAL = 60  # AI模型训练间隔（分钟）
 AI_MIN_TRADE_INTERVAL = 5  # AI最小交易间隔（分钟）
 
 # 策略选择配置
-# 可选策略: 'deepseek', 'simple_adx_di', 'kama_roc_adx', 'advanced_short_term', 'candlestick_pattern'
-STRATEGY_TYPE = 'simple_adx_di'
+# 可选策略: 'deepseek', 'simple_adx_di', 'kama_roc_adx', 'advanced_short_term', 'pattern_probability'
+STRATEGY_TYPE = 'pattern_probability'
 
 # K线形态策略配置
 PATTERN_STRATEGY_CONFIG = {

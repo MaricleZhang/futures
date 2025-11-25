@@ -6,7 +6,7 @@ from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
 from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
 from strategies.kama_roc_adx_strategy import KAMARocAdxStrategy
 from strategies.advanced_short_term_strategy import AdvancedShortTermStrategy
-from strategies.candlestick_pattern_strategy import CandlestickPatternStrategy
+from strategies.pattern_probability_strategy import PatternProbabilityStrategy
 from utils.logger import Logger
 import config
 
@@ -41,8 +41,8 @@ class TradingManager:
                 elif strategy_type == 'advanced_short_term':
                     strategy = AdvancedShortTermStrategy(trader)
                     symbol_logger.info(f"使用 Advanced Short Term 策略")  
-                elif strategy_type == 'candlestick_pattern':
-                    strategy = CandlestickPatternStrategy(trader)
+                elif strategy_type == 'pattern_probability':
+                    strategy = PatternProbabilityStrategy(trader)
                     symbol_logger.info(f"使用 K线形态概率策略")
                 else:  # 默认使用 deepseek
                     strategy = DeepSeekTradingStrategy(trader)

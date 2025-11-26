@@ -3,7 +3,6 @@ from utils.logger import Logger
 import time
 import signal
 import sys
-import ccxt
 import config
 
 def main():

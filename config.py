@@ -3,7 +3,7 @@
 """
 
 # 代理设置
-USE_PROXY = True  # 是否使用代理
+USE_PROXY = False  # 是否使用代理
 PROXY_URL = 'http://127.0.0.1:7890'  # 代理地址
 PROXY_TIMEOUT = 10  # 代理超时时间（秒）
 PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数

@@ -5,6 +5,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from utils.logger import Logger
 from utils.exchange import init_exchange, check_exchange_status
+from utils.trade_recorder import TradeRecorder
 import config
 import logging
 import time
@@ -55,6 +56,9 @@ class Trader:
             # 设置交易对
             self.symbol = symbol
             self.symbol_config = config.SYMBOL_CONFIGS.get(symbol, {})
+            
+            # 初始化交易记录器
+            self.trade_recorder = TradeRecorder()
             
             # 取消所有未完成的订单
             if symbol:                
@@ -286,12 +290,24 @@ class Trader:
                 self.logger.info("当前没有持仓")
                 return
                 
-            # 确定平仓方向
-            side = 'sell' if float(position['info'].get('positionAmt', 0)) > 0 else 'buy'
-            amount = abs(float(position['info'].get('positionAmt', 0)))
+            # 确定平仓方向和持仓方向
+            position_amt = float(position['info'].get('positionAmt', 0))
+            side = 'sell' if position_amt > 0 else 'buy'
+            position_side = 'LONG' if position_amt > 0 else 'SHORT'
+            amount = abs(position_amt)
             
             # 市价平仓
             order = self.place_order(symbol, side, amount)
+            
+            # 记录平仓信息
+            try:
+                close_price = self.get_market_price(symbol)
+                trade_info = self.trade_recorder.record_close_position(symbol, position_side, close_price)
+                if trade_info:
+                    self.logger.info(f"平仓记录成功: 盈亏 {trade_info['profit_loss']:.2f} USDT ({trade_info['profit_rate']:.2f}%)")
+            except Exception as e:
+                self.logger.error(f"记录平仓信息失败: {str(e)}")
+            
             self.logger.info(f"平仓成功: {order}")
             return order
             
@@ -379,11 +395,29 @@ class Trader:
         
     def open_long(self, symbol=None, amount=None):
         """开多仓"""
-        return self.place_order(symbol, 'buy', amount)
+        order = self.place_order(symbol, 'buy', amount)
+        # 记录开仓信息
+        try:
+            symbol = symbol or self.symbol
+            price = self.get_market_price(symbol)
+            leverage = self.symbol_config.get('leverage', config.DEFAULT_LEVERAGE)
+            self.trade_recorder.record_open_position(symbol, 'LONG', amount, price, leverage)
+        except Exception as e:
+            self.logger.error(f"记录开多仓信息失败: {str(e)}")
+        return order
         
     def open_short(self, symbol=None, amount=None):
         """开空仓"""
-        return self.place_order(symbol, 'sell', amount)
+        order = self.place_order(symbol, 'sell', amount)
+        # 记录开仓信息
+        try:
+            symbol = symbol or self.symbol
+            price = self.get_market_price(symbol)
+            leverage = self.symbol_config.get('leverage', config.DEFAULT_LEVERAGE)
+            self.trade_recorder.record_open_position(symbol, 'SHORT', amount, price, leverage)
+        except Exception as e:
+            self.logger.error(f"记录开空仓信息失败: {str(e)}")
+        return order
         
     def close_long(self, symbol=None, amount=None):
         """平多仓"""

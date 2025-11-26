@@ -177,6 +177,20 @@ class TradingManager:
             logger = self.symbol_loggers.get(symbol)
             if not logger:
                 return
+            
+            # 获取交易统计信息
+            try:
+                trader = self.traders.get(symbol)
+                if trader and hasattr(trader, 'trade_recorder'):
+                    stats = trader.trade_recorder.get_statistics(symbol)
+                    if stats['total_trades'] > 0:
+                        logger.info(f"=== 交易统计 ===")
+                        logger.info(f"总交易次数: {stats['total_trades']}, "
+                                  f"胜率: {stats['win_rate']:.2f}%, "
+                                  f"累计盈亏: {stats['total_profit']:.2f} USDT, "
+                                  f"平均收益率: {stats['avg_profit_rate']:.2f}%")
+            except Exception as e:
+                logger.debug(f"获取交易统计失败: {str(e)}")
                 
             if position and 'info' in position:
                 position_amount = float(position['info'].get('positionAmt', 0))

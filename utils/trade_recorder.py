@@ -53,11 +53,19 @@ class TradeRecorder:
                     profit_loss REAL,
                     profit_rate REAL,
                     leverage INTEGER,
+                    strategy TEXT,
                     status TEXT NOT NULL DEFAULT 'OPEN',
                     created_at TEXT NOT NULL,
                     updated_at TEXT NOT NULL
                 )
             ''')
+            
+            # 检查是否需要添加 strategy 列 (用于旧数据库迁移)
+            cursor.execute("PRAGMA table_info(trades)")
+            columns = [info[1] for info in cursor.fetchall()]
+            if 'strategy' not in columns:
+                self.logger.info("正在添加 strategy 列到 trades 表...")
+                cursor.execute("ALTER TABLE trades ADD COLUMN strategy TEXT")
             
             # 创建索引以提高查询性能
             cursor.execute('''
@@ -69,16 +77,19 @@ class TradeRecorder:
             cursor.execute('''
                 CREATE INDEX IF NOT EXISTS idx_open_time ON trades(open_time)
             ''')
+            cursor.execute('''
+                CREATE INDEX IF NOT EXISTS idx_strategy ON trades(strategy)
+            ''')
             
             conn.commit()
             conn.close()
-            self.logger.info("交易记录表创建成功")
+            self.logger.info("交易记录表检查/创建成功")
         except Exception as e:
             self.logger.error(f"创建交易记录表失败: {str(e)}")
             raise
     
     def record_open_position(self, symbol: str, side: str, amount: float, 
-                            price: float, leverage: int = 1) -> int:
+                            price: float, leverage: int = 1, strategy: str = None) -> int:
         """记录开仓信息
         
         Args:
@@ -87,6 +98,7 @@ class TradeRecorder:
             amount: 开仓数量
             price: 开仓价格
             leverage: 杠杆倍数
+            strategy: 策略标识
             
         Returns:
             trade_id: 交易记录ID
@@ -101,17 +113,18 @@ class TradeRecorder:
             cursor.execute('''
                 INSERT INTO trades (
                     symbol, side, open_amount, open_price, open_value,
-                    open_time, leverage, status, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    open_time, leverage, strategy, status, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (symbol, side, amount, price, open_value, now, leverage, 
-                  'OPEN', now, now))
+                  strategy, 'OPEN', now, now))
             
             trade_id = cursor.lastrowid
             conn.commit()
             conn.close()
             
+            strategy_str = f" 策略:{strategy}" if strategy else ""
             self.logger.info(f"记录开仓成功 [ID:{trade_id}] {symbol} {side} "
-                           f"数量:{amount} 价格:{price} 金额:{open_value:.2f}")
+                           f"数量:{amount} 价格:{price} 金额:{open_value:.2f}{strategy_str}")
             return trade_id
             
         except Exception as e:
@@ -213,7 +226,7 @@ class TradeRecorder:
             if symbol:
                 cursor.execute('''
                     SELECT id, symbol, side, open_amount, open_price, open_value,
-                           open_time, leverage
+                           open_time, leverage, strategy
                     FROM trades
                     WHERE symbol = ? AND status = 'OPEN'
                     ORDER BY open_time DESC
@@ -221,7 +234,7 @@ class TradeRecorder:
             else:
                 cursor.execute('''
                     SELECT id, symbol, side, open_amount, open_price, open_value,
-                           open_time, leverage
+                           open_time, leverage, strategy
                     FROM trades
                     WHERE status = 'OPEN'
                     ORDER BY open_time DESC
@@ -240,7 +253,8 @@ class TradeRecorder:
                     'open_price': row[4],
                     'open_value': row[5],
                     'open_time': row[6],
-                    'leverage': row[7]
+                    'leverage': row[7],
+                    'strategy': row[8]
                 })
             
             return positions
@@ -249,12 +263,13 @@ class TradeRecorder:
             self.logger.error(f"获取未平仓记录失败: {str(e)}")
             raise
     
-    def get_trade_history(self, symbol: str = None, limit: int = 100) -> List[Dict[str, Any]]:
+    def get_trade_history(self, symbol: str = None, limit: int = 100, strategy: str = None) -> List[Dict[str, Any]]:
         """获取历史交易记录
         
         Args:
             symbol: 交易对，如果为None则返回所有交易对的记录
             limit: 返回记录数量限制
+            strategy: 策略名称，如果为None则返回所有策略的记录
             
         Returns:
             交易记录列表
@@ -263,25 +278,27 @@ class TradeRecorder:
             conn = self.get_connection()
             cursor = conn.cursor()
             
+            query = '''
+                SELECT id, symbol, side, open_amount, open_price, open_value,
+                       open_time, close_price, close_time, profit_loss,
+                       profit_rate, leverage, strategy, status
+                FROM trades
+                WHERE 1=1
+            '''
+            params = []
+            
             if symbol:
-                cursor.execute('''
-                    SELECT id, symbol, side, open_amount, open_price, open_value,
-                           open_time, close_price, close_time, profit_loss,
-                           profit_rate, leverage, status
-                    FROM trades
-                    WHERE symbol = ?
-                    ORDER BY open_time DESC
-                    LIMIT ?
-                ''', (symbol, limit))
-            else:
-                cursor.execute('''
-                    SELECT id, symbol, side, open_amount, open_price, open_value,
-                           open_time, close_price, close_time, profit_loss,
-                           profit_rate, leverage, status
-                    FROM trades
-                    ORDER BY open_time DESC
-                    LIMIT ?
-                ''', (limit,))
+                query += " AND symbol = ?"
+                params.append(symbol)
+                
+            if strategy:
+                query += " AND strategy = ?"
+                params.append(strategy)
+                
+            query += " ORDER BY open_time DESC LIMIT ?"
+            params.append(limit)
+            
+            cursor.execute(query, params)
             
             rows = cursor.fetchall()
             conn.close()
@@ -301,7 +318,8 @@ class TradeRecorder:
                     'profit_loss': row[9],
                     'profit_rate': row[10],
                     'leverage': row[11],
-                    'status': row[12]
+                    'strategy': row[12],
+                    'status': row[13]
                 })
             
             return trades
@@ -310,11 +328,12 @@ class TradeRecorder:
             self.logger.error(f"获取交易历史失败: {str(e)}")
             raise
     
-    def get_statistics(self, symbol: str = None) -> Dict[str, Any]:
+    def get_statistics(self, symbol: str = None, strategy: str = None) -> Dict[str, Any]:
         """获取交易统计信息
         
         Args:
             symbol: 交易对，如果为None则返回所有交易对的统计
+            strategy: 策略名称，如果为None则返回所有策略的统计
             
         Returns:
             统计信息字典
@@ -329,6 +348,10 @@ class TradeRecorder:
             if symbol:
                 where_clause += " AND symbol = ?"
                 params.append(symbol)
+            
+            if strategy:
+                where_clause += " AND strategy = ?"
+                params.append(strategy)
             
             # 总交易次数
             cursor.execute(f'''
@@ -386,4 +409,101 @@ class TradeRecorder:
             
         except Exception as e:
             self.logger.error(f"获取统计信息失败: {str(e)}")
+            raise
+    
+    def get_trades_by_date(self, date: str = None, start_date: str = None, 
+                           end_date: str = None, symbol: str = None, strategy: str = None) -> List[Dict[str, Any]]:
+        """按日期查询交易记录
+        
+        Args:
+            date: 查询指定日期的记录，格式: YYYY-MM-DD
+            start_date: 开始日期，格式: YYYY-MM-DD
+            end_date: 结束日期，格式: YYYY-MM-DD
+            symbol: 交易对，如果为None则返回所有交易对
+            strategy: 策略名称，如果为None则返回所有策略
+            
+        Returns:
+            交易记录列表
+            
+        Examples:
+            # 查询2025-11-27的所有记录
+            get_trades_by_date(date='2025-11-27')
+            
+            # 查询2025-11-20到2025-11-27的记录
+            get_trades_by_date(start_date='2025-11-20', end_date='2025-11-27')
+            
+            # 查询ETHUSDC在2025-11-27的记录
+            get_trades_by_date(date='2025-11-27', symbol='ETHUSDC')
+        """
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            
+            # 构建查询条件
+            conditions = []
+            params = []
+            
+            if date:
+                # 查询指定日期
+                conditions.append("DATE(open_time) = ?")
+                params.append(date)
+            elif start_date and end_date:
+                # 查询日期范围
+                conditions.append("DATE(open_time) BETWEEN ? AND ?")
+                params.extend([start_date, end_date])
+            elif start_date:
+                # 查询从开始日期到现在
+                conditions.append("DATE(open_time) >= ?")
+                params.append(start_date)
+            elif end_date:
+                # 查询到结束日期
+                conditions.append("DATE(open_time) <= ?")
+                params.append(end_date)
+            
+            if symbol:
+                conditions.append("symbol = ?")
+                params.append(symbol)
+                
+            if strategy:
+                conditions.append("strategy = ?")
+                params.append(strategy)
+            
+            where_clause = "WHERE " + " AND ".join(conditions) if conditions else ""
+            
+            query = f'''
+                SELECT id, symbol, side, open_amount, open_price, open_value,
+                       open_time, close_price, close_time, profit_loss,
+                       profit_rate, leverage, strategy, status
+                FROM trades
+                {where_clause}
+                ORDER BY open_time DESC
+            '''
+            
+            cursor.execute(query, params)
+            rows = cursor.fetchall()
+            conn.close()
+            
+            trades = []
+            for row in rows:
+                trades.append({
+                    'trade_id': row[0],
+                    'symbol': row[1],
+                    'side': row[2],
+                    'open_amount': row[3],
+                    'open_price': row[4],
+                    'open_value': row[5],
+                    'open_time': row[6],
+                    'close_price': row[7],
+                    'close_time': row[8],
+                    'profit_loss': row[9],
+                    'profit_rate': row[10],
+                    'leverage': row[11],
+                    'strategy': row[12],
+                    'status': row[13]
+                })
+            
+            return trades
+            
+        except Exception as e:
+            self.logger.error(f"按日期查询交易记录失败: {str(e)}")
             raise

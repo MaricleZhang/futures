@@ -401,7 +401,7 @@ class Trader:
             symbol = symbol or self.symbol
             price = self.get_market_price(symbol)
             leverage = self.symbol_config.get('leverage', config.DEFAULT_LEVERAGE)
-            self.trade_recorder.record_open_position(symbol, 'LONG', amount, price, leverage)
+            self.trade_recorder.record_open_position(symbol, 'LONG', amount, price, leverage, config.STRATEGY_TYPE)
         except Exception as e:
             self.logger.error(f"记录开多仓信息失败: {str(e)}")
         return order
@@ -414,7 +414,7 @@ class Trader:
             symbol = symbol or self.symbol
             price = self.get_market_price(symbol)
             leverage = self.symbol_config.get('leverage', config.DEFAULT_LEVERAGE)
-            self.trade_recorder.record_open_position(symbol, 'SHORT', amount, price, leverage)
+            self.trade_recorder.record_open_position(symbol, 'SHORT', amount, price, leverage, config.STRATEGY_TYPE)
         except Exception as e:
             self.logger.error(f"记录开空仓信息失败: {str(e)}")
         return order

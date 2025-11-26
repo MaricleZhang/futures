@@ -3,6 +3,7 @@
 """
 import os
 import logging
+import sys
 from datetime import datetime
 from colorama import Fore, Back, Style, init
 
@@ -104,7 +105,7 @@ class Logger:
         file_handler.setFormatter(file_formatter)
         
         # 控制台处理器
-        console_handler = logging.StreamHandler()
+        console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setFormatter(console_formatter)
         
         # 设置根日志记录器

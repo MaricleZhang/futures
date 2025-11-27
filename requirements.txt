@@ -8,3 +8,6 @@ tabulate
 # 用于绘制图表 回测
 matplotlib>=3.8.0
 seaborn>=0.13.0
+# 机器学习
+xgboost>=2.0.0
+scikit-learn>=1.3.0

@@ -100,6 +100,7 @@ class BacktestEngine:
             'simple_adx_di': 'SimpleADXDIStrategy15m',  # Note: ADX, DI are caps, has 15m suffix
             'advanced_short_term': 'AdvancedShortTermStrategy',
             'trend_following': 'TrendFollowingStrategy',
+            'xgboost': 'XGBoostPriceStrategy',
             'deepseek': 'DeepSeekTradingStrategy'
         }
         
@@ -108,6 +109,7 @@ class BacktestEngine:
             'simple_adx_di': 'simple_adx_di_15m_strategy',
             'advanced_short_term': 'advanced_short_term_strategy',
             'trend_following': 'trend_following_strategy',
+            'xgboost': 'xgboost_price_strategy',
             'deepseek': 'deepseek_trading_strategy'
         }
         

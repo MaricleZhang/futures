@@ -7,6 +7,7 @@ from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
 from strategies.advanced_short_term_strategy import AdvancedShortTermStrategy
 from strategies.pattern_probability_strategy import PatternProbabilityStrategy
 from strategies.trend_following_strategy import TrendFollowingStrategy
+from strategies.xgboost_price_strategy import XGBoostPriceStrategy
 from utils.logger import Logger
 import config
 
@@ -45,6 +46,9 @@ class TradingManager:
                 elif strategy_type == 'trend_following':
                     strategy = TrendFollowingStrategy(trader)
                     symbol_logger.info(f"使用 趋势跟随策略")
+                elif strategy_type == 'xgboost':
+                    strategy = XGBoostPriceStrategy(trader)
+                    symbol_logger.info(f"使用 XGBoost 策略")
                 else:  # 默认使用 deepseek
                     strategy = DeepSeekTradingStrategy(trader)
                     symbol_logger.info(f"使用 DeepSeek AI 策略")

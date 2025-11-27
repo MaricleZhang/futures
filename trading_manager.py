@@ -4,7 +4,6 @@ import time
 from trader import Trader
 from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
 from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
-from strategies.kama_roc_adx_strategy import KAMARocAdxStrategy
 from strategies.advanced_short_term_strategy import AdvancedShortTermStrategy
 from strategies.pattern_probability_strategy import PatternProbabilityStrategy
 from strategies.trend_following_strategy import TrendFollowingStrategy
@@ -33,10 +32,8 @@ class TradingManager:
 
                 # 根据配置选择策略
                 strategy_type = getattr(config, 'STRATEGY_TYPE', 'deepseek').lower()
-                if strategy_type == 'kama_roc_adx':
-                    strategy = KAMARocAdxStrategy(trader)
-                    symbol_logger.info(f"使用 KAMA-ROC-ADX 策略")
-                elif strategy_type == 'simple_adx_di':
+
+                if strategy_type == 'simple_adx_di':
                     strategy = SimpleADXDIStrategy15m(trader)
                     symbol_logger.info(f"使用 Simple ADX-DI 策略")
                 elif strategy_type == 'advanced_short_term':

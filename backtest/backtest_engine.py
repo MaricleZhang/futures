@@ -96,7 +96,6 @@ class BacktestEngine:
         
         # Map strategy names to class names (use actual class names from files)
         strategy_map = {
-            'kama_roc_adx': 'KAMARocAdxStrategy',  # Note: KAMA is all caps
             'pattern_probability': 'PatternProbabilityStrategy',
             'simple_adx_di': 'SimpleADXDIStrategy15m',  # Note: ADX, DI are caps, has 15m suffix
             'advanced_short_term': 'AdvancedShortTermStrategy',
@@ -105,7 +104,6 @@ class BacktestEngine:
         }
         
         strategy_files = {
-            'kama_roc_adx': 'kama_roc_adx_strategy',
             'pattern_probability': 'pattern_probability_strategy',
             'simple_adx_di': 'simple_adx_di_15m_strategy',
             'advanced_short_term': 'advanced_short_term_strategy',

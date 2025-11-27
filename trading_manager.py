@@ -4,7 +4,6 @@ import time
 from trader import Trader
 from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
 from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
-from strategies.advanced_short_term_strategy import AdvancedShortTermStrategy
 from strategies.pattern_probability_strategy import PatternProbabilityStrategy
 from strategies.trend_following_strategy import TrendFollowingStrategy
 from strategies.xgboost_price_strategy import XGBoostPriceStrategy
@@ -37,9 +36,6 @@ class TradingManager:
                 if strategy_type == 'simple_adx_di':
                     strategy = SimpleADXDIStrategy15m(trader)
                     symbol_logger.info(f"使用 Simple ADX-DI 策略")
-                elif strategy_type == 'advanced_short_term':
-                    strategy = AdvancedShortTermStrategy(trader)
-                    symbol_logger.info(f"使用 Advanced Short Term 策略")  
                 elif strategy_type == 'pattern_probability':
                     strategy = PatternProbabilityStrategy(trader)
                     symbol_logger.info(f"使用 K线形态概率策略")

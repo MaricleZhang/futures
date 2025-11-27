@@ -170,7 +170,8 @@ class BacktestEngine:
             leverage=self.leverage,
             fee_rate=self.fee_rate,
             slippage_rate=self.slippage_rate,
-            data=self.data
+            data=self.data,
+            base_interval=self.base_interval
         )
         
         # Step 3: Load strategy

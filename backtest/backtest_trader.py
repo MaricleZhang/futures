@@ -20,7 +20,8 @@ class BacktestTrader:
         leverage: int = 1,
         fee_rate: float = 0.0004,  # 0.04% Binance futures taker fee
         slippage_rate: float = 0.0001,  # 0.01% slippage
-        data: pd.DataFrame = None
+        data: pd.DataFrame = None,
+        base_interval: str = '1m'
     ):
         """Initialize backtest trader
         
@@ -31,6 +32,7 @@ class BacktestTrader:
             fee_rate: Trading fee rate
             slippage_rate: Slippage rate for market orders
             data: Historical kline data
+            base_interval: Base interval of the loaded data (e.g., '1m', '15m')
         """
         self.logger = logging.getLogger(f"BacktestTrader.{symbol}")
         self.symbol = symbol
@@ -38,6 +40,7 @@ class BacktestTrader:
         self.leverage = leverage
         self.fee_rate = fee_rate
         self.slippage_rate = slippage_rate
+        self.base_interval = base_interval
         
         # Account state
         self.balance = initial_capital
@@ -113,11 +116,10 @@ class BacktestTrader:
         if df_slice.empty:
             return []
             
-        # If interval is different from base data interval (assumed 1m if we are here), resample
-        # Note: This is a simplified check. Ideally we should know the base interval.
-        # But since we are implementing "Option 2", we assume base is lower than requested.
+        # If interval is different from base data interval, resample
+        # We now know the actual base_interval from initialization
         
-        if interval and interval != '1m': # Assuming base is 1m for now, or at least lower
+        if interval and interval != self.base_interval:
              try:
                 # Resample
                 # Ensure index is datetime
@@ -126,7 +128,7 @@ class BacktestTrader:
                 
                 # Map interval string to pandas offset alias
                 offset_map = {
-                    '1m': '1T', '3m': '3T', '5m': '5T', '15m': '15T', '30m': '30T',
+                    '1m': '1min', '3m': '3min', '5m': '5min', '15m': '15min', '30m': '30min',
                     '1h': '1H', '2h': '2H', '4h': '4H', '6h': '6H', '8h': '8H', '12h': '12H',
                     '1d': '1D', '3d': '3D', '1w': '1W', '1M': '1M'
                 }

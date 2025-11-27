@@ -33,12 +33,13 @@ class DeepSeekTradingStrategy(BaseStrategy):
     - Hold: Low confidence or conflicting signals
     """
     
-    def __init__(self, trader, deepseek_api_key=None):
+    def __init__(self, trader, deepseek_api_key=None, interval='15m'):
         """Initialize the DeepSeek trading strategy
         
         Args:
             trader: Trader instance
             deepseek_api_key: DeepSeek API key (optional, can be set from environment)
+            interval: K-line interval (default: '15m')
         """
         super().__init__(trader)
         self.logger = self.get_logger()
@@ -64,8 +65,13 @@ class DeepSeekTradingStrategy(BaseStrategy):
         self.api_timeout = (10, 30)  # (连接超时, 读取超时) 秒
         
         # Timeframe configuration (短线交易使用较短时间框架)
-        self.kline_interval = '15m'  # 15分钟K线
-        self.check_interval = 300  # 每5分钟检查一次（减少检查频率）
+        self.kline_interval = interval  # Use the interval passed from backtest
+        # Convert interval to seconds for check_interval
+        interval_map = {
+            '1m': 60, '3m': 180, '5m': 300, '15m': 300, '30m': 600,
+            '1h': 900, '2h': 1800, '4h': 3600, '6h': 7200, '12h': 14400, '1d': 28800
+        }
+        self.check_interval = interval_map.get(interval, 300)  # Default to 5 minutes
         self.lookback_period = 100  # 分析用的K线数量
         self.training_lookback = 100  # 与TradingManager兼容
         

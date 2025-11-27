@@ -223,8 +223,16 @@ class BacktestEngine:
         self.logger.info(f"Total bars: {total_bars}, Check every {skip_bars} bars")
         
         # Start from a reasonable index to have enough history
-        start_index = 100  # Need at least 100 bars for most strategies
+        # Use strategy's lookback_period if available, otherwise default to 100
+        lookback = getattr(self.strategy, 'lookback_period', 100)
+        start_index = lookback
         
+        if total_bars <= start_index:
+            error_msg = (f"Insufficient data for backtest: {total_bars} bars loaded, but strategy requires {start_index} bars for warmup. "
+                        "Please increase the date range or use a smaller timeframe interval.")
+            self.logger.error(error_msg)
+            raise ValueError(error_msg)
+
         for i in range(start_index, total_bars, skip_bars):
             self.trader.set_current_index(i)
             

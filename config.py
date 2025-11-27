@@ -11,10 +11,9 @@ PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
 # 策略选择配置
-# 可选策略: 'deepseek', 'simple_adx_di', 'kama_roc_adx',
-# 'advanced_short_term', 'pattern_probability', 'trend_following'
+# 可选策略: 'deepseek', 'simple_adx_di', 'advanced_short_term', 'pattern_probability', 'trend_following'
 
-STRATEGY_TYPE = 'advanced_short_term'
+STRATEGY_TYPE = 'simple_adx_di'
 
 # 交易设置
 SYMBOLS = ['ETHUSDC']  # 支持多个交易对

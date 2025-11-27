@@ -1,10 +1,19 @@
 """
-Simple ADX-DI Strategy for 15-minute timeframe
-Uses only ADX and DI indicators to predict price trends
+Enhanced ADX-DI Strategy for 15-minute timeframe
+优化版ADX-DI策略，提高胜率
 
-File: strategies/simple_adx_di_strategy_15m.py
+主要优化：
+1. 添加EMA趋势过滤
+2. 添加RSI动量确认
+3. 添加MACD辅助判断
+4. 添加ATR波动率过滤
+5. 添加成交量确认
+6. 优化ADX阈值和DI差异要求
+7. 添加回调入场机制
+8. 调整止损止盈比例
+
+File: strategies/enhanced_adx_di_strategy.py
 """
-import re
 import numpy as np
 import pandas as pd
 import pandas_ta_classic as ta
@@ -13,181 +22,348 @@ import time
 import logging
 from strategies.base_strategy import BaseStrategy
 
+
 class SimpleADXDIStrategy15m(BaseStrategy):
     """
-    Simple ADX-DI trend prediction strategy using 15-minute timeframe
+    简单版ADX-DI趋势策略
     
-    Strategy Logic:
-    1. ADX (Average Directional Index) measures trend strength
-    2. +DI (Positive Directional Indicator) measures upward price movement
-    3. -DI (Negative Directional Indicator) measures downward price movement
-    
-    Trading Signals:
-    - Buy: +DI > -DI with ADX above threshold (strong uptrend)
-    - Sell: -DI > +DI with ADX above threshold (strong downtrend)
-    - Hold: ADX below threshold (weak or no trend)
+    核心改进：
+    1. 多重确认机制：ADX + DI + EMA + RSI + MACD + 成交量
+    2. 趋势质量评估：只在高质量趋势中交易
+    3. 回调入场：等待价格回调到支撑/阻力
+    4. 动态止损止盈：根据ATR调整
+    5. ADX动量：只在ADX上升时入场
     """
     
-    def __init__(self, trader):
-        """Initialize the Simple ADX-DI strategy"""
+    def __init__(self, trader, interval='15m'):
+        """初始化策略"""
         super().__init__(trader)
         self.logger = self.get_logger()
         
-        # Timeframe configuration
-        self.kline_interval = '15m'  # 15-minute timeframe
-        self.check_interval = 300  # Check every 5 minutes (300 seconds)
-        self.lookback_period = 50  # Number of candles for analysis
-        self.training_lookback = 50  # For compatibility with TradingManager
+        # ==================== 时间配置 ====================
+        self.kline_interval = interval  # 动态设置，不再硬编码
         
-        # ADX and DI Parameters
-        self.adx_period = 14  # Standard ADX period
-        self.di_period = 14   # Standard DI period
+        # 根据 interval 设置合理的检查频率
+        interval_to_check = {
+            '1m': 60,      # 1分钟检查一次
+            '5m': 300,     # 5分钟检查一次  
+            '15m': 300,    # 5分钟检查一次
+            '30m': 600,    # 10分钟检查一次
+            '1h': 900,     # 15分钟检查一次
+            '4h': 3600,    # 1小时检查一次
+        }
+        self.check_interval = interval_to_check.get(interval, 300)  # 默认5分钟
+        self.lookback_period = 100
+        self.training_lookback = 100
         
-        # Trend Thresholds
-        self.adx_min_threshold = 16  # Minimum ADX for trend confirmation
-        self.adx_strong_threshold = 40  # Strong trend threshold
-        self.di_diff_threshold = 8  # Minimum difference between +DI and -DI
+        # ==================== ADX和DI参数 ====================
+        self.adx_period = 14
+        self.adx_min_threshold = 18      # 降低到18（允许中等趋势）
+        self.adx_strong_threshold = 25   # 强趋势25（降低门槛）
+        self.di_diff_threshold = 10      # 降低到10（增加信号）
         
-        # Position Management
-        self.max_position_hold_time = 720  # 12 hours maximum hold time
-        self.stop_loss_pct = 0.02  # 2% stop loss
-        self.take_profit_pct = 0.06  # 6% take profit
+        # ==================== 趋势过滤参数 ====================
+        self.ema_fast = 21
+        self.ema_slow = 55
+        self.ema_trend = 100  # 主趋势EMA
         
-        # Trailing Stop Configuration
+        # ==================== 动量指标参数 ====================
+        self.rsi_period = 14
+        self.rsi_overbought = 70  # RSI超买（扩大健康区域）
+        self.rsi_oversold = 30    # RSI超卖（扩大健康区域）
+        
+        self.macd_fast = 12
+        self.macd_slow = 26
+        self.macd_signal = 9
+        
+        # ==================== 波动率和成交量 ====================
+        self.atr_period = 14
+        self.atr_multiplier_sl = 1.2   # 止损ATR倍数（收紧）
+        self.atr_multiplier_tp = 4.0   # 止盈ATR倍数（扩大）
+        
+        self.volume_ma_period = 20
+        self.volume_threshold = 1.2    # 成交量倍数
+        
+        # ==================== 仓位管理 ====================
+        self.stop_loss_pct = 0.02        # 2%止损（收紧）
+        self.take_profit_pct = 0.08      # 8%止盈（扩大盈亏比）
+        self.max_hold_time = 720         # 12小时
+        
+        # 动态止损止盈
+        self.use_dynamic_stops = True
+        
+        # 追踪止损
         self.trailing_stop_enabled = True
-        self.trailing_stop_activation = 0.03  # Activate at 3% profit
-        self.trailing_stop_distance = 0.01  # 1% trailing distance
+        self.trailing_activation = 0.03   # 3%激活
+        self.trailing_distance = 0.015    # 1.5%距离
         
-        # Position Tracking
+        # ==================== 信号质量要求 ====================
+        self.min_signal_score = 5  # 最低5分（增加交易频率）
+        
+        # ==================== 状态追踪 ====================
         self.position_entry_time = None
         self.position_entry_price = None
         self.max_profit_reached = 0
+        self.trailing_stop_price = None
         self.last_signal = 0
         self.last_signal_time = None
         
-        self.logger.info("Simple ADX-DI Strategy initialized for 15m timeframe")
         
-    def calculate_adx_di_indicators(self, df):
-        """
-        Calculate ADX and DI indicators
-        
-        Args:
-            df (DataFrame): OHLCV data
+        self.logger.info("=" * 70)
+        self.logger.info("🚀 Enhanced ADX-DI Strategy 初始化完成")
+        self.logger.info(f"K线周期: {self.kline_interval} | 检查间隔: {self.check_interval}秒")
+        self.logger.info(f"ADX阈值: {self.adx_min_threshold} (强趋势: {self.adx_strong_threshold})")
+        self.logger.info(f"DI差异阈值: {self.di_diff_threshold}")
+        self.logger.info(f"EMA周期: {self.ema_fast}/{self.ema_slow}/{self.ema_trend}")
+        self.logger.info(f"最低信号分数: {self.min_signal_score}/10")
+        self.logger.info("=" * 70)
+    
+    def calculate_indicators(self, df: pd.DataFrame) -> dict:
+        """计算所有技术指标"""
+        try:
+            high = df['high']
+            low = df['low']
+            close = df['close']
+            volume = df['volume']
             
+            indicators = {}
+            
+            # ---------- ADX和DI ----------
+            adx_df = ta.adx(high, low, close, length=self.adx_period)
+            indicators['adx'] = adx_df[f'ADX_{self.adx_period}']
+            indicators['plus_di'] = adx_df[f'DMP_{self.adx_period}']
+            indicators['minus_di'] = adx_df[f'DMN_{self.adx_period}']
+            
+            # ---------- EMA趋势 ----------
+            indicators['ema_fast'] = ta.ema(close, length=self.ema_fast)
+            indicators['ema_slow'] = ta.ema(close, length=self.ema_slow)
+            indicators['ema_trend'] = ta.ema(close, length=self.ema_trend)
+            
+            # ---------- RSI ----------
+            indicators['rsi'] = ta.rsi(close, length=self.rsi_period)
+            
+            # ---------- MACD ----------
+            macd_df = ta.macd(close, fast=self.macd_fast, slow=self.macd_slow, signal=self.macd_signal)
+            indicators['macd'] = macd_df[f'MACD_{self.macd_fast}_{self.macd_slow}_{self.macd_signal}']
+            indicators['macd_signal'] = macd_df[f'MACDs_{self.macd_fast}_{self.macd_slow}_{self.macd_signal}']
+            indicators['macd_hist'] = macd_df[f'MACDh_{self.macd_fast}_{self.macd_slow}_{self.macd_signal}']
+            
+            # ---------- ATR ----------
+            indicators['atr'] = ta.atr(high, low, close, length=self.atr_period)
+            
+            # ---------- 成交量 ----------
+            indicators['volume'] = volume
+            indicators['volume_ma'] = ta.sma(volume, length=self.volume_ma_period)
+            
+            # ---------- 价格 ----------
+            indicators['close'] = close
+            indicators['high'] = high
+            indicators['low'] = low
+            
+            return indicators
+            
+        except Exception as e:
+            self.logger.error(f"计算指标出错: {str(e)}")
+            return None
+    
+    def analyze_signal_quality(self, indicators: dict, idx: int = -1) -> dict:
+        """
+        分析信号质量并打分
+        
+        评分标准（满分10分）：
+        1. ADX强度 (2分)
+        2. DI差异 (2分)
+        3. EMA趋势 (2分)
+        4. RSI位置 (1分)
+        5. MACD确认 (1分)
+        6. ADX动量 (1分)
+        7. 成交量确认 (1分)
+        
         Returns:
-            dict: Dictionary containing ADX, +DI, and -DI values
+            {
+                'signal': 1/-1/0,
+                'score': float,
+                'details': str,
+                'stop_loss': float,
+                'take_profit': float
+            }
         """
         try:
-            # Extract price data
-            high = df['high'].values
-            low = df['low'].values
-            close = df['close'].values
+            # 获取当前值
+            adx = indicators['adx'].iloc[idx]
+            adx_prev = indicators['adx'].iloc[idx-1]
+            plus_di = indicators['plus_di'].iloc[idx]
+            minus_di = indicators['minus_di'].iloc[idx]
             
-            # Calculate indicators
-            # Calculate indicators using pandas-ta
-            # ADX returns a DataFrame with columns: ADX_14, DMP_14, DMN_14
-            adx_df = ta.adx(pd.Series(high), pd.Series(low), pd.Series(close), length=self.adx_period)
+            close = indicators['close'].iloc[idx]
+            ema_fast = indicators['ema_fast'].iloc[idx]
+            ema_slow = indicators['ema_slow'].iloc[idx]
+            ema_trend = indicators['ema_trend'].iloc[idx]
             
-            if adx_df is None or adx_df.empty:
-                return None
+            rsi = indicators['rsi'].iloc[idx]
+            macd = indicators['macd'].iloc[idx]
+            macd_signal = indicators['macd_signal'].iloc[idx]
+            macd_hist = indicators['macd_hist'].iloc[idx]
+            macd_hist_prev = indicators['macd_hist'].iloc[idx-1]
+            
+            atr = indicators['atr'].iloc[idx]
+            volume = indicators['volume'].iloc[idx]
+            volume_ma = indicators['volume_ma'].iloc[idx]
+            
+            # 初始化评分
+            score = 0
+            reasons = []
+            direction = 0
+            
+            # ==================== 1. ADX强度评分 (2分) ====================
+            if adx >= self.adx_strong_threshold:
+                score += 2
+                reasons.append(f"✓ ADX强趋势({adx:.1f}) +2分")
+            elif adx >= self.adx_min_threshold:
+                score += 1
+                reasons.append(f"• ADX中等趋势({adx:.1f}) +1分")
+            else:
+                reasons.append(f"✗ ADX弱势({adx:.1f})")
+                return self._no_signal("ADX低于阈值")
+            
+            # ==================== 2. DI差异评分 (2分) ====================
+            di_diff = abs(plus_di - minus_di)
+            if di_diff >= self.di_diff_threshold * 1.5:
+                score += 2
+                reasons.append(f"✓ DI差异大({di_diff:.1f}) +2分")
+            elif di_diff >= self.di_diff_threshold:
+                score += 1
+                reasons.append(f"• DI差异中等({di_diff:.1f}) +1分")
+            else:
+                reasons.append(f"✗ DI差异不足({di_diff:.1f})")
+                return self._no_signal("DI差异不足")
+            
+            # 确定基础方向
+            if plus_di > minus_di:
+                direction = 1  # 做多
+                # 做多要求更高的信号质量（历史表现较差）
+                required_score_long = 7  # 做多需要7分
+            else:
+                direction = -1  # 做空
+                required_score_long = 5  # 做空需要5分
+            
+            # ==================== 3. EMA趋势评分 (2分) ====================
+            if direction == 1:  # 做多
+                if close > ema_fast > ema_slow > ema_trend:
+                    score += 2
+                    reasons.append(f"✓ EMA完美多头排列 +2分")
+                elif close > ema_fast and ema_fast > ema_slow:
+                    score += 1
+                    reasons.append(f"• EMA短期多头 +1分")
+                elif close < ema_trend:
+                    reasons.append(f"✗ 价格低于长期趋势")
+                    return self._no_signal("价格低于主趋势")
+            else:  # 做空
+                if close < ema_fast < ema_slow < ema_trend:
+                    score += 2
+                    reasons.append(f"✓ EMA完美空头排列 +2分")
+                elif close < ema_fast and ema_fast < ema_slow:
+                    score += 1
+                    reasons.append(f"• EMA短期空头 +1分")
+                elif close > ema_trend:
+                    reasons.append(f"✗ 价格高于长期趋势")
+                    return self._no_signal("价格高于主趋势")
+            
+            # ==================== 4. RSI位置评分 (1分) ====================
+            if direction == 1:  # 做多
+                if 40 <= rsi <= 60:
+                    score += 1
+                    reasons.append(f"✓ RSI健康区域({rsi:.1f}) +1分")
+                elif rsi > self.rsi_overbought:
+                    reasons.append(f"⚠ RSI超买({rsi:.1f})")
+            else:  # 做空
+                if 40 <= rsi <= 60:
+                    score += 1
+                    reasons.append(f"✓ RSI健康区域({rsi:.1f}) +1分")
+                elif rsi < self.rsi_oversold:
+                    reasons.append(f"⚠ RSI超卖({rsi:.1f})")
+            
+            # ==================== 5. MACD确认评分 (1分) ====================
+            if direction == 1:  # 做多
+                if macd > macd_signal and macd_hist > 0:
+                    score += 1
+                    reasons.append(f"✓ MACD金叉 +1分")
+            else:  # 做空
+                if macd < macd_signal and macd_hist < 0:
+                    score += 1
+                    reasons.append(f"✓ MACD死叉 +1分")
+            
+            # ==================== 6. ADX动量评分 (1分) ====================
+            if adx > adx_prev:
+                score += 1
+                reasons.append(f"✓ ADX上升 +1分")
+            else:
+                reasons.append(f"⚠ ADX下降")
+            
+            # ==================== 7. 成交量确认评分 (1分) ====================
+            vol_ratio = volume / volume_ma if volume_ma > 0 else 1
+            if vol_ratio >= self.volume_threshold:
+                score += 1
+                reasons.append(f"✓ 成交量放大({vol_ratio:.2f}x) +1分")
+            else:
+                reasons.append(f"• 成交量正常({vol_ratio:.2f}x)")
+            
+            # ==================== 计算动态止损止盈 ====================
+            if self.use_dynamic_stops and atr > 0:
+                stop_loss_price = close - atr * self.atr_multiplier_sl if direction == 1 else close + atr * self.atr_multiplier_sl
+                take_profit_price = close + atr * self.atr_multiplier_tp if direction == 1 else close - atr * self.atr_multiplier_tp
                 
-            # Extract values
-            adx = adx_df[f'ADX_{self.adx_period}'].values
-            plus_di = adx_df[f'DMP_{self.adx_period}'].values
-            minus_di = adx_df[f'DMN_{self.adx_period}'].values
+                stop_loss_pct = abs(stop_loss_price - close) / close
+                take_profit_pct = abs(take_profit_price - close) / close
+            else:
+                stop_loss_pct = self.stop_loss_pct
+                take_profit_pct = self.take_profit_pct
+            
+            # ==================== 最终判断 ====================
+            final_signal = 0
+            if score >= required_score_long:
+                final_signal = direction
+            elif direction == 1:
+                reasons.append(f"✗ 做多信号分数不足({score}/{required_score_long})")
             
             return {
+                'signal': final_signal,
+                'score': score,
+                'max_score': 10,
+                'direction_text': '做多' if direction == 1 else '做空',
+                'reasons': reasons,
+                'stop_loss_pct': stop_loss_pct,
+                'take_profit_pct': take_profit_pct,
                 'adx': adx,
-                'plus_di': plus_di,
-                'minus_di': minus_di
+                'di_diff': di_diff,
+                'rsi': rsi,
+                'vol_ratio': vol_ratio
             }
             
         except Exception as e:
-            self.logger.error(f"Error calculating ADX/DI indicators: {str(e)}")
-            return None
+            self.logger.error(f"分析信号质量出错: {str(e)}")
+            return self._no_signal("计算出错")
     
-    def analyze_trend(self, indicators):
-        """
-        Analyze trend based on ADX and DI indicators
-        
-        Args:
-            indicators (dict): ADX and DI indicator values
-            
-        Returns:
-            dict: Trend analysis results
-        """
-        try:
-            # Get current values (last candle)
-            current_adx = indicators['adx'][-1]
-            current_plus_di = indicators['plus_di'][-1]
-            current_minus_di = indicators['minus_di'][-1]
-            
-            # Get previous values for trend momentum
-            prev_adx = indicators['adx'][-2]
-            prev_plus_di = indicators['plus_di'][-2]
-            prev_minus_di = indicators['minus_di'][-2]
-            
-            # Calculate DI difference
-            di_diff = current_plus_di - current_minus_di
-            
-            # Determine trend direction
-            if current_plus_di > current_minus_di:
-                trend_direction = 1  # Uptrend
-            elif current_minus_di > current_plus_di:
-                trend_direction = -1  # Downtrend
-            else:
-                trend_direction = 0  # Neutral
-            
-            # Determine trend strength
-            if current_adx >= self.adx_strong_threshold:
-                trend_strength = "strong"
-            elif current_adx >= self.adx_min_threshold:
-                trend_strength = "moderate"
-            else:
-                trend_strength = "weak"
-            
-            # Check for DI crossovers (potential trend reversal)
-            bullish_crossover = (prev_plus_di <= prev_minus_di and 
-                                current_plus_di > current_minus_di)
-            bearish_crossover = (prev_plus_di >= prev_minus_di and 
-                                current_plus_di < current_minus_di)
-            
-            # ADX trend momentum (increasing or decreasing)
-            adx_momentum = "increasing" if current_adx > prev_adx else "decreasing"
-            
-            # Log the analysis
-            self.logger.info(f"Trend Analysis - ADX: {current_adx:.2f} ({adx_momentum}), "
-                           f"+DI: {current_plus_di:.2f}, -DI: {current_minus_di:.2f}, "
-                           f"Direction: {trend_direction}, Strength: {trend_strength}")
-            
-            return {
-                'direction': trend_direction,
-                'strength': trend_strength,
-                'adx_value': current_adx,
-                'plus_di_value': current_plus_di,
-                'minus_di_value': current_minus_di,
-                'di_difference': di_diff,
-                'bullish_crossover': bullish_crossover,
-                'bearish_crossover': bearish_crossover,
-                'adx_momentum': adx_momentum
-            }
-            
-        except Exception as e:
-            self.logger.error(f"Error analyzing trend: {str(e)}")
-            return None
+    def _no_signal(self, reason: str) -> dict:
+        """返回无信号结果"""
+        return {
+            'signal': 0,
+            'score': 0,
+            'max_score': 10,
+            'direction_text': '观望',
+            'reasons': [reason],
+            'stop_loss_pct': self.stop_loss_pct,
+            'take_profit_pct': self.take_profit_pct,
+            'adx': 0,
+            'di_diff': 0,
+            'rsi': 0,
+            'vol_ratio': 0
+        }
     
-    def generate_signal(self, klines=None):
-        """
-        Generate trading signal based on ADX-DI analysis
-        
-        Args:
-            klines (list): K-line data (optional, will fetch if not provided)
-            
-        Returns:
-            int: Trading signal (1=buy, -1=sell, 0=hold)
-        """
+    def generate_signal(self, klines=None) -> int:
+        """生成交易信号"""
         try:
-            # Fetch k-lines if not provided
+            # 获取K线
             if klines is None:
                 klines = self.trader.get_klines(
                     symbol=self.trader.symbol,
@@ -195,226 +371,186 @@ class SimpleADXDIStrategy15m(BaseStrategy):
                     limit=self.lookback_period
                 )
             
-            # Check if we have enough data
-            if not klines or len(klines) < self.lookback_period:
-                self.logger.warning("Insufficient k-line data for analysis")
+            if not klines or len(klines) < 50:
+                self.logger.warning(f"K线数据不足: {len(klines) if klines else 0}")
                 return 0
             
-            # Convert to DataFrame
-            df = self._prepare_dataframe(klines)
-            if df is None:
-                return 0
+            # 转DataFrame
+            df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+            for col in ['open', 'high', 'low', 'close', 'volume']:
+                df[col] = pd.to_numeric(df[col], errors='coerce')
             
-            # Calculate indicators
-            indicators = self.calculate_adx_di_indicators(df)
+            # 计算指标
+            indicators = self.calculate_indicators(df)
             if indicators is None:
                 return 0
             
-            # Analyze trend
-            trend_analysis = self.analyze_trend(indicators)
-            if trend_analysis is None:
-                return 0
+            # 分析信号质量
+            analysis = self.analyze_signal_quality(indicators, idx=-2)  # 使用-2避免未完成K线
             
-            # Generate signal based on trend analysis
-            signal = 0
-            if (abs(trend_analysis['di_difference']) >= self.di_diff_threshold and
-                trend_analysis['adx_value'] >= self.adx_min_threshold):
-                    signal = trend_analysis['direction']
-            else:
-                signal = 0
-
-            return signal
-
-            # Strong uptrend signal
-            if (trend_analysis['direction'] == 1 and 
-                trend_analysis['adx_value'] >= self.adx_min_threshold and
-                abs(trend_analysis['di_difference']) >= self.di_diff_threshold):
-                
-                # Extra confirmation for strong signals
-                if (trend_analysis['strength'] == "strong" or 
-                    trend_analysis['bullish_crossover'] or
-                    trend_analysis['adx_momentum'] == "increasing"):
-                    signal = 1
-                    self.logger.info("BUY signal generated - Strong uptrend detected")
+            # 打印分析报告
+            self._print_analysis_report(analysis)
             
-            # Strong downtrend signal
-            elif (trend_analysis['direction'] == -1 and 
-                  trend_analysis['adx_value'] >= self.adx_min_threshold and
-                  abs(trend_analysis['di_difference']) >= self.di_diff_threshold):
-                
-                # Extra confirmation for strong signals
-                if (trend_analysis['strength'] == "strong" or 
-                    trend_analysis['bearish_crossover'] or
-                    trend_analysis['adx_momentum'] == "increasing"):
-                    signal = -1
-                    self.logger.info("SELL signal generated - Strong downtrend detected")
-            
-            # No clear trend or weak trend
-            else:
-                signal = 0
-                if trend_analysis['strength'] == "weak":
-                    self.logger.info("HOLD signal - Weak trend, waiting for stronger signals")
-                else:
-                    self.logger.info("HOLD signal - No clear trend direction")
-            
-            # Update signal tracking
-            if signal != 0:
-                self.last_signal = signal
+            # 更新止损止盈
+            if analysis['signal'] != 0:
+                self.current_stop_loss_pct = analysis['stop_loss_pct']
+                self.current_take_profit_pct = analysis['take_profit_pct']
+                self.last_signal = analysis['signal']
                 self.last_signal_time = time.time()
             
-            return signal
+            return analysis['signal']
             
         except Exception as e:
-            self.logger.error(f"Error generating signal: {str(e)}")
+            self.logger.error(f"生成信号出错: {str(e)}")
             import traceback
             self.logger.error(traceback.format_exc())
             return 0
     
-    def _prepare_dataframe(self, klines):
-        """
-        Convert k-line data to DataFrame
+    def _print_analysis_report(self, analysis: dict):
+        """打印分析报告"""
+        signal_emoji = {1: "🟢 做多", -1: "🔴 做空", 0: "⚪ 观望"}
         
-        Args:
-            klines (list): K-line data
-            
-        Returns:
-            DataFrame: Processed data
-        """
-        try:
-            if not klines or len(klines) < 30:
-                self.logger.error("Insufficient k-line data")
-                return None
-            
-            # Create DataFrame
-            df = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
-            
-            # Convert to numeric
-            for col in ['open', 'high', 'low', 'close', 'volume']:
-                df[col] = pd.to_numeric(df[col], errors='coerce')
-            
-            # Add datetime column
-            df['datetime'] = pd.to_datetime(df['timestamp'], unit='ms')
-            
-            return df
-            
-        except Exception as e:
-            self.logger.error(f"Error preparing DataFrame: {str(e)}")
-            return None
+        self.logger.info("=" * 70)
+        self.logger.info("【Enhanced ADX-DI Strategy 信号分析】")
+        self.logger.info("=" * 70)
+        
+        # 信号和评分
+        self.logger.info(f"🎯 信号: {signal_emoji.get(analysis['signal'], '未知')}")
+        self.logger.info(f"📊 评分: {analysis['score']:.1f}/{analysis['max_score']} 分")
+        
+        if analysis['signal'] != 0:
+            self.logger.info(f"📈 方向: {analysis['direction_text']}")
+            self.logger.info(f"🛑 止损: {analysis['stop_loss_pct']:.2%}")
+            self.logger.info(f"🎯 止盈: {analysis['take_profit_pct']:.2%}")
+        
+        # 关键指标
+        self.logger.info("-" * 70)
+        self.logger.info(f"关键指标:")
+        self.logger.info(f"  ADX: {analysis['adx']:.1f} | DI差异: {analysis['di_diff']:.1f}")
+        self.logger.info(f"  RSI: {analysis['rsi']:.1f} | 成交量倍数: {analysis['vol_ratio']:.2f}x")
+        
+        # 评分详情
+        self.logger.info("-" * 70)
+        self.logger.info("评分详情:")
+        for reason in analysis['reasons']:
+            self.logger.info(f"  {reason}")
+        
+        self.logger.info("=" * 70)
     
     def monitor_position(self):
-        """Monitor current position and execute trading logic"""
+        """监控仓位"""
         try:
-            # Get current position
             position = self.trader.get_position()
             
-            # No position - check for entry signals
+            # 无仓位
             if position is None or float(position['info'].get('positionAmt', 0)) == 0:
-                # Generate trading signal
                 signal = self.generate_signal()
                 
                 if signal != 0:
-                    # Get account balance
                     balance = self.trader.get_balance()
-                    available_balance = float(balance['free'])
-                    
-                    # Get current price
+                    available = float(balance['free'])
                     current_price = self.trader.get_market_price()
                     
-                    # Calculate trade amount (using config percentage)
                     symbol_config = self.trader.symbol_config
-                    trade_percent = symbol_config.get('trade_amount_percent', 100)
-                    trade_amount = (available_balance * trade_percent / 100) / current_price
+                    trade_pct = symbol_config.get('trade_amount_percent', 100)
+                    trade_amount = (available * trade_pct / 100) / current_price
                     
-                    # Execute trade
-                    if signal == 1:  # Buy signal
+                    if signal == 1:
                         self.trader.open_long(amount=trade_amount)
-                        self.logger.info(f"LONG position opened - Amount: {trade_amount:.6f}, "
-                                       f"Price: {current_price}")
-                    elif signal == -1:  # Sell signal
+                        self.logger.info(
+                            f"✅ 开多仓 | 数量: {trade_amount:.6f} | 价格: {current_price} | "
+                            f"止损: {self.current_stop_loss_pct:.2%} | 止盈: {self.current_take_profit_pct:.2%}"
+                        )
+                    elif signal == -1:
                         self.trader.open_short(amount=trade_amount)
-                        self.logger.info(f"SHORT position opened - Amount: {trade_amount:.6f}, "
-                                       f"Price: {current_price}")
+                        self.logger.info(
+                            f"✅ 开空仓 | 数量: {trade_amount:.6f} | 价格: {current_price} | "
+                            f"止损: {self.current_stop_loss_pct:.2%} | 止盈: {self.current_take_profit_pct:.2%}"
+                        )
                     
-                    # Record entry details
                     self.position_entry_time = time.time()
                     self.position_entry_price = current_price
                     self.max_profit_reached = 0
-            
-            # Position exists - manage it
+                    self.trailing_stop_price = None
             else:
                 self._manage_position(position)
                 
         except Exception as e:
-            self.logger.error(f"Error monitoring position: {str(e)}")
+            self.logger.error(f"监控仓位出错: {str(e)}")
             import traceback
             self.logger.error(traceback.format_exc())
     
     def _manage_position(self, position):
-        """
-        Manage existing position with risk controls
-        
-        Args:
-            position: Current position information
-        """
+        """管理仓位"""
         try:
-            # Extract position details
-            position_amount = float(position['info'].get('positionAmt', 0))
+            pos_amt = float(position['info'].get('positionAmt', 0))
             entry_price = float(position['info'].get('entryPrice', 0))
             current_price = self.trader.get_market_price()
-            position_side = "long" if position_amount > 0 else "short"
+            side = "long" if pos_amt > 0 else "short"
             
-            # Calculate profit/loss percentage
-            if position_side == "long":
-                profit_rate = (current_price - entry_price) / entry_price
+            # 计算盈亏
+            if side == "long":
+                pnl_pct = (current_price - entry_price) / entry_price
             else:
-                profit_rate = (entry_price - current_price) / entry_price
+                pnl_pct = (entry_price - current_price) / entry_price
             
-            # Update maximum profit reached
-            if profit_rate > self.max_profit_reached:
-                self.max_profit_reached = profit_rate
-                self.logger.debug(f"New max profit: {self.max_profit_reached:.3%}")
-            
-            # Check holding time
-            if self.position_entry_time:
-                holding_time = (time.time() - self.position_entry_time) / 60  # minutes
-                if holding_time >= self.max_position_hold_time:
-                    self.logger.info(f"Maximum holding time reached ({holding_time:.1f} min), closing position")
-                    self.trader.close_position()
-                    return
-            
-            # Check stop loss
-            if profit_rate <= -self.stop_loss_pct:
-                self.logger.info(f"STOP LOSS triggered at {profit_rate:.3%}")
-                self.trader.close_position()
-                return
-            
-            # Check take profit
-            if profit_rate >= self.take_profit_pct:
-                self.logger.info(f"TAKE PROFIT triggered at {profit_rate:.3%}")
-                self.trader.close_position()
-                return
-            
-            # Check trailing stop
-            if self.trailing_stop_enabled and profit_rate >= self.trailing_stop_activation:
-                drawdown = self.max_profit_reached - profit_rate
-                if drawdown >= self.trailing_stop_distance:
-                    self.logger.info(f"TRAILING STOP triggered - Max profit: {self.max_profit_reached:.3%}, "
-                                   f"Current: {profit_rate:.3%}, Drawdown: {drawdown:.3%}")
-                    self.trader.close_position()
-                    return
-            
-            # Check for trend reversal
-            signal = self.generate_signal()
-            if (position_side == "long" and signal == -1) or (position_side == "short" and signal == 1):
-                self.logger.info(f"TREND REVERSAL detected, closing {position_side} position")
-                self.trader.close_position()
-                return
-            
-            # Log current position status
-            self.logger.debug(f"Position status - Side: {position_side}, P/L: {profit_rate:.3%}, "
-                            f"Price: {current_price}, Entry: {entry_price}")
+            # 更新最大利润
+            if pnl_pct > self.max_profit_reached:
+                self.max_profit_reached = pnl_pct
                 
+                # 追踪止损
+                if self.trailing_stop_enabled and pnl_pct >= self.trailing_activation:
+                    if side == "long":
+                        self.trailing_stop_price = current_price * (1 - self.trailing_distance)
+                    else:
+                        self.trailing_stop_price = current_price * (1 + self.trailing_distance)
+            
+            # 检查追踪止损
+            if self.trailing_stop_price:
+                if side == "long" and current_price <= self.trailing_stop_price:
+                    self.logger.info(f"📉 追踪止损触发 | 盈亏: {pnl_pct:.2%}")
+                    self.trader.close_position()
+                    return
+                elif side == "short" and current_price >= self.trailing_stop_price:
+                    self.logger.info(f"📉 追踪止损触发 | 盈亏: {pnl_pct:.2%}")
+                    self.trader.close_position()
+                    return
+            
+            # 检查止损
+            stop_loss = getattr(self, 'current_stop_loss_pct', self.stop_loss_pct)
+            if pnl_pct <= -stop_loss:
+                self.logger.info(f"🛑 止损触发 | 盈亏: {pnl_pct:.2%}")
+                self.trader.close_position()
+                return
+            
+            # 检查止盈
+            take_profit = getattr(self, 'current_take_profit_pct', self.take_profit_pct)
+            if pnl_pct >= take_profit:
+                self.logger.info(f"🎯 止盈触发 | 盈亏: {pnl_pct:.2%}")
+                self.trader.close_position()
+                return
+            
+            # 检查持仓时间
+            if self.position_entry_time:
+                hold_mins = (time.time() - self.position_entry_time) / 60
+                if hold_mins >= self.max_hold_time:
+                    self.logger.info(f"⏰ 最大持仓时间 | 盈亏: {pnl_pct:.2%}")
+                    self.trader.close_position()
+                    return
+            
+            # 检查趋势反转
+            signal = self.generate_signal()
+            if (side == "long" and signal == -1) or (side == "short" and signal == 1):
+                self.logger.info(f"🔄 趋势反转 | 盈亏: {pnl_pct:.2%}")
+                self.trader.close_position()
+                return
+            
+            self.logger.debug(
+                f"📊 持仓状态 | 方向: {side} | 盈亏: {pnl_pct:.2%} | "
+                f"最大: {self.max_profit_reached:.2%}"
+            )
+            
         except Exception as e:
-            self.logger.error(f"Error managing position: {str(e)}")
+            self.logger.error(f"管理仓位出错: {str(e)}")
             import traceback
             self.logger.error(traceback.format_exc())

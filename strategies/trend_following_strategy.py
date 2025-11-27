@@ -52,7 +52,7 @@ class TrendFollowingStrategy(BaseStrategy):
     - ATR追踪止损触发
     """
     
-    def __init__(self, trader):
+    def __init__(self, trader, interval='15m'):
         """初始化策略"""
         super().__init__(trader)
         self.logger = self.get_logger()

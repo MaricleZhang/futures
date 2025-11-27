@@ -46,7 +46,7 @@ class PatternProbabilityStrategy(BaseStrategy):
     P(观望) = 1 - P(做多) - P(做空)
     """
     
-    def __init__(self, trader):
+    def __init__(self, trader, interval='15m'):
         """初始化策略"""
         super().__init__(trader)
         self.logger = self.get_logger()

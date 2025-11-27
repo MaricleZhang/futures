@@ -125,8 +125,8 @@ class BacktestEngine:
             module = importlib.import_module(f'strategies.{file_name}')
             strategy_class = getattr(module, class_name)
             
-            # Initialize strategy with backtest trader
-            self.strategy = strategy_class(self.trader)
+            # Initialize strategy with backtest trader and interval
+            self.strategy = strategy_class(self.trader, interval=self.interval)
             
             self.logger.info(f"Strategy loaded: {class_name}")
             

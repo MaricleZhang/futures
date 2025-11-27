@@ -55,7 +55,7 @@ class XGBoostPriceStrategy(BaseStrategy):
     - ADX 趋势强度
     """
     
-    def __init__(self, trader):
+    def __init__(self, trader, interval='15m'):
         """初始化策略"""
         super().__init__(trader)
         

@@ -42,6 +42,8 @@ def parse_args():
                        help='Slippage rate (default: 0.0001 = 0.01%%)')
     parser.add_argument('--interval', type=str, default='15m',
                        help='Kline interval (default: 15m)')
+    parser.add_argument('--base_interval', type=str, default='1m',
+                       help='Base data interval for simulation (default: 1m)')
     parser.add_argument('--no_cache', action='store_true',
                        help='Disable data caching')
     parser.add_argument('--output_dir', type=str, default=None,
@@ -85,6 +87,7 @@ def main():
     logger.info(f"Fee Rate:        {args.fee_rate:.4f} ({args.fee_rate * 100:.2f}%)")
     logger.info(f"Slippage:        {args.slippage:.4f} ({args.slippage * 100:.2f}%)")
     logger.info(f"Interval:        {args.interval}")
+    logger.info(f"Base Interval:   {args.base_interval}")
     logger.info("=" * 80)
     
     try:
@@ -98,7 +101,8 @@ def main():
             leverage=args.leverage,
             fee_rate=args.fee_rate,
             slippage_rate=args.slippage,
-            interval=args.interval
+            interval=args.interval,
+            base_interval=args.base_interval
         )
         
         # Run backtest

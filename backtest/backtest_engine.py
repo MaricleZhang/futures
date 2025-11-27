@@ -30,6 +30,7 @@ class BacktestEngine:
         fee_rate: float = 0.0004,
         slippage_rate: float = 0.0001,
         interval: str = '15m',
+        base_interval: str = '1m',
         cache_dir: str = None,
         results_dir: str = None
     ):
@@ -44,7 +45,9 @@ class BacktestEngine:
             leverage: Leverage multiplier
             fee_rate: Trading fee rate
             slippage_rate: Slippage rate
-            interval: Kline interval (e.g., '15m', '1h')
+            slippage_rate: Slippage rate
+            interval: Strategy Kline interval (e.g., '15m', '1h')
+            base_interval: Base data interval for simulation (e.g., '1m')
             cache_dir: Directory for data cache
             results_dir: Directory for results
         """
@@ -60,6 +63,7 @@ class BacktestEngine:
         self.fee_rate = fee_rate
         self.slippage_rate = slippage_rate
         self.interval = interval
+        self.base_interval = base_interval
         
         # Directories
         if cache_dir is None:
@@ -146,7 +150,7 @@ class BacktestEngine:
         self.logger.info("Step 1: Loading historical data...")
         self.data = self.data_loader.load_data(
             symbol=self.symbol,
-            interval=self.interval,
+            interval=self.base_interval,
             start_date=self.start_date,
             end_date=self.end_date
         )
@@ -215,7 +219,7 @@ class BacktestEngine:
         interval_minutes = {
             '1m': 1, '5m': 5, '15m': 15, '30m': 30,
             '1h': 60, '4h': 240, '1d': 1440
-        }.get(self.interval, 15)
+        }.get(self.base_interval, 1)
         
         # Skip bars based on check interval
         skip_bars = max(1, check_interval // interval_minutes)

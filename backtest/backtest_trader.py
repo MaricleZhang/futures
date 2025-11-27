@@ -99,8 +99,87 @@ class BacktestTrader:
         
         # Get data up to current index
         end_idx = self.current_index + 1
-        start_idx = max(0, end_idx - limit)
         
+        # If requested interval matches data interval, return as is
+        # We assume data interval is 1m if not specified, or we can infer it
+        # For now, we'll check if resampling is needed based on the requested interval
+        
+        # Simple check: if we have high frequency data (e.g. 1m) and request is for 15m
+        # We need to resample.
+        
+        # Get the slice of data up to current time
+        df_slice = self.data.iloc[:end_idx].copy()
+        
+        if df_slice.empty:
+            return []
+            
+        # If interval is different from base data interval (assumed 1m if we are here), resample
+        # Note: This is a simplified check. Ideally we should know the base interval.
+        # But since we are implementing "Option 2", we assume base is lower than requested.
+        
+        if interval and interval != '1m': # Assuming base is 1m for now, or at least lower
+             try:
+                # Resample
+                # Ensure index is datetime
+                if not isinstance(df_slice.index, pd.DatetimeIndex):
+                    df_slice.set_index('timestamp', inplace=True)
+                
+                # Map interval string to pandas offset alias
+                offset_map = {
+                    '1m': '1T', '3m': '3T', '5m': '5T', '15m': '15T', '30m': '30T',
+                    '1h': '1H', '2h': '2H', '4h': '4H', '6h': '6H', '8h': '8H', '12h': '12H',
+                    '1d': '1D', '3d': '3D', '1w': '1W', '1M': '1M'
+                }
+                rule = offset_map.get(interval, interval)
+                
+                # Resample logic:
+                # Open: first
+                # High: max
+                # Low: min
+                # Close: last
+                # Volume: sum
+                resampled = df_slice.resample(rule).agg({
+                    'open': 'first',
+                    'high': 'max',
+                    'low': 'min',
+                    'close': 'last',
+                    'volume': 'sum'
+                })
+                
+                # Drop incomplete last bin if it doesn't cover the full period?
+                # Actually, for backtesting, we want the *forming* candle as well if we are "inside" it?
+                # But usually strategies work on *closed* candles.
+                # If we are at 10:07 (1m data), and we ask for 15m candles.
+                # We have 10:00-10:15 candle forming.
+                # The strategy usually expects the last *completed* candle + maybe current forming.
+                # Let's keep all, but drop NaN (which happens if no data in bin)
+                resampled.dropna(inplace=True)
+                
+                # Slice the last 'limit' candles
+                if len(resampled) > limit:
+                    resampled = resampled.iloc[-limit:]
+                
+                # Convert to list format
+                klines = []
+                for time_idx, row in resampled.iterrows():
+                    klines.append([
+                        int(time_idx.timestamp() * 1000),
+                        float(row['open']),
+                        float(row['high']),
+                        float(row['low']),
+                        float(row['close']),
+                        float(row['volume'])
+                    ])
+                return klines
+                
+             except Exception as e:
+                 self.logger.error(f"Resampling failed: {e}")
+                 # Fallback to raw data if resampling fails
+                 pass
+
+        # Fallback / No resampling needed (or failed)
+        # Just take the last 'limit' rows
+        start_idx = max(0, end_idx - limit)
         df_slice = self.data.iloc[start_idx:end_idx]
         
         # Convert to list format

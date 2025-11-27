@@ -14,7 +14,7 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 # 可选策略: 'deepseek', 'simple_adx_di', 'kama_roc_adx',
 # 'advanced_short_term', 'pattern_probability', 'trend_following'
 
-STRATEGY_TYPE = 'trend_following'
+STRATEGY_TYPE = 'advanced_short_term'
 
 # 交易设置
 SYMBOLS = ['ETHUSDC']  # 支持多个交易对
@@ -64,3 +64,14 @@ DEEPSEEK_API_READ_TIMEOUT = 30     # DeepSeek API读取超时(秒)
 DEEPSEEK_API_RETRY_COUNT = 3       # DeepSeek API重试次数
 DEEPSEEK_API_RETRY_BACKOFF = 1     # DeepSeek API重试间隔倍数
 DEEPSEEK_API_MIN_INTERVAL = 10     # DeepSeek API最小调用间隔(秒)
+
+# 回测设置
+BACKTEST_CONFIG = {
+    'initial_capital': 1000,        # 初始资金(USDT)
+    'default_leverage': 10,         # 默认杠杆倍数
+    'fee_rate': 0.0004,            # 手续费率 (0.04% Binance futures taker fee)
+    'slippage_rate': 0.0001,       # 滑点率 (0.01%)
+    'data_cache_dir': 'data/backtest',  # 数据缓存目录
+    'results_dir': 'results/backtest'   # 结果输出目录
+}
+

@@ -349,7 +349,7 @@ class Trader:
         Args:
             symbol: 交易对
             interval: K线周期，支持 1m, 5m, 15m, 1h, 4h, 1d
-            limit: 获取的K线数量，最大1500
+            limit: 获取的K线数量
         
         Returns:
             K线数据列表，每个K线包含 [timestamp, open, high, low, close, volume]
@@ -358,23 +358,59 @@ class Trader:
             symbol = symbol or self.symbol
             if not symbol:
                 raise ValueError("Symbol not specified")
-            # 限制最大获取数量
-            if limit > 1500:
-                limit = 1500
-                self.logger.warning("K线数量超过最大限制1500，已自动调整")
                 
-            # 获取K线数据
-            klines = self.exchange.fetch_ohlcv(
-                symbol=symbol,
-                timeframe=interval,
-                limit=limit,
-                params={'type': 'future'}  # 指定为期货
-            )
+            # 解析时间周期为毫秒
+            timeframe_duration_seconds = self.exchange.parse_timeframe(interval)
+            timeframe_duration_ms = timeframe_duration_seconds * 1000
             
-            if klines and len(klines) > 0:
+            all_klines = []
+            remaining_limit = limit
+            
+            # 如果请求的数量超过单次最大限制（通常是1000或1500），需要分批获取
+            # 这里我们设置单次获取的最大数量为1000，以确保兼容性
+            BATCH_LIMIT = 1000
+            
+            # 计算起始时间
+            # 当前时间 - 需要获取的K线数量 * K线周期
+            end_time = self.exchange.milliseconds()
+            start_time = end_time - (limit * timeframe_duration_ms)
+            
+            current_since = start_time
+            
+            while remaining_limit > 0:
+                fetch_limit = min(remaining_limit, BATCH_LIMIT)
+                
+                # 获取K线数据
+                klines = self.exchange.fetch_ohlcv(
+                    symbol=symbol,
+                    timeframe=interval,
+                    limit=fetch_limit,
+                    since=int(current_since),
+                    params={'type': 'future'}  # 指定为期货
+                )
+                
+                if not klines:
+                    break
+                    
+                all_klines.extend(klines)
+                remaining_limit -= len(klines)
+                
+                # 更新下一次获取的起始时间
+                # 取最后一条K线的时间 + 1个周期
+                last_kline_time = klines[-1][0]
+                current_since = last_kline_time + timeframe_duration_ms
+                
+                # 如果获取的数量少于请求的数量，说明已经获取到了最新的数据
+                if len(klines) < fetch_limit:
+                    break
+                    
+                # 防止请求过快
+                time.sleep(0.1)
+            
+            if all_klines:
                 # 转换数据格式
                 formatted_klines = []
-                for k in klines:
+                for k in all_klines:
                     formatted_klines.append([
                         int(k[0]),  # timestamp
                         float(k[1]),  # open
@@ -383,6 +419,11 @@ class Trader:
                         float(k[4]),  # close
                         float(k[5])   # volume
                     ])
+                
+                # 确保返回的数量不超过请求的数量
+                if len(formatted_klines) > limit:
+                    formatted_klines = formatted_klines[-limit:]
+                    
                 self.logger.info(f"成功获取{len(formatted_klines)}根{interval}K线数据")
                 return formatted_klines
             else:

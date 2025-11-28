@@ -10,9 +10,9 @@ PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
 PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
-# 策略选择配置
+# 策略选择配置 xgboost 只支持ZECUSDT
 # 可选策略: 'deepseek', 'simple_adx_di', 'pattern_probability', 'trend_following', 'xgboost'
-STRATEGY_TYPE = 'simple_adx_di'
+STRATEGY_TYPE = 'deepseek'
 
 # 交易设置
 SYMBOLS = ['ZECUSDT']  # 支持多个交易对
@@ -21,7 +21,7 @@ SYMBOL_CONFIGS = {
         'leverage':10,
         'min_notional': 20,
         'trade_amount_percent': 300,
-        'check_interval': 60,  # 5分钟策略的检查间隔(秒) 
+        'check_interval': 900,  # 5分钟策略的检查间隔(秒) 
     }
 }
 DEFAULT_LEVERAGE = 5  # 默认杠杆倍数

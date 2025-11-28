@@ -33,7 +33,7 @@ class DeepSeekTradingStrategy(BaseStrategy):
     - Hold: Low confidence or conflicting signals
     """
     
-    def __init__(self, trader, deepseek_api_key=None, interval='15m'):
+    def __init__(self, trader, deepseek_api_key=None, interval='1h'):
         """Initialize the DeepSeek trading strategy
         
         Args:

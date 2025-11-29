@@ -15,25 +15,19 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 STRATEGY_TYPE = 'qwen'
 
 # 交易设置
-SYMBOLS = ['BOBUSDT','STABLEUSDT','ZECUSDT']  # 支持多个交易对
+SYMBOLS = ['BOBUSDT','ZECUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
     'BOBUSDT': {
         'leverage':10,
         'min_notional': 20,
         'trade_amount_percent': 300,
-        'check_interval': 600,  # 5分钟策略的检查间隔(秒) 
-    },
-    'STABLEUSDT': {
-        'leverage':10,
-        'min_notional': 20,
-        'trade_amount_percent': 300,
-        'check_interval': 600,  # 5分钟策略的检查间隔(秒) 
+        'check_interval': 300,  # 5分钟策略的检查间隔(秒) 
     },
     'ZECUSDT': {
         'leverage':10,
         'min_notional': 20,
         'trade_amount_percent': 300,
-        'check_interval': 600,  # 5分钟策略的检查间隔(秒) 
+        'check_interval': 300,  # 5分钟策略的检查间隔(秒) 
     }
 }
 DEFAULT_LEVERAGE = 5  # 默认杠杆倍数
@@ -51,8 +45,8 @@ PRICE_CHECK_INTERVAL = 5       # 价格检查间隔（秒）
 
 # 风控设置
 MAX_LEVERAGE = 10  # 最大允许杠杆
-DEFAULT_STOP_LOSS_PERCENT = 50  # 默认止损百分比
-DEFAULT_TAKE_PROFIT_PERCENT = 500  # 默认止盈百分比
+DEFAULT_STOP_LOSS_PERCENT = 5  # 默认止损百分比（交易所兜底止损，策略层面可用更小的动态止损）
+DEFAULT_TAKE_PROFIT_PERCENT = 0  # 默认止盈百分比（设为0禁用交易所止盈，策略层面控制止盈更灵活）
 
 # K线设置
 DEFAULT_TIMEFRAME = '1m'  # 默认K线周期

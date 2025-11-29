@@ -232,45 +232,43 @@ class Trader:
             order = self.exchange.create_order(**order_params)
             self.logger.info(f"订单创建成功: {order}")
             
-            # # 如果没有指定止损价格，使用默认百分比
-            # if stop_loss is None and config.DEFAULT_STOP_LOSS_PERCENT > 0:
-            #     current_price = self.get_market_price()
-            #     stop_loss = current_price * (1 - config.DEFAULT_STOP_LOSS_PERCENT/100) if side.upper() == 'BUY' else current_price * (1 + config.DEFAULT_STOP_LOSS_PERCENT/100)
+            # 如果没有指定止损价格，使用默认百分比
+            if stop_loss is None and config.DEFAULT_STOP_LOSS_PERCENT > 0:
+                stop_loss = current_price * (1 - config.DEFAULT_STOP_LOSS_PERCENT/100) if side.upper() == 'BUY' else current_price * (1 + config.DEFAULT_STOP_LOSS_PERCENT/100)
             
-            # # 如果没有指定止盈价格，使用默认百分比
-            # if take_profit is None and config.DEFAULT_TAKE_PROFIT_PERCENT > 0:
-            #     current_price = self.get_market_price()
-            #     take_profit = current_price * (1 + config.DEFAULT_TAKE_PROFIT_PERCENT/100) if side.upper() == 'BUY' else current_price * (1 - config.DEFAULT_TAKE_PROFIT_PERCENT/100)
+            # 如果没有指定止盈价格，使用默认百分比
+            if take_profit is None and config.DEFAULT_TAKE_PROFIT_PERCENT > 0:
+                take_profit = current_price * (1 + config.DEFAULT_TAKE_PROFIT_PERCENT/100) if side.upper() == 'BUY' else current_price * (1 - config.DEFAULT_TAKE_PROFIT_PERCENT/100)
             
-            # # 设置止损单
-            # if stop_loss is not None:
-            #     stop_loss_params = {
-            #         'symbol': symbol,
-            #         'type': 'STOP_MARKET',
-            #         'side': 'SELL' if side.upper() == 'BUY' else 'BUY',
-            #         'amount': amount,
-            #         'params': {
-            #             'stopPrice': stop_loss,
-            #             'workingType': 'MARK_PRICE',
-            #         }
-            #     }
-            #     stop_order = self.exchange.create_order(**stop_loss_params)
-            #     self.logger.info(f"止损订单创建成功: {stop_order}")
+            # 设置止损单
+            if stop_loss is not None:
+                stop_loss_params = {
+                    'symbol': symbol,
+                    'type': 'STOP_MARKET',
+                    'side': 'SELL' if side.upper() == 'BUY' else 'BUY',
+                    'amount': amount,
+                    'params': {
+                        'stopPrice': stop_loss,
+                        'workingType': 'MARK_PRICE',
+                    }
+                }
+                stop_order = self.exchange.create_order(**stop_loss_params)
+                self.logger.info(f"🛑 止损订单创建成功: 止损价={stop_loss:.6f}, 订单ID={stop_order.get('id', 'N/A')}")
                 
-            # # 设置止盈单
-            # if take_profit is not None:
-            #     take_profit_params = {
-            #         'symbol': symbol,
-            #         'type': 'TAKE_PROFIT_MARKET',
-            #         'side': 'SELL' if side.upper() == 'BUY' else 'BUY',
-            #         'amount': amount,
-            #         'params': {
-            #             'stopPrice': take_profit,
-            #             'workingType': 'MARK_PRICE',
-            #         }
-            #     }
-            #     tp_order = self.exchange.create_order(**take_profit_params)
-            #     self.logger.info(f"止盈订单创建成功: {tp_order}")
+            # 设置止盈单
+            if take_profit is not None:
+                take_profit_params = {
+                    'symbol': symbol,
+                    'type': 'TAKE_PROFIT_MARKET',
+                    'side': 'SELL' if side.upper() == 'BUY' else 'BUY',
+                    'amount': amount,
+                    'params': {
+                        'stopPrice': take_profit,
+                        'workingType': 'MARK_PRICE',
+                    }
+                }
+                tp_order = self.exchange.create_order(**take_profit_params)
+                self.logger.info(f"🎯 止盈订单创建成功: 止盈价={take_profit:.6f}, 订单ID={tp_order.get('id', 'N/A')}")
                 
             return order
             
@@ -278,7 +276,7 @@ class Trader:
             self.logger.error(f"下单失败: {str(e)}")
             raise
     
-    def place_limit_order_with_fallback(self, symbol=None, side=None, amount=None):
+    def place_limit_order_with_fallback(self, symbol=None, side=None, amount=None, stop_loss=None, take_profit=None):
         """
         先尝试挂单(maker)，超时未成交则改用市价单(taker)
         
@@ -286,6 +284,8 @@ class Trader:
             symbol: 交易对
             side: 'buy' 或 'sell'
             amount: 下单数量
+            stop_loss: 止损价格（可选）
+            take_profit: 止盈价格（可选）
             
         Returns:
             最终成交的订单信息
@@ -311,7 +311,7 @@ class Trader:
             
             # 提交限价单
             self.logger.info(f"尝试挂单 {side.upper()}: 数量={amount}, 挂单价={limit_price:.6f}, 当前价={current_price:.6f}")
-            order = self.place_order(symbol, side, amount, order_type='limit', price=limit_price)
+            order = self.place_order(symbol, side, amount, order_type='limit', price=limit_price, stop_loss=stop_loss, take_profit=take_profit)
             order_id = order['id']
             
             # 循环检查订单状态
@@ -368,7 +368,7 @@ class Trader:
             
             # 使用市价单确保成交
             self.logger.info(f"使用市价单 {side.upper()}: 数量={amount}")
-            market_order = self.place_order(symbol, side, amount, order_type='market')
+            market_order = self.place_order(symbol, side, amount, order_type='market', stop_loss=stop_loss, take_profit=take_profit)
             self.logger.info(f"✓ 市价单成交成功!")
             
             return market_order
@@ -533,28 +533,68 @@ class Trader:
             self.logger.error(f"获取K线数据时出错: {str(e)}")
             return []
         
-    def open_long(self, symbol=None, amount=None):
-        """开多仓"""
-        order = self.place_limit_order_with_fallback(symbol, 'buy', amount)
+    def open_long(self, symbol=None, amount=None, stop_loss_pct=None, take_profit_pct=None):
+        """开多仓
+        
+        Args:
+            symbol: 交易对
+            amount: 开仓数量
+            stop_loss_pct: 止损百分比（可选），默认使用配置中的值
+            take_profit_pct: 止盈百分比（可选），默认使用配置中的值
+        """
+        symbol = symbol or self.symbol
+        current_price = self.get_market_price(symbol)
+        
+        # 计算止损止盈价格
+        stop_loss = None
+        take_profit = None
+        
+        if stop_loss_pct is not None and stop_loss_pct > 0:
+            stop_loss = current_price * (1 - stop_loss_pct / 100)
+            
+        if take_profit_pct is not None and take_profit_pct > 0:
+            take_profit = current_price * (1 + take_profit_pct / 100)
+        
+        # 使用挂单策略开仓，并设置止损止盈
+        order = self.place_limit_order_with_fallback(symbol, 'buy', amount, stop_loss=stop_loss, take_profit=take_profit)
+        
         # 记录开仓信息
         try:
-            symbol = symbol or self.symbol
-            price = self.get_market_price(symbol)
             leverage = self.symbol_config.get('leverage', config.DEFAULT_LEVERAGE)
-            self.trade_recorder.record_open_position(symbol, 'LONG', amount, price, leverage, config.STRATEGY_TYPE)
+            self.trade_recorder.record_open_position(symbol, 'LONG', amount, current_price, leverage, config.STRATEGY_TYPE)
         except Exception as e:
             self.logger.error(f"记录开多仓信息失败: {str(e)}")
         return order
         
-    def open_short(self, symbol=None, amount=None):
-        """开空仓"""
-        order = self.place_limit_order_with_fallback(symbol, 'sell', amount)
+    def open_short(self, symbol=None, amount=None, stop_loss_pct=None, take_profit_pct=None):
+        """开空仓
+        
+        Args:
+            symbol: 交易对
+            amount: 开仓数量
+            stop_loss_pct: 止损百分比（可选），默认使用配置中的值
+            take_profit_pct: 止盈百分比（可选），默认使用配置中的值
+        """
+        symbol = symbol or self.symbol
+        current_price = self.get_market_price(symbol)
+        
+        # 计算止损止盈价格
+        stop_loss = None
+        take_profit = None
+        
+        if stop_loss_pct is not None and stop_loss_pct > 0:
+            stop_loss = current_price * (1 + stop_loss_pct / 100)
+            
+        if take_profit_pct is not None and take_profit_pct > 0:
+            take_profit = current_price * (1 - take_profit_pct / 100)
+        
+        # 使用挂单策略开仓，并设置止损止盈
+        order = self.place_limit_order_with_fallback(symbol, 'sell', amount, stop_loss=stop_loss, take_profit=take_profit)
+        
         # 记录开仓信息
         try:
-            symbol = symbol or self.symbol
-            price = self.get_market_price(symbol)
             leverage = self.symbol_config.get('leverage', config.DEFAULT_LEVERAGE)
-            self.trade_recorder.record_open_position(symbol, 'SHORT', amount, price, leverage, config.STRATEGY_TYPE)
+            self.trade_recorder.record_open_position(symbol, 'SHORT', amount, current_price, leverage, config.STRATEGY_TYPE)
         except Exception as e:
             self.logger.error(f"记录开空仓信息失败: {str(e)}")
         return order

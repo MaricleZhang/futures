@@ -11,17 +11,29 @@ PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
 # 策略选择配置 xgboost 只支持ZECUSDT
-# 可选策略: 'deepseek', 'simple_adx_di', 'pattern_probability', 'trend_following', 'xgboost'
-STRATEGY_TYPE = 'deepseek'
+# 可选策略: 'deepseek', 'simple_adx_di', 'pattern_probability', 'trend_following', 'xgboost', 'qwen', 'kimi'
+STRATEGY_TYPE = 'qwen'
 
 # 交易设置
-SYMBOLS = ['ZECUSDT']  # 支持多个交易对
+SYMBOLS = ['BOBUSDT','STABLEUSDT','ZECUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
+    'BOBUSDT': {
+        'leverage':10,
+        'min_notional': 20,
+        'trade_amount_percent': 300,
+        'check_interval': 600,  # 5分钟策略的检查间隔(秒) 
+    },
+    'STABLEUSDT': {
+        'leverage':10,
+        'min_notional': 20,
+        'trade_amount_percent': 300,
+        'check_interval': 600,  # 5分钟策略的检查间隔(秒) 
+    },
     'ZECUSDT': {
         'leverage':10,
         'min_notional': 20,
         'trade_amount_percent': 300,
-        'check_interval': 900,  # 5分钟策略的检查间隔(秒) 
+        'check_interval': 600,  # 5分钟策略的检查间隔(秒) 
     }
 }
 DEFAULT_LEVERAGE = 5  # 默认杠杆倍数
@@ -56,6 +68,13 @@ DEEPSEEK_API_READ_TIMEOUT = 30     # DeepSeek API读取超时(秒)
 DEEPSEEK_API_RETRY_COUNT = 3       # DeepSeek API重试次数
 DEEPSEEK_API_RETRY_BACKOFF = 1     # DeepSeek API重试间隔倍数
 DEEPSEEK_API_MIN_INTERVAL = 10     # DeepSeek API最小调用间隔(秒)
+
+# Kimi API设置
+KIMI_API_CONNECT_TIMEOUT = 10  # Kimi API连接超时(秒)
+KIMI_API_READ_TIMEOUT = 30     # Kimi API读取超时(秒)
+KIMI_API_RETRY_COUNT = 3       # Kimi API重试次数
+KIMI_API_RETRY_BACKOFF = 1     # Kimi API重试间隔倍数
+KIMI_API_MIN_INTERVAL = 10     # Kimi API最小调用间隔(秒)
 
 # 回测设置
 BACKTEST_CONFIG = {

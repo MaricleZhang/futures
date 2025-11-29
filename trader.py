@@ -277,6 +277,105 @@ class Trader:
         except Exception as e:
             self.logger.error(f"下单失败: {str(e)}")
             raise
+    
+    def place_limit_order_with_fallback(self, symbol=None, side=None, amount=None):
+        """
+        先尝试挂单(maker)，超时未成交则改用市价单(taker)
+        
+        Args:
+            symbol: 交易对
+            side: 'buy' 或 'sell'
+            amount: 下单数量
+            
+        Returns:
+            最终成交的订单信息
+        """
+        try:
+            symbol = symbol or self.symbol
+            if not symbol:
+                raise ValueError("Symbol not specified")
+            if not side:
+                raise ValueError("Side not specified")
+            if not amount:
+                raise ValueError("Amount not specified")
+            
+            # 获取当前市场价格
+            current_price = self.get_market_price(symbol)
+            
+            # 计算挂单价格
+            # 买入时略高于当前价（更容易成交），卖出时略低于当前价
+            if side.lower() == 'buy':
+                limit_price = current_price * (1 + config.LIMIT_ORDER_DISTANCE)
+            else:  # sell
+                limit_price = current_price * (1 - config.LIMIT_ORDER_DISTANCE)
+            
+            # 提交限价单
+            self.logger.info(f"尝试挂单 {side.upper()}: 数量={amount}, 挂单价={limit_price:.6f}, 当前价={current_price:.6f}")
+            order = self.place_order(symbol, side, amount, order_type='limit', price=limit_price)
+            order_id = order['id']
+            
+            # 循环检查订单状态
+            start_time = time.time()
+            max_wait_time = config.MAX_ORDER_WAITING_TIME
+            check_interval = config.PRICE_CHECK_INTERVAL
+            
+            while True:
+                elapsed_time = time.time() - start_time
+                
+                # 检查是否超时
+                if elapsed_time >= max_wait_time:
+                    self.logger.warning(f"挂单等待超时({max_wait_time}秒)，准备切换为市价单")
+                    break
+                
+                # 等待一段时间后再检查
+                time.sleep(check_interval)
+                
+                # 查询订单状态
+                try:
+                    order_status = self.exchange.fetch_order(order_id, symbol)
+                    status = order_status['status']
+                    
+                    self.logger.debug(f"订单状态检查: {status}, 已等待 {elapsed_time:.1f}秒")
+                    
+                    if status == 'closed':
+                        # 订单已成交
+                        self.logger.info(f"✓ 挂单成交成功! 成交价={order_status.get('average', limit_price):.6f}")
+                        return order_status
+                    elif status == 'canceled':
+                        # 订单被取消（可能被用户或其他程序取消）
+                        self.logger.warning("挂单被取消，切换为市价单")
+                        break
+                    elif status == 'open':
+                        # 订单仍在等待成交
+                        continue
+                    else:
+                        # 其他状态（如rejected等）
+                        self.logger.warning(f"挂单状态异常: {status}，切换为市价单")
+                        break
+                        
+                except Exception as e:
+                    self.logger.error(f"查询订单状态失败: {str(e)}")
+                    # 继续等待，不立即放弃
+                    continue
+            
+            # 超时或失败，取消挂单并使用市价单
+            try:
+                self.logger.info(f"取消挂单 {order_id}")
+                self.exchange.cancel_order(order_id, symbol)
+                self.logger.info("挂单已取消")
+            except Exception as e:
+                self.logger.warning(f"取消挂单失败（订单可能已成交或已取消）: {str(e)}")
+            
+            # 使用市价单确保成交
+            self.logger.info(f"使用市价单 {side.upper()}: 数量={amount}")
+            market_order = self.place_order(symbol, side, amount, order_type='market')
+            self.logger.info(f"✓ 市价单成交成功!")
+            
+            return market_order
+            
+        except Exception as e:
+            self.logger.error(f"智能下单失败: {str(e)}")
+            raise
             
     @retry_on_error()
     def close_position(self, symbol=None):
@@ -436,7 +535,7 @@ class Trader:
         
     def open_long(self, symbol=None, amount=None):
         """开多仓"""
-        order = self.place_order(symbol, 'buy', amount)
+        order = self.place_limit_order_with_fallback(symbol, 'buy', amount)
         # 记录开仓信息
         try:
             symbol = symbol or self.symbol
@@ -449,7 +548,7 @@ class Trader:
         
     def open_short(self, symbol=None, amount=None):
         """开空仓"""
-        order = self.place_order(symbol, 'sell', amount)
+        order = self.place_limit_order_with_fallback(symbol, 'sell', amount)
         # 记录开仓信息
         try:
             symbol = symbol or self.symbol

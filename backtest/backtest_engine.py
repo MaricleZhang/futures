@@ -100,7 +100,9 @@ class BacktestEngine:
             'simple_adx_di': 'SimpleADXDIStrategy15m',  # Note: ADX, DI are caps, has 15m suffix
             'trend_following': 'TrendFollowingStrategy',
             'xgboost': 'XGBoostPriceStrategy',
-            'deepseek': 'DeepSeekTradingStrategy'
+            'deepseek': 'DeepSeekTradingStrategy',
+            'qwen': 'QwenTradingStrategy',
+            'kimi': 'KimiTradingStrategy'
         }
         
         strategy_files = {
@@ -108,7 +110,9 @@ class BacktestEngine:
             'simple_adx_di': 'simple_adx_di_15m_strategy',
             'trend_following': 'trend_following_strategy',
             'xgboost': 'xgboost_price_strategy',
-            'deepseek': 'deepseek_trading_strategy'
+            'deepseek': 'deepseek_trading_strategy',
+            'qwen': 'qwen_trading_strategy',
+            'kimi': 'kimi_trading_strategy'
         }
         
         strategy_name_lower = self.strategy_name.lower().replace('_strategy', '').replace('-', '_')

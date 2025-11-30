@@ -11,3 +11,5 @@ seaborn>=0.13.0
 # 机器学习
 xgboost>=2.0.0
 scikit-learn>=1.3.0
+# 定时任务
+schedule>=1.2.0

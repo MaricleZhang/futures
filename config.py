@@ -80,3 +80,14 @@ BACKTEST_CONFIG = {
     'results_dir': 'results/backtest'   # 结果输出目录
 }
 
+# 市场扫描配置
+MARKET_SCAN_CONFIG = {
+    'scan_interval_hours': 6,              # 扫描间隔（小时）
+    'strategy_type': 'qwen',               # 使用的策略类型（默认使用STRATEGY_TYPE）
+    'min_volume_24h': 1000000,             # 最小24小时交易量（USDT）过滤
+    'max_symbols_to_scan': 100,            # 最大扫描数量限制（0表示不限制）
+    'top_n_results': 5,                    # 输出前N个结果
+    'results_dir': 'data/market_scan_results',  # 结果保存目录
+    'enable_notifications': False,          # 是否启用通知（未来扩展）
+}
+

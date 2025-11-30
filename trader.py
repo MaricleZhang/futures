@@ -179,6 +179,51 @@ class Trader:
             self.logger.error(f"检查下单数量失败: {str(e)}")
             raise
             
+    def _cancel_pending_limit_orders(self, symbol=None):
+        """
+        取消指定交易对的所有挂单（包括限价单、止损单、止盈单等）
+        
+        Args:
+            symbol: 交易对
+        """
+        try:
+            symbol = symbol or self.symbol
+            if not symbol:
+                raise ValueError("Symbol not specified")
+                
+            # 获取所有未完成的订单
+            open_orders = self.exchange.fetch_open_orders(symbol=symbol)
+            
+            if not open_orders:
+                return
+            
+            if not open_orders:
+                self.logger.debug(f"[{symbol}] 没有需要取消的挂单")
+                return
+                
+            self.logger.info(f"[{symbol}] 检测到 {len(open_orders)} 个挂单，准备全部取消...")
+            
+            # 取消所有挂单
+            cancelled_count = 0
+            for order in open_orders:
+                try:
+                    order_id = order['id']
+                    order_type = order.get('type', 'N/A')
+                    order_side = order.get('side', 'N/A')
+                    order_price = order.get('price', order.get('stopPrice', 'N/A'))
+                    self.exchange.cancel_order(order_id, symbol)
+                    self.logger.info(f"✓ 取消挂单: 类型={order_type}, ID={order_id}, 方向={order_side}, 价格={order_price}")
+                    cancelled_count += 1
+                except Exception as e:
+                    self.logger.error(f"✗ 取消订单失败 {order.get('id', 'N/A')}: {str(e)}")
+            
+            if cancelled_count > 0:
+                self.logger.info(f"[{symbol}] 成功取消 {cancelled_count} 个挂单")
+                
+        except Exception as e:
+            self.logger.error(f"取消挂单时出错: {str(e)}")
+            # 不抛出异常，避免影响后续下单流程
+    
     @retry_on_error()
     def place_order(self, symbol=None, side=None, amount=None, order_type=None, price=None, stop_loss=None, take_profit=None):
         """
@@ -201,6 +246,9 @@ class Trader:
                 raise ValueError("Amount not specified")
             if order_type is None:
                 order_type = config.DEFAULT_ORDER_TYPE
+            
+            # 下单前先取消该交易对的所有限价挂单
+            self._cancel_pending_limit_orders(symbol)
                 
             # 检查并调整下单数量
             amount = self.check_order_amount(symbol, amount)
@@ -298,6 +346,9 @@ class Trader:
                 raise ValueError("Side not specified")
             if not amount:
                 raise ValueError("Amount not specified")
+            
+            # 下单前先取消该交易对的所有限价挂单
+            self._cancel_pending_limit_orders(symbol)
             
             # 获取当前市场价格
             current_price = self.get_market_price(symbol)

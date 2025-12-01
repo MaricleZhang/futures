@@ -12,7 +12,7 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
 # 策略选择配置 xgboost 只支持ZECUSDT
 # 可选策略: 'deepseek', 'simple_adx_di', 'trend_following', 'xgboost', 'qwen', 'kimi'
-STRATEGY_TYPE = 'qwen'
+STRATEGY_TYPE = 'kimi'
 
 # 交易设置
 SYMBOLS = ['BOBUSDT','ZECUSDT']  # 支持多个交易对

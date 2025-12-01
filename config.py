@@ -15,7 +15,7 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 STRATEGY_TYPE = 'deepseek'
 
 # 交易设置
-SYMBOLS = ['ZECUSDC','BOBUSDT','BEATUSDT']  # 支持多个交易对
+SYMBOLS = ['ZECUSDC','BOBUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
     'ZECUSDC': {
         'leverage':10,

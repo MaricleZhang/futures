@@ -11,7 +11,7 @@ PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
 # 策略选择配置 xgboost 只支持ZECUSDT
-# 可选策略: 'deepseek', 'simple_adx_di', 'pattern_probability', 'trend_following', 'xgboost', 'qwen', 'kimi'
+# 可选策略: 'deepseek', 'simple_adx_di', 'trend_following', 'xgboost', 'qwen', 'kimi'
 STRATEGY_TYPE = 'qwen'
 
 # 交易设置
@@ -20,13 +20,13 @@ SYMBOL_CONFIGS = {
     'BOBUSDT': {
         'leverage':10,
         'min_notional': 20,
-        'trade_amount_percent': 300,
+        'trade_amount_percent': 200,
         'check_interval': 300,  # 5分钟策略的检查间隔(秒) 
     },
     'ZECUSDT': {
         'leverage':10,
         'min_notional': 20,
-        'trade_amount_percent': 300,
+        'trade_amount_percent': 200,
         'check_interval': 300,  # 5分钟策略的检查间隔(秒) 
     }
 }
@@ -83,7 +83,7 @@ BACKTEST_CONFIG = {
 # 市场扫描配置
 MARKET_SCAN_CONFIG = {
     'scan_interval_hours': 6,              # 扫描间隔（小时）
-    'strategy_type': 'qwen',               # 使用的策略类型（默认使用STRATEGY_TYPE）
+    'strategy_type': 'simple_adx_di',               # 使用的策略类型（默认使用STRATEGY_TYPE）
     'min_volume_24h': 1000000,             # 最小24小时交易量（USDT）过滤
     'max_symbols_to_scan': 100,            # 最大扫描数量限制（0表示不限制）
     'top_n_results': 5,                    # 输出前N个结果

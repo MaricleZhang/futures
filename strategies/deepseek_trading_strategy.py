@@ -112,7 +112,12 @@ class DeepSeekTradingStrategy(BaseStrategy):
         self.min_confirmation_count = 2  # 需要连续确认的次数
         
         # Rate Limiting
-        self.min_time_between_api_calls = getattr(config, 'DEEPSEEK_API_MIN_INTERVAL', 10)  # 最小API调用间隔（秒）
+        # 在回测模式下禁用API限流，让每次都能获取新预测
+        self.is_backtest = getattr(trader, 'is_backtest', False)
+        if self.is_backtest:
+            self.min_time_between_api_calls = 0  # 回测模式：不限流
+        else:
+            self.min_time_between_api_calls = getattr(config, 'DEEPSEEK_API_MIN_INTERVAL', 10)  # 实盘：10秒间隔
         self.last_api_call_time = 0
         
         # Configure HTTP session with retry strategy

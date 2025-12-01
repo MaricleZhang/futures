@@ -42,6 +42,9 @@ class BacktestTrader:
         self.slippage_rate = slippage_rate
         self.base_interval = base_interval
         
+        # Backtest mode flag
+        self.is_backtest = True  # 标识这是回测环境
+        
         # Account state
         self.balance = initial_capital
         self.equity = initial_capital

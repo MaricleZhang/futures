@@ -15,15 +15,9 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 STRATEGY_TYPE = 'kimi'
 
 # 交易设置
-SYMBOLS = ['BOBUSDT','ZECUSDT']  # 支持多个交易对
+SYMBOLS = ['ZECUSDC']  # 支持多个交易对
 SYMBOL_CONFIGS = {
-    'BOBUSDT': {
-        'leverage':10,
-        'min_notional': 20,
-        'trade_amount_percent': 200,
-        'check_interval': 300,  # 5分钟策略的检查间隔(秒) 
-    },
-    'ZECUSDT': {
+    'ZECUSDC': {
         'leverage':10,
         'min_notional': 20,
         'trade_amount_percent': 200,

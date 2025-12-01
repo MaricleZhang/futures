@@ -12,12 +12,24 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
 # 策略选择配置 xgboost 只支持ZECUSDT
 # 可选策略: 'deepseek', 'simple_adx_di', 'trend_following', 'xgboost', 'qwen', 'kimi'
-STRATEGY_TYPE = 'kimi'
+STRATEGY_TYPE = 'deepseek'
 
 # 交易设置
-SYMBOLS = ['ZECUSDC']  # 支持多个交易对
+SYMBOLS = ['ZECUSDC','BOBUSDT','BEATUSDT']  # 支持多个交易对
 SYMBOL_CONFIGS = {
     'ZECUSDC': {
+        'leverage':10,
+        'min_notional': 20,
+        'trade_amount_percent': 200,
+        'check_interval': 300,  # 5分钟策略的检查间隔(秒) 
+    },
+    'BOBUSDT': {
+        'leverage':10,
+        'min_notional': 20,
+        'trade_amount_percent': 200,
+        'check_interval': 300,  # 5分钟策略的检查间隔(秒) 
+    },
+    'BEATUSDT': {
         'leverage':10,
         'min_notional': 20,
         'trade_amount_percent': 200,

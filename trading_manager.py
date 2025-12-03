@@ -4,9 +4,7 @@ import time
 from trader import Trader
 from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
 from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
-from strategies.pattern_probability_strategy import PatternProbabilityStrategy
-from strategies.trend_following_strategy import TrendFollowingStrategy
-from strategies.xgboost_price_strategy import XGBoostPriceStrategy
+from strategies.deepseek_multi_timeframe_strategy import DeepSeekMultiTimeframeStrategy
 from strategies.qwen_trading_strategy import QwenTradingStrategy
 from strategies.kimi_trading_strategy import KimiTradingStrategy
 from utils.logger import Logger
@@ -38,21 +36,15 @@ class TradingManager:
                 if strategy_type == 'simple_adx_di':
                     strategy = SimpleADXDIStrategy15m(trader)
                     symbol_logger.info(f"使用 Simple ADX-DI 策略")
-                elif strategy_type == 'pattern_probability':
-                    strategy = PatternProbabilityStrategy(trader)
-                    symbol_logger.info(f"使用 K线形态概率策略")
-                elif strategy_type == 'trend_following':
-                    strategy = TrendFollowingStrategy(trader)
-                    symbol_logger.info(f"使用 趋势跟随策略")
-                elif strategy_type == 'xgboost':
-                    strategy = XGBoostPriceStrategy(trader)
-                    symbol_logger.info(f"使用 XGBoost 策略")
                 elif strategy_type == 'qwen':
                     strategy = QwenTradingStrategy(trader)
                     symbol_logger.info(f"使用 Qwen 策略")
                 elif strategy_type == 'kimi':
                     strategy = KimiTradingStrategy(trader)
                     symbol_logger.info(f"使用 Kimi AI 策略")
+                elif strategy_type == 'deepseek_multi_timeframe':
+                    strategy = DeepSeekMultiTimeframeStrategy(trader)
+                    symbol_logger.info(f"使用 DeepSeek 多时间周期策略 (15m + 1h)")
                 else:  # 默认使用 deepseek
                     strategy = DeepSeekTradingStrategy(trader)
                     symbol_logger.info(f"使用 DeepSeek AI 策略")

@@ -10,20 +10,25 @@ PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
 PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
-# 策略选择配置 xgboost 只支持ZECUSDT
-# 可选策略: 'deepseek', 'simple_adx_di', 'trend_following', 'xgboost', 'qwen', 'kimi'
-STRATEGY_TYPE = 'deepseek'
+# 可选策略: 'deepseek', 'deepseek_multi_timeframe', 'simple_adx_di', 'qwen', 'kimi'
+STRATEGY_TYPE = 'deepseek_multi_timeframe'
 
 # 交易设置
-SYMBOLS = ['ZECUSDC','BOBUSDT']  # 支持多个交易对
+SYMBOLS = ['ENAUSDC']  # LSTM策略专用于ZECUSDT
 SYMBOL_CONFIGS = {
-    'ZECUSDC': {
+    'ENAUSDC': {
+        'leverage': 5,
+        'min_notional': 20,
+        'trade_amount_percent': 95,
+        'check_interval': 300,  # 15分钟策略的检查间隔(秒)
+    },
+    'IRYSUSDT': {
         'leverage':10,
         'min_notional': 20,
         'trade_amount_percent': 200,
         'check_interval': 300,  # 5分钟策略的检查间隔(秒) 
     },
-    'BOBUSDT': {
+    'ENAUSDC': {
         'leverage':10,
         'min_notional': 20,
         'trade_amount_percent': 200,

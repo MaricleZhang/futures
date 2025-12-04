@@ -103,6 +103,7 @@ class BacktestEngine:
             'deepseek': 'DeepSeekTradingStrategy',
             'qwen': 'QwenTradingStrategy',
             'kimi': 'KimiTradingStrategy',
+            'dl_lstm': 'DLLSTMStrategy',
         }
         
         strategy_files = {
@@ -111,6 +112,7 @@ class BacktestEngine:
             'deepseek': 'deepseek_trading_strategy',
             'qwen': 'qwen_trading_strategy',
             'kimi': 'kimi_trading_strategy',
+            'dl_lstm': 'dl_lstm_strategy',
         }
         
         strategy_name_lower = self.strategy_name.lower().replace('_strategy', '').replace('-', '_')

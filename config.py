@@ -10,8 +10,8 @@ PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
 PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
-# 可选策略: 'deepseek', 'deepseek_multi_timeframe', 'simple_adx_di', 'qwen', 'kimi'
-STRATEGY_TYPE = 'deepseek_multi_timeframe'
+# 可选策略: 'deepseek', 'deepseek_multi_timeframe', 'simple_adx_di', 'qwen', 'kimi', 'dl_lstm'
+STRATEGY_TYPE = 'dl_lstm'
 
 # 交易设置
 SYMBOLS = ['ENAUSDC']  # LSTM策略专用于ZECUSDT
@@ -19,26 +19,8 @@ SYMBOL_CONFIGS = {
     'ENAUSDC': {
         'leverage': 5,
         'min_notional': 20,
-        'trade_amount_percent': 95,
+        'trade_amount_percent': 100,
         'check_interval': 300,  # 15分钟策略的检查间隔(秒)
-    },
-    'IRYSUSDT': {
-        'leverage':10,
-        'min_notional': 20,
-        'trade_amount_percent': 200,
-        'check_interval': 300,  # 5分钟策略的检查间隔(秒) 
-    },
-    'ENAUSDC': {
-        'leverage':10,
-        'min_notional': 20,
-        'trade_amount_percent': 200,
-        'check_interval': 300,  # 5分钟策略的检查间隔(秒) 
-    },
-    'BEATUSDT': {
-        'leverage':10,
-        'min_notional': 20,
-        'trade_amount_percent': 200,
-        'check_interval': 300,  # 5分钟策略的检查间隔(秒) 
     }
 }
 DEFAULT_LEVERAGE = 5  # 默认杠杆倍数
@@ -90,6 +72,27 @@ BACKTEST_CONFIG = {
     'data_cache_dir': 'data/backtest',  # 数据缓存目录
     'results_dir': 'results/backtest'   # 结果输出目录
 }
+
+# 深度学习策略配置
+DL_STRATEGY_CONFIG = {
+    'model_path': 'strategies/models/best_model.pth',  # 模型权重路径
+    'sequence_length': 60,      # 输入序列长度(60根K线)
+    'hidden_size': 128,         # LSTM隐藏层大小
+    'num_layers': 2,            # LSTM层数
+    'dropout': 0.3,             # Dropout比例
+    'input_features': 18,       # 输入特征数
+    'output_classes': 3,        # 输出类别数(买/卖/持)
+    'confidence_threshold': 0.50,  # 信号置信度阈值
+    'training': {
+        'epochs': 100,
+        'patience': 15,
+        'batch_size': 64,
+        'learning_rate': 0.001,
+        'future_periods': 5,       # 预测未来K线数
+        'threshold': 0.002,        # 涨跌阈值(0.2%)
+    }
+}
+
 
 # 市场扫描配置
 MARKET_SCAN_CONFIG = {

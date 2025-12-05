@@ -145,9 +145,13 @@ def main():
         for u, c in zip(unique, counts):
             logger.info(f"  {class_names[u]}: {c} ({c/len(y)*100:.1f}%)")
         
-        # Step 4: Normalize features
+        # Step 4: Normalize features (fit global scaler)
         logger.info("Step 4: Normalizing features...")
-        X = feature_extractor.normalize_features(X)
+        X = feature_extractor.normalize_features(X, fit=True)
+        
+        # Save scaler for inference
+        scaler_path = Path(args.output_dir) / 'scaler.npz'
+        feature_extractor.save_scaler(str(scaler_path))
         
         # Step 5: Split data
         logger.info("Step 5: Splitting train/validation sets...")

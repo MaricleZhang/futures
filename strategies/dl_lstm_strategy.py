@@ -55,6 +55,10 @@ class DLLSTMStrategy(BaseStrategy):
         self.output_classes = dl_config.get('output_classes', 3)
         self.confidence_threshold = dl_config.get('confidence_threshold', 0.50)
         self.model_path = dl_config.get('model_path', 'strategies/models/best_model.pth')
+        self.scaler_path = dl_config.get('scaler_path', 'strategies/models/scaler.npz')
+        
+        # 温度缩放参数 (用于校准置信度)
+        self.temperature = dl_config.get('temperature', 2.0)  # 温度越高，概率越平滑
         
         # 回测需要的属性
         self.lookback_period = self.sequence_length + 50  # 确保有足够数据计算特征
@@ -63,7 +67,7 @@ class DLLSTMStrategy(BaseStrategy):
         # ==================== 特征提取器 ====================
         self.feature_extractor = LSTMFeatureExtractor(sequence_length=self.sequence_length)
         
-        # ==================== 模型加载 ====================
+        # ==================== 模型和Scaler加载 ====================
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model = None
         self._load_model()
@@ -102,7 +106,7 @@ class DLLSTMStrategy(BaseStrategy):
         self.logger.info("=" * 70)
     
     def _load_model(self):
-        """加载预训练模型"""
+        """加载预训练模型和归一化参数"""
         try:
             model_path = Path(self.model_path)
             if not model_path.is_absolute():
@@ -133,6 +137,17 @@ class DLLSTMStrategy(BaseStrategy):
                     dropout=0.0
                 ).to(self.device)
                 self.model.eval()
+            
+            # 加载归一化参数
+            scaler_path = Path(self.scaler_path)
+            if not scaler_path.is_absolute():
+                scaler_path = Path(__file__).parent.parent / self.scaler_path
+            
+            if self.feature_extractor.load_scaler(str(scaler_path)):
+                self.logger.info(f"✅ Scaler加载成功: {scaler_path}")
+            else:
+                self.logger.warning(f"⚠️ Scaler文件不存在: {scaler_path}")
+                self.logger.warning("将使用逐序列归一化（可能影响预测准确性）")
                 
         except Exception as e:
             self.logger.error(f"模型加载失败: {str(e)}")
@@ -176,18 +191,17 @@ class DLLSTMStrategy(BaseStrategy):
             features = df[feature_cols].iloc[-self.sequence_length:].values
             features = np.nan_to_num(features, nan=0.0, posinf=0.0, neginf=0.0)
             
-            # 归一化
-            mean = features.mean(axis=0, keepdims=True)
-            std = features.std(axis=0, keepdims=True)
-            std = np.where(std == 0, 1, std)
-            features = (features - mean) / std
+            # 使用全局归一化参数进行归一化
+            features = self.feature_extractor.transform_single(features)
             
             # 模型预测
             X = torch.FloatTensor(features).unsqueeze(0).to(self.device)
             
             with torch.no_grad():
                 logits = self.model(X)
-                probs = torch.softmax(logits, dim=1)[0]
+                # 使用温度缩放校准置信度
+                logits_scaled = logits / self.temperature
+                probs = torch.softmax(logits_scaled, dim=1)[0]
             
             probs = probs.cpu().numpy()
             pred_class = np.argmax(probs)

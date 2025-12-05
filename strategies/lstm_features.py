@@ -45,6 +45,11 @@ class LSTMFeatureExtractor:
         # 特征名称
         self.feature_names = None
         
+        # 全局归一化参数 (训练时拟合，推理时使用)
+        self.global_mean = None
+        self.global_std = None
+        self.scaler_fitted = False
+        
     def calculate_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """计算所有特征
         
@@ -230,27 +235,121 @@ class LSTMFeatureExtractor:
         """获取特征数量"""
         return len(self.feature_names) if self.feature_names else 18
     
-    def normalize_features(self, X: np.ndarray) -> np.ndarray:
-        """标准化特征(逐序列)
+    def normalize_features(self, X: np.ndarray, fit: bool = False) -> np.ndarray:
+        """标准化特征
         
         Args:
             X: 形状为(samples, sequence_length, features)的特征矩阵
+            fit: 是否拟合全局统计量（训练时为True，推理时为False）
             
         Returns:
             标准化后的特征矩阵
         """
         try:
-            X_norm = np.zeros_like(X)
+            if fit:
+                # 训练时：计算全局统计量
+                # 将所有样本展平计算全局均值和标准差
+                X_flat = X.reshape(-1, X.shape[-1])  # (samples * seq_len, features)
+                self.global_mean = X_flat.mean(axis=0)
+                self.global_std = X_flat.std(axis=0)
+                self.global_std = np.where(self.global_std == 0, 1, self.global_std)
+                self.scaler_fitted = True
+                self.logger.info(f"Scaler fitted: mean range [{self.global_mean.min():.4f}, {self.global_mean.max():.4f}]")
             
-            for i in range(X.shape[0]):
-                seq = X[i]
-                mean = seq.mean(axis=0, keepdims=True)
-                std = seq.std(axis=0, keepdims=True)
-                std = np.where(std == 0, 1, std)  # 避免除零
-                X_norm[i] = (seq - mean) / std
+            if self.scaler_fitted and self.global_mean is not None:
+                # 使用全局统计量归一化
+                X_norm = (X - self.global_mean) / self.global_std
+            else:
+                # 回退到逐序列归一化（兼容旧代码）
+                self.logger.warning("Scaler not fitted, using per-sequence normalization")
+                X_norm = np.zeros_like(X)
+                for i in range(X.shape[0]):
+                    seq = X[i]
+                    mean = seq.mean(axis=0, keepdims=True)
+                    std = seq.std(axis=0, keepdims=True)
+                    std = np.where(std == 0, 1, std)
+                    X_norm[i] = (seq - mean) / std
             
             return X_norm
             
         except Exception as e:
             self.logger.error(f"标准化特征出错: {str(e)}")
             return X
+    
+    def save_scaler(self, path: str) -> bool:
+        """保存归一化参数
+        
+        Args:
+            path: 保存路径 (如 'models/scaler.npz')
+            
+        Returns:
+            是否保存成功
+        """
+        try:
+            if not self.scaler_fitted:
+                self.logger.warning("Scaler not fitted, nothing to save")
+                return False
+            
+            np.savez(
+                path,
+                global_mean=self.global_mean,
+                global_std=self.global_std,
+                feature_names=np.array(self.feature_names, dtype=object)
+            )
+            self.logger.info(f"Scaler saved to {path}")
+            return True
+        except Exception as e:
+            self.logger.error(f"保存scaler失败: {str(e)}")
+            return False
+    
+    def load_scaler(self, path: str) -> bool:
+        """加载归一化参数
+        
+        Args:
+            path: 加载路径
+            
+        Returns:
+            是否加载成功
+        """
+        try:
+            from pathlib import Path
+            scaler_path = Path(path)
+            
+            if not scaler_path.exists():
+                self.logger.warning(f"Scaler file not found: {path}")
+                return False
+            
+            data = np.load(path, allow_pickle=True)
+            self.global_mean = data['global_mean']
+            self.global_std = data['global_std']
+            self.scaler_fitted = True
+            
+            # 可选：加载特征名称
+            if 'feature_names' in data:
+                loaded_names = data['feature_names'].tolist()
+                if self.feature_names is None:
+                    self.feature_names = loaded_names
+            
+            self.logger.info(f"Scaler loaded from {path}")
+            return True
+        except Exception as e:
+            self.logger.error(f"加载scaler失败: {str(e)}")
+            return False
+    
+    def transform_single(self, features: np.ndarray) -> np.ndarray:
+        """转换单个序列（推理时使用）
+        
+        Args:
+            features: 形状为(sequence_length, features)的特征矩阵
+            
+        Returns:
+            标准化后的特征矩阵
+        """
+        if self.scaler_fitted and self.global_mean is not None:
+            return (features - self.global_mean) / self.global_std
+        else:
+            # 回退到逐序列归一化
+            mean = features.mean(axis=0, keepdims=True)
+            std = features.std(axis=0, keepdims=True)
+            std = np.where(std == 0, 1, std)
+            return (features - mean) / std

@@ -10,7 +10,7 @@ PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
 PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
-# 可选策略: 'deepseek', 'deepseek_multi_timeframe', 'simple_adx_di', 'qwen', 'kimi', 'dl_lstm'
+# 可选策略: 'deepseek', 'simple_adx_di', 'qwen', 'kimi', 'dl_lstm'
 STRATEGY_TYPE = 'dl_lstm'
 
 # 交易设置

@@ -38,7 +38,7 @@ def parse_args():
                        help='Trading symbol (default: ENAUSDC)')
     parser.add_argument('--start_date', type=str, default='2025-06-01',
                        help='Start date for training data')
-    parser.add_argument('--end_date', type=str, default='2025-12-05',
+    parser.add_argument('--end_date', type=str, default='2025-12-06',
                        help='End date for training data')
     parser.add_argument('--interval', type=str, default='15m',
                        help='Kline interval (default: 15m)')

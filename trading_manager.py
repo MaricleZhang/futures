@@ -4,7 +4,6 @@ import time
 from trader import Trader
 from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
 from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
-from strategies.deepseek_multi_timeframe_strategy import DeepSeekMultiTimeframeStrategy
 from strategies.qwen_trading_strategy import QwenTradingStrategy
 from strategies.kimi_trading_strategy import KimiTradingStrategy
 from strategies.dl_lstm_strategy import DLLSTMStrategy
@@ -43,9 +42,6 @@ class TradingManager:
                 elif strategy_type == 'kimi':
                     strategy = KimiTradingStrategy(trader)
                     symbol_logger.info(f"使用 Kimi AI 策略")
-                elif strategy_type == 'deepseek_multi_timeframe':
-                    strategy = DeepSeekMultiTimeframeStrategy(trader)
-                    symbol_logger.info(f"使用 DeepSeek 多时间周期策略 (15m + 1h)")
                 elif strategy_type == 'dl_lstm':
                     strategy = DLLSTMStrategy(trader)
                     symbol_logger.info(f"使用 DL LSTM 策略")

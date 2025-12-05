@@ -75,7 +75,7 @@ class DLLSTMStrategy(BaseStrategy):
         # ==================== 仓位管理 ====================
         self.stop_loss_pct = 0.02        # 2%止损
         self.take_profit_pct = 0.06      # 6%止盈
-        self.max_hold_time = 480         # 8小时
+        self.max_hold_time = 1440         # 1天
         
         # 动态止损止盈
         self.use_dynamic_stops = True

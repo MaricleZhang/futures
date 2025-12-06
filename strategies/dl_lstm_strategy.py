@@ -26,15 +26,20 @@ import config
 class DLLSTMStrategy(BaseStrategy):
     """深度学习LSTM交易策略"""
     
-    def __init__(self, trader, interval='15m'):
+    def __init__(self, trader, interval='15m', symbol=None):
         """初始化策略
         
         Args:
             trader: 交易器实例
             interval: K线周期
+            symbol: 交易对(可选，默认从trader获取)
         """
         super().__init__(trader)
         self.logger = self.get_logger()
+        
+        # ==================== 交易对配置 ====================
+        self.symbol = symbol or getattr(trader, 'symbol', 'UNKNOWN')
+        self.symbol_key = self.symbol.lower().replace('/', '')
         
         # ==================== 时间配置 ====================
         self.kline_interval = interval
@@ -54,8 +59,17 @@ class DLLSTMStrategy(BaseStrategy):
         self.input_features = dl_config.get('input_features', 18)
         self.output_classes = dl_config.get('output_classes', 3)
         self.confidence_threshold = dl_config.get('confidence_threshold', 0.50)
-        self.model_path = dl_config.get('model_path', 'strategies/models/best_model.pth')
-        self.scaler_path = dl_config.get('scaler_path', 'strategies/models/scaler.npz')
+        
+        # 根据交易对自动选择模型路径
+        base_dir = dl_config.get('models_base_dir', 'strategies/models')
+        symbol_model_dir = f"{base_dir}/{self.symbol_key}"
+        
+        self.model_path = f"{symbol_model_dir}/best_model.pth"
+        self.scaler_path = f"{symbol_model_dir}/scaler.npz"
+        
+        # 默认模型路径(回退用)
+        self.default_model_path = dl_config.get('default_model_path', 'strategies/models/best_model.pth')
+        self.default_scaler_path = dl_config.get('default_scaler_path', 'strategies/models/scaler.npz')
         
         # 温度缩放参数 (用于校准置信度)
         self.temperature = dl_config.get('temperature', 2.0)  # 温度越高，概率越平滑
@@ -99,6 +113,7 @@ class DLLSTMStrategy(BaseStrategy):
         
         self.logger.info("=" * 70)
         self.logger.info("🧠 Deep Learning LSTM Strategy 初始化完成")
+        self.logger.info(f"交易对: {self.symbol} | 模型目录: {self.symbol_key}")
         self.logger.info(f"K线周期: {self.kline_interval} | 检查间隔: {self.check_interval}秒")
         self.logger.info(f"序列长度: {self.sequence_length} | 隐藏层: {self.hidden_size}")
         self.logger.info(f"置信度阈值: {self.confidence_threshold:.0%}")
@@ -108,9 +123,19 @@ class DLLSTMStrategy(BaseStrategy):
     def _load_model(self):
         """加载预训练模型和归一化参数"""
         try:
+            # 尝试加载交易对专属模型
             model_path = Path(self.model_path)
             if not model_path.is_absolute():
                 model_path = Path(__file__).parent.parent / self.model_path
+            
+            # 如果交易对专属模型不存在，尝试回退到默认模型
+            if not model_path.exists():
+                self.logger.warning(f"⚠️ 交易对专属模型不存在: {model_path}")
+                model_path = Path(self.default_model_path)
+                if not model_path.is_absolute():
+                    model_path = Path(__file__).parent.parent / self.default_model_path
+                if model_path.exists():
+                    self.logger.info(f"📍 回退到默认模型: {model_path}")
             
             if model_path.exists():
                 self.model = LSTMClassifier(
@@ -138,10 +163,19 @@ class DLLSTMStrategy(BaseStrategy):
                 ).to(self.device)
                 self.model.eval()
             
-            # 加载归一化参数
+            # 尝试加载交易对专属scaler
             scaler_path = Path(self.scaler_path)
             if not scaler_path.is_absolute():
                 scaler_path = Path(__file__).parent.parent / self.scaler_path
+            
+            # 如果交易对专属scaler不存在，尝试回退到默认scaler
+            if not scaler_path.exists():
+                self.logger.warning(f"⚠️ 交易对专属Scaler不存在: {scaler_path}")
+                scaler_path = Path(self.default_scaler_path)
+                if not scaler_path.is_absolute():
+                    scaler_path = Path(__file__).parent.parent / self.default_scaler_path
+                if scaler_path.exists():
+                    self.logger.info(f"📍 回退到默认Scaler: {scaler_path}")
             
             if self.feature_extractor.load_scaler(str(scaler_path)):
                 self.logger.info(f"✅ Scaler加载成功: {scaler_path}")

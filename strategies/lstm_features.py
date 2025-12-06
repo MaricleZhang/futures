@@ -290,6 +290,11 @@ class LSTMFeatureExtractor:
                 self.logger.warning("Scaler not fitted, nothing to save")
                 return False
             
+            # 确保目录存在
+            from pathlib import Path
+            save_path = Path(path)
+            save_path.parent.mkdir(parents=True, exist_ok=True)
+            
             np.savez(
                 path,
                 global_mean=self.global_mean,

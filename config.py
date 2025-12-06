@@ -14,6 +14,7 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 STRATEGY_TYPE = 'dl_lstm'
 
 # 交易设置
+# ENAUSDC ARBUSDC
 SYMBOLS = ['ENAUSDC']  # LSTM策略专用于ZECUSDT
 SYMBOL_CONFIGS = {
     'ENAUSDC': {
@@ -75,7 +76,9 @@ BACKTEST_CONFIG = {
 
 # 深度学习策略配置
 DL_STRATEGY_CONFIG = {
-    'model_path': 'strategies/models/best_model.pth',  # 模型权重路径
+    'models_base_dir': 'strategies/models',  # 模型根目录，按交易对自动选择子目录
+    'default_model_path': 'strategies/models/best_model.pth',  # 默认模型路径(回退用)
+    'default_scaler_path': 'strategies/models/scaler.npz',  # 默认scaler路径(回退用)
     'sequence_length': 60,      # 输入序列长度(60根K线)
     'hidden_size': 128,         # LSTM隐藏层大小
     'num_layers': 2,            # LSTM层数

@@ -38,7 +38,7 @@ def parse_args():
                        help='Trading symbol (default: ENAUSDC)')
     parser.add_argument('--start_date', type=str, default='2025-06-01',
                        help='Start date for training data')
-    parser.add_argument('--end_date', type=str, default='2025-12-06',
+    parser.add_argument('--end_date', type=str, default='2025-12-07',
                        help='End date for training data')
     parser.add_argument('--interval', type=str, default='15m',
                        help='Kline interval (default: 15m)')
@@ -54,8 +54,8 @@ def parse_args():
                        help='LSTM sequence length (default: 60)')
     parser.add_argument('--hidden_size', type=int, default=128,
                        help='LSTM hidden size (default: 128)')
-    parser.add_argument('--output_dir', type=str, default='strategies/models',
-                       help='Output directory for models')
+    parser.add_argument('--output_dir', type=str, default=None,
+                       help='Output directory (default: strategies/models/{symbol})')
     
     return parser.parse_args()
 
@@ -79,6 +79,12 @@ def main():
         else:
             raise ValueError(f"Unsupported symbol: {symbol}")
         symbol = f"{base}/{quote}"
+    
+    # Auto-generate output directory based on symbol if not specified
+    if args.output_dir is None:
+        symbol_dir = args.symbol.lower().replace('/', '')
+        args.output_dir = f'strategies/models/{symbol_dir}'
+        logger.info(f"Auto-generated output directory: {args.output_dir}")
     
     logger.info("=" * 80)
     logger.info("LSTM MODEL TRAINING")

@@ -12,6 +12,8 @@ seaborn>=0.13.0
 # 机器学习
 xgboost>=2.0.0
 scikit-learn>=1.3.0
+# 属性测试
+hypothesis>=6.0.0
 # 神经网络
 torch>=2.0.0
 # 定时任务

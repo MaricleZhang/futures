@@ -99,7 +99,7 @@ class BacktestEngine:
             'pattern_probability': 'PatternProbabilityStrategy',
             'simple_adx_di': 'SimpleADXDIStrategy15m',  # Note: ADX, DI are caps, has 15m suffix
             'trend_following': 'TrendFollowingStrategy',
-            'xgboost': 'XGBoostPriceStrategy',
+            'xgboost': 'XGBoostStrategy',
             'deepseek': 'DeepSeekTradingStrategy',
             'qwen': 'QwenTradingStrategy',
             'kimi': 'KimiTradingStrategy',
@@ -108,7 +108,7 @@ class BacktestEngine:
         
         strategy_files = {
             'simple_adx_di': 'simple_adx_di_15m_strategy',
-            'xgboost': 'xgboost_price_strategy',
+            'xgboost': 'xgboost_strategy',
             'deepseek': 'deepseek_trading_strategy',
             'qwen': 'qwen_trading_strategy',
             'kimi': 'kimi_trading_strategy',

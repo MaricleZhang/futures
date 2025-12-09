@@ -36,10 +36,12 @@ def parse_args():
     
     parser.add_argument('--symbol', type=str, default='ENAUSDC',
                        help='Trading symbol (default: ENAUSDC)')
-    parser.add_argument('--start_date', type=str, default='2025-06-01',
-                       help='Start date for training data')
-    parser.add_argument('--end_date', type=str, default='2025-12-07',
-                       help='End date for training data')
+    parser.add_argument('--days', type=int, default=None,
+                       help='Number of days for training data (overrides start_date/end_date)')
+    parser.add_argument('--start_date', type=str, default=None,
+                       help='Start date for training data (ignored if --days is set)')
+    parser.add_argument('--end_date', type=str, default=None,
+                       help='End date for training data (ignored if --days is set)')
     parser.add_argument('--interval', type=str, default='15m',
                        help='Kline interval (default: 15m)')
     parser.add_argument('--epochs', type=int, default=100,
@@ -57,7 +59,19 @@ def parse_args():
     parser.add_argument('--output_dir', type=str, default=None,
                        help='Output directory (default: strategies/models/{symbol})')
     
-    return parser.parse_args()
+    args = parser.parse_args()
+    
+    # Calculate dates based on --days or use defaults
+    if args.days is not None:
+        args.end_date = datetime.now().strftime('%Y-%m-%d')
+        args.start_date = (datetime.now() - pd.Timedelta(days=args.days)).strftime('%Y-%m-%d')
+    else:
+        # Default to 90 days if no dates specified
+        if args.start_date is None or args.end_date is None:
+            args.end_date = datetime.now().strftime('%Y-%m-%d')
+            args.start_date = (datetime.now() - pd.Timedelta(days=90)).strftime('%Y-%m-%d')
+    
+    return args
 
 
 def main():

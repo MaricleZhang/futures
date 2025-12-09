@@ -170,7 +170,7 @@ def main():
         X = feature_extractor.normalize_features(X, fit=True)
         
         # Save scaler for inference
-        scaler_path = Path(args.output_dir) / 'scaler.npz'
+        scaler_path = Path(args.output_dir) / 'scaler_model.npz'
         feature_extractor.save_scaler(str(scaler_path))
         
         # Step 5: Split data
@@ -225,7 +225,7 @@ def main():
         
         output_dir = Path(args.output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
-        best_model_path = output_dir / 'best_model.pth'
+        best_model_path = output_dir / 'lstm_model.pth'
         
         for epoch in range(args.epochs):
             train_loss, train_acc = trainer.train_epoch(train_loader)

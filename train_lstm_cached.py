@@ -170,7 +170,7 @@ def main():
         
         output_dir = Path('strategies/models')
         output_dir.mkdir(parents=True, exist_ok=True)
-        best_model_path = output_dir / 'best_model.pth'
+        best_model_path = output_dir / 'lstm_model.pth'
         
         for epoch in range(epochs):
             train_loss, train_acc = trainer.train_epoch(train_loader)

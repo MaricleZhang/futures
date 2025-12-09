@@ -64,12 +64,12 @@ class DLLSTMStrategy(BaseStrategy):
         base_dir = dl_config.get('models_base_dir', 'strategies/models')
         symbol_model_dir = f"{base_dir}/{self.symbol_key}"
         
-        self.model_path = f"{symbol_model_dir}/best_model.pth"
-        self.scaler_path = f"{symbol_model_dir}/scaler.npz"
+        self.model_path = f"{symbol_model_dir}/lstm_model.pth"
+        self.scaler_path = f"{symbol_model_dir}/lstm_scaler.npz"
         
         # 默认模型路径(回退用)
-        self.default_model_path = dl_config.get('default_model_path', 'strategies/models/best_model.pth')
-        self.default_scaler_path = dl_config.get('default_scaler_path', 'strategies/models/scaler.npz')
+        self.default_model_path = dl_config.get('default_model_path', 'strategies/models/lstm_model.pth')
+        self.default_scaler_path = dl_config.get('default_scaler_path', 'strategies/models/lstm_scaler.npz')
         
         # 温度缩放参数 (用于校准置信度)
         self.temperature = dl_config.get('temperature', 2.0)  # 温度越高，概率越平滑

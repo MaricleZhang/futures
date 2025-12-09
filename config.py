@@ -10,8 +10,8 @@ PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
 PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
-# 可选策略: 'deepseek', 'simple_adx_di', 'qwen', 'kimi', 'dl_lstm','xgboost'
-STRATEGY_TYPE = 'xgboost'
+# 可选策略: 'deepseek', 'simple_adx_di', 'qwen', 'kimi', 'dl_lstm'
+STRATEGY_TYPE = 'dl_lstm'
 
 # 交易设置
 # ENAUSDC ARBUSDC
@@ -77,8 +77,8 @@ BACKTEST_CONFIG = {
 # 深度学习策略配置
 DL_STRATEGY_CONFIG = {
     'models_base_dir': 'strategies/models',  # 模型根目录，按交易对自动选择子目录
-    'default_model_path': 'strategies/models/best_model.pth',  # 默认模型路径(回退用)
-    'default_scaler_path': 'strategies/models/scaler.npz',  # 默认scaler路径(回退用)
+    'default_model_path': 'strategies/models/lstm_model.pth',  # 默认模型路径(回退用)
+    'default_scaler_path': 'strategies/models/lstm_scaler.npz',  # 默认scaler路径(回退用)
     'sequence_length': 60,      # 输入序列长度(60根K线)
     'hidden_size': 128,         # LSTM隐藏层大小
     'num_layers': 2,            # LSTM层数
@@ -93,40 +93,6 @@ DL_STRATEGY_CONFIG = {
         'learning_rate': 0.001,
         'future_periods': 5,       # 预测未来K线数
         'threshold': 0.002,        # 涨跌阈值(0.2%)
-    }
-}
-
-
-# XGBoost策略配置
-XGBOOST_STRATEGY_CONFIG = {
-    'models_base_dir': 'strategies/models',  # 模型根目录，按交易对自动选择子目录
-    'model_filename': 'xgboost_model.json',  # XGBoost模型文件名
-    'scaler_filename': 'xgboost_scaler.npz',  # XGBoost scaler文件名
-    'signal_mode': 'prob_diff',  # 信号模式: 'confidence'(单一置信度) 或 'prob_diff'(概率差值)
-    'confidence_threshold': 0.50,  # 单一置信度模式阈值
-    'prob_diff_threshold': 0.15,  # 概率差值模式阈值(涨概率-跌概率)
-    'min_class_prob': 0.35,  # 概率差值模式下，最低类别概率要求(可选，设为0禁用)
-    'hyperparameters': {
-        'max_depth': 6,
-        'learning_rate': 0.1,
-        'n_estimators': 200,
-        'subsample': 0.8,
-        'colsample_bytree': 0.8,
-        'min_child_weight': 1,
-        'gamma': 0,
-        'reg_alpha': 0,
-        'reg_lambda': 1,
-        'objective': 'multi:softprob',
-        'num_class': 3,
-        'eval_metric': 'mlogloss',
-        'early_stopping_rounds': 20,
-        'random_state': 42,
-    },
-    'training': {
-        'future_periods': 5,       # 预测未来K线数
-        'threshold': 0.002,        # 涨跌阈值(0.2%)
-        'test_size': 0.2,          # 测试集比例
-        'ic_target': 0.05,         # IC目标值
     }
 }
 

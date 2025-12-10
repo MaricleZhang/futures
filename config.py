@@ -14,10 +14,10 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 STRATEGY_TYPE = 'deepseek'
 
 # 交易设置
-# ENAUSDC ARBUSDC
-SYMBOLS = ['ENAUSDC']  # LSTM策略专用于ZECUSDT
+# ENA/USDT:USDT (USDT合约支持止损止盈订单)
+SYMBOLS = ['ENAUSDT']
 SYMBOL_CONFIGS = {
-    'ENAUSDC': {
+    'ENAUSDT': {
         'leverage': 5,
         'min_notional': 20,
         'trade_amount_percent': 100,

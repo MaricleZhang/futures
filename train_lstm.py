@@ -4,6 +4,7 @@ LSTM模型训练脚本
 
 Usage:
     python train_lstm.py --symbol ENAUSDC --start_date 2025-09-01 --end_date 2025-12-04
+    python train_lstm.py --symbol ZECUSDT --start_date 2025-01-01 --end_date 2025-06-01 --interval 1h
 
 File: train_lstm.py
 """
@@ -170,7 +171,7 @@ def main():
         X = feature_extractor.normalize_features(X, fit=True)
         
         # Save scaler for inference
-        scaler_path = Path(args.output_dir) / 'scaler_model.npz'
+        scaler_path = Path(args.output_dir) / 'lstm_scaler.npz'
         feature_extractor.save_scaler(str(scaler_path))
         
         # Step 5: Split data

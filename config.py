@@ -11,7 +11,7 @@ PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
 # 可选策略: 'deepseek', 'simple_adx_di', 'qwen', 'kimi', 'dl_lstm'
-STRATEGY_TYPE = 'dl_lstm'
+STRATEGY_TYPE = 'deepseek'
 
 # 交易设置
 # ENAUSDC ARBUSDC

@@ -14,16 +14,16 @@ PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 STRATEGY_TYPE = 'deepseek'
 
 # 交易设置
-# ENA/USDT:USDT (USDT合约支持止损止盈订单)
-SYMBOLS = ['ZECUSDC']
+# ZECSDT (USDT合约支持止损止盈订单)
+SYMBOLS = ['ZECUSDT']
 SYMBOL_CONFIGS = {
-    'ZECUSDC': {
+    'ZECUSDT': {
         'leverage': 5,
         'min_notional': 20,
         'trade_amount_percent': 100,
         'check_interval': 60,  # 订单流策略检查间隔(秒)
-        'strategy': 'orderflow',  # 指定使用订单流策略
-        'interval': '5m',  # K线周期
+        'strategy': 'deepseek',  # 指定使用策略
+        'interval': '15m',  # K线周期
     }
 }
 DEFAULT_LEVERAGE = 5  # 默认杠杆倍数

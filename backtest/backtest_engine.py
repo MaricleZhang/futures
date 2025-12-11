@@ -102,7 +102,6 @@ class BacktestEngine:
             'qwen': 'QwenTradingStrategy',
             'kimi': 'KimiTradingStrategy',
             'dl_lstm': 'DLLSTMStrategy',
-            'rf': 'RandomForestStrategy',
         }
         
         strategy_files = {
@@ -111,7 +110,6 @@ class BacktestEngine:
             'qwen': 'qwen_trading_strategy',
             'kimi': 'kimi_trading_strategy',
             'dl_lstm': 'dl_lstm_strategy',
-            'rf': 'random_forest_strategy',
         }
         
         strategy_name_lower = self.strategy_name.lower().replace('_strategy', '').replace('-', '_')

@@ -11,5 +11,6 @@ matplotlib>=3.8.0
 seaborn>=0.13.0
 # 神经网络
 torch>=2.0.0
-# 定时任务
-schedule>=1.2.0
+scikit-learn
+# XGBoost
+xgboost>=2.0.0

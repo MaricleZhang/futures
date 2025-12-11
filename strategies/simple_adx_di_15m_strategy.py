@@ -53,9 +53,7 @@ class SimpleADXDIStrategy15m(BaseStrategy):
             '4h': 3600,    # 1小时检查一次
         }
         self.check_interval = interval_to_check.get(interval, 300)  # 默认5分钟
-        self.lookback_period = 100
-        self.training_lookback = 100
-        
+        self.lookback_period = 100        
         # ==================== ADX和DI参数 ====================
         self.adx_period = 14
         self.adx_min_threshold = 18      # 降低到18（允许中等趋势）

@@ -76,7 +76,6 @@ class DLLSTMStrategy(BaseStrategy):
         
         # 回测需要的属性
         self.lookback_period = self.sequence_length + 50  # 确保有足够数据计算特征
-        self.training_lookback = self.lookback_period
         
         # ==================== 特征提取器 ====================
         self.feature_extractor = LSTMFeatureExtractor(sequence_length=self.sequence_length)

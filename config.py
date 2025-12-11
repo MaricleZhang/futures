@@ -10,18 +10,20 @@ PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
 PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
-# 可选策略: 'deepseek', 'simple_adx_di', 'qwen', 'kimi', 'dl_lstm'
+# 可选策略: 'deepseek', 'simple_adx_di', 'qwen', 'kimi', 'dl_lstm', 'orderflow'
 STRATEGY_TYPE = 'deepseek'
 
 # 交易设置
 # ENA/USDT:USDT (USDT合约支持止损止盈订单)
-SYMBOLS = ['ENAUSDT']
+SYMBOLS = ['ZECUSDC']
 SYMBOL_CONFIGS = {
-    'ENAUSDT': {
+    'ZECUSDC': {
         'leverage': 5,
         'min_notional': 20,
         'trade_amount_percent': 100,
-        'check_interval': 300,  # 15分钟策略的检查间隔(秒)
+        'check_interval': 60,  # 订单流策略检查间隔(秒)
+        'strategy': 'orderflow',  # 指定使用订单流策略
+        'interval': '5m',  # K线周期
     }
 }
 DEFAULT_LEVERAGE = 5  # 默认杠杆倍数

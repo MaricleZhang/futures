@@ -73,7 +73,6 @@ class DeepSeekTradingStrategy(BaseStrategy):
         }
         self.check_interval = interval_map.get(interval, 300)  # Default to 5 minutes
         self.lookback_period = 100  # 分析用的K线数量
-        self.training_lookback = 100  # 与TradingManager兼容
         
         # Technical Indicator Parameters
         self.rsi_period = 14

@@ -5,8 +5,7 @@ from trader import Trader
 from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
 from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
 from strategies.qwen_trading_strategy import QwenTradingStrategy
-from strategies.kimi_trading_strategy import KimiTradingStrategy
-from strategies.dl_lstm_strategy import DLLSTMStrategy
+from strategies.xgboost_strategy import XGBoostStrategy
 from utils.logger import Logger
 import config
 
@@ -42,12 +41,9 @@ class TradingManager:
                 elif strategy_type == 'qwen':
                     strategy = QwenTradingStrategy(trader)
                     symbol_logger.info(f"使用 Qwen 策略")
-                elif strategy_type == 'kimi':
-                    strategy = KimiTradingStrategy(trader)
-                    symbol_logger.info(f"使用 Kimi AI 策略")
-                elif strategy_type == 'dl_lstm':
-                    strategy = DLLSTMStrategy(trader)
-                    symbol_logger.info(f"使用 DL LSTM 策略")
+                elif strategy_type == 'xgboost':
+                    strategy = XGBoostStrategy(trader)
+                    symbol_logger.info(f"使用 Xgboost 策略")
                 else:  # 默认使用 deepseek
                     strategy = DeepSeekTradingStrategy(trader)
                     symbol_logger.info(f"使用 DeepSeek AI 策略")

@@ -10,8 +10,8 @@ PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
 PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
-# 可选策略: 'deepseek', 'simple_adx_di', 'qwen', 'kimi', 'dl_lstm', 'orderflow'
-STRATEGY_TYPE = 'deepseek'
+# 可选策略: 'deepseek', 'simple_adx_di', 'qwen', 'xgboost'
+STRATEGY_TYPE = 'simple_adx_di'
 
 # 交易设置
 # ZECSDT (USDT合约支持止损止盈订单)
@@ -22,7 +22,7 @@ SYMBOL_CONFIGS = {
         'min_notional': 20,
         'trade_amount_percent': 100,
         'check_interval': 60,  # 订单流策略检查间隔(秒)
-        'strategy': 'deepseek',  # 指定使用策略
+        'strategy': 'xgboost',  # 指定使用策略
         'interval': '15m',  # K线周期
     }
 }
@@ -95,6 +95,24 @@ DL_STRATEGY_CONFIG = {
         'learning_rate': 0.001,
         'future_periods': 5,       # 预测未来K线数
         'threshold': 0.002,        # 涨跌阈值(0.2%)
+    }
+}
+
+# XGBoost策略配置
+XGBOOST_STRATEGY_CONFIG = {
+    'models_base_dir': 'strategies/models',  # 模型根目录
+    'n_estimators': 200,           # 树的数量
+    'max_depth': 6,                # 最大深度
+    'learning_rate': 0.1,          # 学习率
+    'min_child_weight': 3,         # 最小子节点权重
+    'subsample': 0.8,              # 样本采样比例
+    'colsample_bytree': 0.8,       # 特征采样比例
+    'lookback_period': 150,        # 回溯周期
+    'confidence_threshold': 0.50,  # 信号置信度阈值
+    'training': {
+        'future_periods': 5,       # 预测未来K线数
+        'threshold': 0.003,        # 涨跌阈值(0.3%)
+        'early_stopping': 20,      # 早停轮数
     }
 }
 

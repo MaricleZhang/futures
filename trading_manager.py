@@ -81,7 +81,7 @@ class TradingManager:
                 
                 self.logger_info(symbol, position, current_price, signal)
                 
-                # strategy.monitor_position()
+                strategy.monitor_position()
                 if position and 'info' in position:
                     position_amount = float(position['info'].get('positionAmt', 0))
                     

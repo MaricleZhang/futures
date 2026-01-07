@@ -21,7 +21,7 @@ SYMBOL_CONFIGS = {
         'leverage': 5,
         'min_notional': 20,
         'trade_amount_percent': 100,
-        'check_interval': 60,  # 订单流策略检查间隔(秒)
+        'check_interval': 300,  # 订单流策略检查间隔(秒)
         'strategy': 'xgboost',  # 指定使用策略
         'interval': '15m',  # K线周期
     }

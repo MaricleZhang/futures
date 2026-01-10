@@ -15,15 +15,15 @@ STRATEGY_TYPE = 'simple_adx_di'
 
 # 交易设置
 # ZECSDT (USDT合约支持止损止盈订单)
-SYMBOLS = ['ZECUSDT']
+SYMBOLS = ['POLUSDT']
 SYMBOL_CONFIGS = {
-    'ZECUSDT': {
+    'POLUSDT': {
         'leverage': 5,
         'min_notional': 20,
         'trade_amount_percent': 100,
         'check_interval': 300,  # 订单流策略检查间隔(秒)
-        'strategy': 'xgboost',  # 指定使用策略
-        'interval': '15m',  # K线周期
+        'strategy': 'deepseek',  # 指定使用策略
+        'interval': '1h',  # K线周期
     }
 }
 DEFAULT_LEVERAGE = 5  # 默认杠杆倍数

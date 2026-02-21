@@ -4,8 +4,6 @@ import time
 from trader import Trader
 from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
 from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
-from strategies.qwen_trading_strategy import QwenTradingStrategy
-from strategies.xgboost_strategy import XGBoostStrategy
 from utils.logger import Logger
 import config
 
@@ -38,12 +36,6 @@ class TradingManager:
                 if strategy_type == 'simple_adx_di':
                     strategy = SimpleADXDIStrategy15m(trader, interval=interval)
                     symbol_logger.info(f"使用 Simple ADX-DI 策略")
-                elif strategy_type == 'qwen':
-                    strategy = QwenTradingStrategy(trader)
-                    symbol_logger.info(f"使用 Qwen 策略")
-                elif strategy_type == 'xgboost':
-                    strategy = XGBoostStrategy(trader)
-                    symbol_logger.info(f"使用 Xgboost 策略")
                 else:  # 默认使用 deepseek
                     strategy = DeepSeekTradingStrategy(trader)
                     symbol_logger.info(f"使用 DeepSeek AI 策略")
@@ -88,30 +80,30 @@ class TradingManager:
                 # 计算交易数量
                 trade_amount = (available_balance * symbol_config['trade_amount_percent'] / 100) / current_price
                 
-                # 根据信号执行交易
-                if signal == 1:  # 买入信号
-                    if position_amount < 0:  # 有空仓，先平空
-                        trader.close_position(symbol)
-                    if position_amount <= 0:  # 没有多仓时开多
-                        # 使用配置中的止损作为兜底保护
-                        trader.open_long(symbol, trade_amount, 
-                                       stop_loss_pct=config.DEFAULT_STOP_LOSS_PERCENT,
-                                       take_profit_pct=config.DEFAULT_TAKE_PROFIT_PERCENT if config.DEFAULT_TAKE_PROFIT_PERCENT > 0 else None)
-                elif signal == -1:  # 卖出信号
-                    if position_amount > 0:  # 有多仓，先平多
-                        trader.close_position(symbol)
-                    if position_amount >= 0:  # 没有空仓时开空
-                        # 使用配置中的止损作为兜底保护
-                        trader.open_short(symbol, trade_amount,
-                                        stop_loss_pct=config.DEFAULT_STOP_LOSS_PERCENT,
-                                        take_profit_pct=config.DEFAULT_TAKE_PROFIT_PERCENT if config.DEFAULT_TAKE_PROFIT_PERCENT > 0 else None)
-                elif signal == 2:  # 平仓信号
-                    if abs(position_amount) > 0:  # 有持仓就平掉
-                        trader.close_position(symbol)
+                # # 根据信号执行交易
+                # if signal == 1:  # 买入信号
+                #     if position_amount < 0:  # 有空仓，先平空
+                #         trader.close_position(symbol)
+                #     if position_amount <= 0:  # 没有多仓时开多
+                #         # 使用配置中的止损作为兜底保护
+                #         trader.open_long(symbol, trade_amount, 
+                #                        stop_loss_pct=config.DEFAULT_STOP_LOSS_PERCENT,
+                #                        take_profit_pct=config.DEFAULT_TAKE_PROFIT_PERCENT if config.DEFAULT_TAKE_PROFIT_PERCENT > 0 else None)
+                # elif signal == -1:  # 卖出信号
+                #     if position_amount > 0:  # 有多仓，先平多
+                #         trader.close_position(symbol)
+                #     if position_amount >= 0:  # 没有空仓时开空
+                #         # 使用配置中的止损作为兜底保护
+                #         trader.open_short(symbol, trade_amount,
+                #                         stop_loss_pct=config.DEFAULT_STOP_LOSS_PERCENT,
+                #                         take_profit_pct=config.DEFAULT_TAKE_PROFIT_PERCENT if config.DEFAULT_TAKE_PROFIT_PERCENT > 0 else None)
+                # elif signal == 2:  # 平仓信号
+                #     if abs(position_amount) > 0:  # 有持仓就平掉
+                #         trader.close_position(symbol)
 
-                else:  # 观望信号
-                    if abs(position_amount) > 0:  # 有持仓就平掉
-                        trader.close_position(symbol)
+                # else:  # 观望信号
+                #     if abs(position_amount) > 0:  # 有持仓就平掉
+                #         trader.close_position(symbol)
             except Exception as e:
                 logger.error(f"{symbol} 交易过程出错: {str(e)}")
                 time.sleep(10)  # 错误后等待较短时间

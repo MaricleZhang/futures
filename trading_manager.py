@@ -3,7 +3,6 @@ import threading
 import time
 from trader import Trader
 from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
-from strategies.deepseek_trading_strategy import DeepSeekTradingStrategy
 from utils.logger import Logger
 import config
 
@@ -36,10 +35,6 @@ class TradingManager:
                 if strategy_type == 'simple_adx_di':
                     strategy = SimpleADXDIStrategy15m(trader, interval=interval)
                     symbol_logger.info(f"使用 Simple ADX-DI 策略")
-                else:  # 默认使用 deepseek
-                    strategy = DeepSeekTradingStrategy(trader)
-                    symbol_logger.info(f"使用 DeepSeek AI 策略")
-
 
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy

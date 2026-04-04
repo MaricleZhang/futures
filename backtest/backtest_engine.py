@@ -100,6 +100,8 @@ class BacktestEngine:
             'deepseek': 'DeepSeekTradingStrategy',
             'qwen': 'QwenTradingStrategy',
             'xgboost': 'XGBoostStrategy',
+            'zec_ema_momentum': 'ZECEmaMomentumStrategy',
+            'kline_trend': 'KlineTrendStrategy',
         }
         
         strategy_files = {
@@ -107,6 +109,8 @@ class BacktestEngine:
             'deepseek': 'deepseek_trading_strategy',
             'qwen': 'qwen_trading_strategy',
             'xgboost': 'xgboost_strategy',
+            'zec_ema_momentum': 'zec_ema_momentum_strategy',
+            'kline_trend': 'kline_trend_strategy',
         }
         
         strategy_name_lower = self.strategy_name.lower().replace('_strategy', '').replace('-', '_')
@@ -333,4 +337,3 @@ class BacktestEngine:
         self.logger.info(f"Results saved to: {output_path}")
         
         return str(output_path)
-

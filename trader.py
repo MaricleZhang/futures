@@ -5,6 +5,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from utils.logger import Logger
 from utils.exchange import init_exchange, check_exchange_status
+from utils.exchange_adapter import make_adapter
 from utils.trade_recorder import TradeRecorder
 import config
 import logging
@@ -38,23 +39,32 @@ def retry_on_error(max_retries=None, retry_delay=None):
     return decorator
 
 class Trader:
-    def __init__(self, symbol=None):
-        """初始化交易器"""
+    def __init__(self, symbol=None, exchange_name='binance'):
+        """初始化交易器
+
+        Args:
+            symbol: 交易对（允许多种输入格式，例如 'BTCUSDT' / 'BTC/USDT' / 'BTC/USDT:USDT'，
+                    内部会通过 adapter 归一化为当前交易所可用的形式）
+            exchange_name: 'binance' 或 'gate'，默认 'binance' 保持向下兼容
+        """
         try:
             # 清除可能的代理设置
             os.environ.pop('HTTP_PROXY', None)
             os.environ.pop('HTTPS_PROXY', None)
-            
-            # 初始化日志记录器，添加交易对标识
+
+            self.exchange_name = (exchange_name or 'binance').lower()
+
+            # 初始化日志记录器，添加交易所 + 交易对标识
             self.logger = logging.getLogger()
             if symbol:
-                self.logger = logging.getLogger(symbol)
-            
-            # 初始化交易所
-            self.exchange = init_exchange()
-            
-            # 设置交易对
-            self.symbol = symbol
+                self.logger = logging.getLogger(f"{self.exchange_name}.{symbol}")
+
+            # 初始化交易所 + 适配器
+            self.exchange = init_exchange(self.exchange_name)
+            self.adapter = make_adapter(self.exchange_name, self.exchange)
+
+            # 设置交易对（统一归一化）
+            self.symbol = self.adapter.normalize_symbol(symbol) if symbol else None
             self.symbol_config = config.SYMBOL_CONFIGS.get(symbol, {})
             
             # 初始化交易记录器
@@ -108,7 +118,7 @@ class Trader:
             
     @retry_on_error()
     def get_position(self, symbol=None):
-        """获取当前持仓"""
+        """获取当前持仓（多交易所统一：通过 adapter 解析 position 结构）"""
         try:
             symbol = symbol or self.symbol
             if not symbol:
@@ -117,18 +127,25 @@ class Trader:
             if not positions:
                 self.logger.info("当前没有持仓信息")
                 return None
-                
+
             for position in positions:
-                if position is None or 'info' not in position or 'positionAmt' not in position['info']:
+                if position is None:
                     continue
-                    
-                position_amt = float(position['info'].get('positionAmt', 0))
+                position_amt = self.adapter.get_position_amt(position)
                 if abs(position_amt) > 0:
                     return position
             return None
         except Exception as e:
             self.logger.error(f"获取持仓信息失败: {str(e)}")
             raise
+
+    @retry_on_error()
+    def fetch_funding_rate(self, symbol=None):
+        """获取当前交易对的资金费率 / 下次结算时间 / 结算周期（统一结构）"""
+        symbol = symbol or self.symbol
+        if not symbol:
+            raise ValueError("Symbol not specified")
+        return self.adapter.fetch_funding_rate(symbol)
             
     @retry_on_error()
     def get_market_info(self, symbol=None):
@@ -660,76 +677,46 @@ class Trader:
         
     @retry_on_error()
     def set_position_mode(self, symbol=None, dual_side_position=False):
-        """设置持仓模式
-        Args:
-            symbol: 交易对
-            dual_side_position (bool): True为双向持仓，False为单向持仓
-        """
+        """设置持仓模式（通过 adapter 适配各交易所差异）"""
         try:
-            symbol = symbol or self.symbol
-            if not symbol:
-                raise ValueError("Symbol not specified")
-            self.exchange.fapiPrivatePostPositionSideDual({
-                'dualSidePosition': 'true' if dual_side_position else 'false'
-            })
-            self.logger.info(f"设置{'双向' if dual_side_position else '单向'}持仓模式成功")
+            self.adapter.set_position_mode(bool(dual_side_position))
+            self.logger.info(f"[{self.exchange_name}] 设置{'双向' if dual_side_position else '单向'}持仓模式成功")
         except Exception as e:
-            # 如果已经是目标模式，会抛出异常，这种情况可以忽略
-            if 'No need to change position side' in str(e):
-                self.logger.info(f"当前已经是{'双向' if dual_side_position else '单向'}持仓模式")
-            else:
-                self.logger.error(f"设置持仓模式失败: {str(e)}")
-                raise
+            self.logger.error(f"设置持仓模式失败: {str(e)}")
+            raise
 
     @retry_on_error()
     def set_leverage(self, leverage=None):
-        """设置杠杆倍数
-        Args:
-            leverage (int): 杠杆倍数
-        """
+        """设置杠杆倍数（通过 adapter 适配各交易所差异）"""
         try:
             if not self.symbol:
                 raise ValueError("Symbol not specified")
-                
-            # 如果没有指定杠杆倍数，使用配置中的默认值
+
             if leverage is None:
                 if self.symbol in config.SYMBOL_CONFIGS:
                     leverage = config.SYMBOL_CONFIGS[self.symbol].get('leverage', config.DEFAULT_LEVERAGE)
                 else:
                     leverage = config.DEFAULT_LEVERAGE
-                
-            self.exchange.fapiPrivatePostLeverage({
-                'symbol': self.exchange.market(self.symbol)['id'],
-                'leverage': leverage
-            })
-            self.logger.info(f"设置杠杆倍数 {leverage}倍 成功")
+
+            self.adapter.set_leverage(self.symbol, int(leverage))
+            self.logger.info(f"[{self.exchange_name}] 设置杠杆倍数 {leverage}倍 成功")
         except Exception as e:
             self.logger.error(f"设置杠杆倍数失败: {str(e)}")
             raise
 
     @retry_on_error()
     def set_margin_type(self, margin_type=None):
-        """设置保证金模式
-        Args:
-            margin_type (str): 'ISOLATED' 或 'CROSSED'
-        """
+        """设置保证金模式（通过 adapter 适配各交易所差异）"""
         try:
             if not self.symbol:
                 raise ValueError("Symbol not specified")
             if not margin_type:
                 raise ValueError("Margin type not specified")
-            self.exchange.fapiPrivatePostMarginType({
-                'symbol': self.exchange.market(self.symbol)['id'],
-                'marginType': margin_type.upper()
-            })
-            self.logger.info(f"设置{margin_type}保证金模式成功")
+            self.adapter.set_margin_mode(self.symbol, margin_type)
+            self.logger.info(f"[{self.exchange_name}] 设置 {margin_type} 保证金模式成功")
         except Exception as e:
-            # 如果已经是目标模式，会抛出异常，这种情况可以忽略
-            if 'No need to change margin type' in str(e):
-                self.logger.info(f"当前已经是{margin_type}保证金模式")
-            else:
-                self.logger.error(f"设置保证金模式失败: {str(e)}")
-                raise
+            self.logger.error(f"设置保证金模式失败: {str(e)}")
+            raise
 
     @retry_on_error()
     def get_all_symbols(self):

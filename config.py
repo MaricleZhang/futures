@@ -2,6 +2,15 @@
 交易配置文件
 """
 
+# 测试网设置（为 True 时通过 ccxt.set_sandbox_mode(True) 连接交易所 testnet）
+USE_TESTNET = False
+
+# 交易所默认配置（用于多交易所抽象层，单交易所趋势策略不受影响）
+EXCHANGE_DEFAULTS = {
+    'binance': {'default_type': 'future', 'settle': 'USDT'},
+    'gate':    {'default_type': 'swap',   'settle': 'USDT'},
+}
+
 # 代理设置
 USE_PROXY = False  # 是否使用代理
 PROXY_URL = 'http://127.0.0.1:7890'  # 代理地址
@@ -98,6 +107,34 @@ DL_STRATEGY_CONFIG = {
     }
 }
 
+
+# ==================== 跨交易所资金费率套利配置 ====================
+# 主开关：为 False 时 ArbitrageManager 不启动，现有趋势策略不受影响
+ARBITRAGE_ENABLED = False
+
+# 套利 pair 列表。每项是一个跨交易所 symbol 套利配置。
+# 策略：高费率方做空 + 低费率方做多，构造 delta 中性头寸赚取资金费差
+ARBITRAGE_CONFIGS = [
+    {
+        'pair_id': 'BTC_BINANCE_GATE',
+        'symbol': 'BTC/USDT',               # 规范 symbol，由 adapter 翻译到各交易所格式
+        'exchanges': ['binance', 'gate'],   # 两腿交易所（仅支持 2 个）
+        'threshold_bps': 5,                 # 进场阈值：|r_a - r_b| >= 5bp / 结算周期
+        'exit_bps': 1,                      # 出场阈值：差价收敛到 <= 1bp 平仓
+        'leverage': 3,
+        'notional_usdt': 100,               # 单腿名义金额（USDT）
+        'max_position_usdt': 1000,          # 累计最大头寸上限
+        'max_holding_hours': 48,            # 最长持仓小时数
+        'price_divergence_stop_pct': 0.8,   # 两腿价格发散风控：偏离 > 0.8% 强制平仓
+        'margin_stop_ratio': 0.05,          # 任一腿维持保证金率 < 5% 强制平仓
+        'min_net_bps_after_fee': 2,         # 扣除 2 腿 taker 手续费后净收益仍需 >= 2bp 才开仓
+        'taker_fee_bps': 4,                 # 单腿 taker 费率估计（bp），Binance/Gate ≈ 4bp
+        'check_interval': 60,               # 套利循环 tick 间隔（秒）
+        'margin_type': 'CROSSED',           # 'CROSSED' / 'ISOLATED'
+        'max_slippage_bps': 30,             # 成交均价相对 mark 偏离超过此值告警
+        'dry_run': False,                   # True: 不真实下单仅记录决策，用于灰度验证
+    },
+]
 
 # 市场扫描配置
 MARKET_SCAN_CONFIG = {

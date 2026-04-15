@@ -26,92 +26,121 @@ def test_proxy(proxy_url, timeout=10):
         logger.error(f"代理测试失败: {str(e)}")
         return False
 
-def init_exchange(max_retries=3, retry_delay=5):
+_EXCHANGE_API_KEYS = {
+    'binance': ('BINANCE_API_KEY', 'BINANCE_SECRET_KEY'),
+    'gate': ('GATE_API_KEY', 'GATE_SECRET_KEY'),
+}
+
+
+def _build_exchange(exchange_name, api_key, api_secret):
+    """根据 exchange_name 创建对应的 ccxt 实例并设置期货/永续默认值"""
+    name = exchange_name.lower()
+    if name == 'binance':
+        params = {
+            'apiKey': api_key,
+            'secret': api_secret,
+            'enableRateLimit': True,
+            'options': {
+                'defaultType': 'future',
+                'adjustForTimeDifference': True,
+                'recvWindow': 60000,
+            },
+        }
+        return ccxt.binance(params), params
+    if name == 'gate':
+        params = {
+            'apiKey': api_key,
+            'secret': api_secret,
+            'enableRateLimit': True,
+            'options': {
+                'defaultType': 'swap',
+                'defaultSettle': 'usdt',
+                'adjustForTimeDifference': True,
+            },
+        }
+        return ccxt.gate(params), params
+    raise ValueError(f"不支持的交易所: {exchange_name}")
+
+
+def init_exchange(exchange_name='binance', max_retries=3, retry_delay=5):
     """
-    初始化交易所接口
-    支持重试机制
+    初始化交易所接口（支持 binance / gate）
+    - exchange_name: 'binance' 或 'gate'
+    - 支持重试、代理、时间同步、testnet 沙盒模式
     """
     # 加载环境变量
     load_dotenv()
-    
+    exchange_name = (exchange_name or 'binance').lower()
+
     # 获取API密钥
-    api_key = os.getenv('BINANCE_API_KEY')
-    api_secret = os.getenv('BINANCE_SECRET_KEY')
-    
+    env_keys = _EXCHANGE_API_KEYS.get(exchange_name)
+    if not env_keys:
+        raise ValueError(f"不支持的交易所: {exchange_name}")
+    api_key_env, api_secret_env = env_keys
+    api_key = os.getenv(api_key_env)
+    api_secret = os.getenv(api_secret_env)
+
     if not api_key or not api_secret:
-        raise ValueError("未找到API密钥，请检查.env文件")
-    
-    # 初始化交易所设置
-    exchange_params = {
-        'apiKey': api_key,
-        'secret': api_secret,
-        'enableRateLimit': True,
-        'options': {
-            'defaultType': 'future',
-            'adjustForTimeDifference': True,
-            'recvWindow': 60000  # 增加到60秒，给予更大的时间窗口
-        }
-    }
-    
-    # 如果启用代理，添加代理设置
+        raise ValueError(f"未找到 {exchange_name} API密钥（{api_key_env} / {api_secret_env}），请检查 .env 文件")
+
+    exchange, exchange_params = _build_exchange(exchange_name, api_key, api_secret)
+
+    # 代理设置
     if config.USE_PROXY:
-        # 测试代理连接
         retry_count = 0
         while retry_count < config.PROXY_MAX_RETRIES:
             if test_proxy(config.PROXY_URL, config.PROXY_TEST_TIMEOUT):
-                logger.info("代理连接测试成功")
-                exchange_params['proxies'] = {
+                logger.info(f"[{exchange_name}] 代理连接测试成功")
+                exchange.proxies = {
                     'http': config.PROXY_URL,
-                    'https': config.PROXY_URL
+                    'https': config.PROXY_URL,
                 }
-                exchange_params['timeout'] = config.PROXY_TIMEOUT * 1000  # 转换为毫秒
+                exchange.timeout = config.PROXY_TIMEOUT * 1000
                 break
+            retry_count += 1
+            if retry_count < config.PROXY_MAX_RETRIES:
+                logger.warning(f"[{exchange_name}] 代理连接失败，{config.PROXY_RETRY_DELAY}秒后重试 ({retry_count}/{config.PROXY_MAX_RETRIES})")
+                time.sleep(config.PROXY_RETRY_DELAY)
             else:
-                retry_count += 1
-                if retry_count < config.PROXY_MAX_RETRIES:
-                    logger.warning(f"代理连接失败，{config.PROXY_RETRY_DELAY}秒后重试 ({retry_count}/{config.PROXY_MAX_RETRIES})")
-                    time.sleep(config.PROXY_RETRY_DELAY)
-                else:
-                    logger.error("代理连接失败，将不使用代理继续运行")
-    
-    # 创建交易所实例
-    exchange = ccxt.binance(exchange_params)
-    
+                logger.error(f"[{exchange_name}] 代理连接失败，将不使用代理继续运行")
+
+    # testnet 模式
+    if getattr(config, 'USE_TESTNET', False):
+        try:
+            exchange.set_sandbox_mode(True)
+            logger.info(f"[{exchange_name}] 已启用 TESTNET 沙盒模式")
+        except Exception as e:
+            logger.warning(f"[{exchange_name}] 启用 testnet 失败: {e}")
+
     for attempt in range(max_retries):
         try:
             # 测试API连接
             server_time = exchange.fetch_time()
             local_time = int(time.time() * 1000)
             time_diff = server_time - local_time
-            logger.info(f"服务器时间差: {time_diff} ms")
-            
-            # 如果时间差异过大，进行本地时间调整
-            if abs(time_diff) > 1000:  # 如果时间差超过1秒
-                logger.warning(f"检测到较大的时间差异: {time_diff}ms，正在调整...")
-                # 将交易所时间差异保存到exchange对象中，用于后续请求
+            logger.info(f"[{exchange_name}] 服务器时间差: {time_diff} ms")
+
+            if abs(time_diff) > 1000:
+                logger.warning(f"[{exchange_name}] 检测到较大的时间差异: {time_diff}ms，正在调整...")
                 exchange.options['timeDifference'] = time_diff
-                logger.info(f"已设置时间差异补偿: {time_diff}ms")
-            
-            # 设置市场类型
-            exchange.options['defaultType'] = 'future'
-            
+
             # 测试API权限
             try:
                 exchange.fetch_balance()
-                logger.info("API权限验证成功")
+                logger.info(f"[{exchange_name}] API权限验证成功")
             except Exception as e:
-                raise ValueError(f"API权限验证失败: {str(e)}")
-                
+                raise ValueError(f"[{exchange_name}] API权限验证失败: {str(e)}")
+
             return exchange
-            
+
         except ccxt.NetworkError as e:
             if attempt < max_retries - 1:
-                logger.warning(f"连接失败，{retry_delay}秒后重试 ({attempt + 1}/{max_retries})")
+                logger.warning(f"[{exchange_name}] 连接失败，{retry_delay}秒后重试 ({attempt + 1}/{max_retries})")
                 time.sleep(retry_delay)
             else:
-                raise RuntimeError(f"初始化交易所失败: {str(e)}")
+                raise RuntimeError(f"初始化交易所 {exchange_name} 失败: {str(e)}")
         except Exception as e:
-            raise RuntimeError(f"初始化交易所失败: {str(e)}")
+            raise RuntimeError(f"初始化交易所 {exchange_name} 失败: {str(e)}")
 
 def check_exchange_status(exchange):
     """

@@ -10,7 +10,7 @@ PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
 PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
-# 可选策略: 'deepseek', 'simple_adx_di'
+# 可选策略:'simple_adx_di', 'kline_trend'
 STRATEGY_TYPE = 'simple_adx_di'
 
 # 交易设置
@@ -22,7 +22,7 @@ SYMBOL_CONFIGS = {
         'min_notional': 20,
         'trade_amount_percent': 100,
         'check_interval': 300,  # 订单流策略检查间隔(秒)
-        'strategy': 'simple_adx_di',  # 指定使用策略
+        'strategy': 'kline_trend',  # 指定使用策略
         'interval': '15m',  # K线周期
     }
 }

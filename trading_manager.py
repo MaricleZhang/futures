@@ -3,6 +3,7 @@ import threading
 import time
 from trader import Trader
 from strategies.simple_adx_di_15m_strategy import SimpleADXDIStrategy15m
+from strategies.kline_trend_strategy import KlineTrendStrategy
 from utils.logger import Logger
 import config
 
@@ -35,6 +36,9 @@ class TradingManager:
                 if strategy_type == 'simple_adx_di':
                     strategy = SimpleADXDIStrategy15m(trader, interval=interval)
                     symbol_logger.info(f"使用 Simple ADX-DI 策略")
+                elif strategy_type == 'kline_trend':
+                    strategy = KlineTrendStrategy(trader, interval=interval)
+                    symbol_logger.info(f"使用 Kline Trend 策略")
 
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy

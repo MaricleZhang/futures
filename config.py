@@ -10,19 +10,19 @@ PROXY_MAX_RETRIES = 3  # 代理连接最大重试次数
 PROXY_TEST_TIMEOUT = 10  # 代理测试超时时间(秒)
 PROXY_RETRY_DELAY = 5  # 重试延迟时间(秒)
 
-# 可选策略:'simple_adx_di', 'kline_trend'
-STRATEGY_TYPE = 'simple_adx_di'
+# 可选策略:'simple_adx_di', 'trend_breakout_15m'
+STRATEGY_TYPE = 'trend_breakout_15m'
 
 # 交易设置
 # ZECSDT (USDT合约支持止损止盈订单)
-SYMBOLS = ['SOLUSDT']
+SYMBOLS = ['SOXLUSDT']
 SYMBOL_CONFIGS = {
-    'SOLUSDT': {
+    'SOXLUSDT': {
         'leverage': 5,
         'min_notional': 20,
         'trade_amount_percent': 100,
         'check_interval': 300,  # 订单流策略检查间隔(秒)
-        'strategy': 'kline_trend',  # 指定使用策略
+        'strategy': 'trend_breakout_15m',  # 指定使用策略
         'interval': '15m',  # K线周期
     }
 }
@@ -102,7 +102,7 @@ DL_STRATEGY_CONFIG = {
 # 市场扫描配置
 MARKET_SCAN_CONFIG = {
     'scan_interval_hours': 6,              # 扫描间隔（小时）
-    'strategy_type': 'simple_adx_di',               # 使用的策略类型（默认使用STRATEGY_TYPE）
+    'strategy_type': 'trend_breakout_15m',               # 使用的策略类型（默认使用STRATEGY_TYPE）
     'min_volume_24h': 1000000,             # 最小24小时交易量（USDT）过滤
     'max_symbols_to_scan': 100,            # 最大扫描数量限制（0表示不限制）
     'top_n_results': 5,                    # 输出前N个结果

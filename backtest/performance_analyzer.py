@@ -139,8 +139,8 @@ class PerformanceAnalyzer:
         if len(returns) == 0:
             return 0
         
-        # Annualized volatility (assuming daily data)
-        volatility = returns.std() * np.sqrt(252) * 100
+        periods_per_year = self._periods_per_year(equity_curve)
+        volatility = returns.std() * np.sqrt(periods_per_year) * 100
         
         return volatility
     
@@ -159,11 +159,11 @@ class PerformanceAnalyzer:
         if len(returns) == 0 or returns.std() == 0:
             return 0
         
-        # Annualized Sharpe ratio
+        periods_per_year = self._periods_per_year(equity_curve)
         avg_return = returns.mean()
         std_return = returns.std()
         
-        sharpe = (avg_return - risk_free_rate / 252) / std_return * np.sqrt(252)
+        sharpe = (avg_return - risk_free_rate / periods_per_year) / std_return * np.sqrt(periods_per_year)
         
         return sharpe
     
@@ -194,9 +194,33 @@ class PerformanceAnalyzer:
             return 0
         
         avg_return = returns.mean()
-        sortino = (avg_return - risk_free_rate / 252) / downside_std * np.sqrt(252)
+        periods_per_year = self._periods_per_year(equity_curve)
+        sortino = (avg_return - risk_free_rate / periods_per_year) / downside_std * np.sqrt(periods_per_year)
         
         return sortino
+
+    @staticmethod
+    def _periods_per_year(equity_curve: pd.DataFrame) -> float:
+        """Infer annualization from equity samples, supporting intraday curves.
+
+        Intraday samples use a continuous 365.25-day year, as futures trade
+        around the clock. Daily-or-slower samples retain the traditional
+        252-session convention.
+        """
+        if 'timestamp' not in equity_curve or len(equity_curve) < 2:
+            return 252.0
+
+        timestamps = pd.to_datetime(equity_curve['timestamp'], errors='coerce').dropna().sort_values()
+        intervals = timestamps.diff().dt.total_seconds().dropna()
+        intervals = intervals[intervals > 0]
+        if intervals.empty:
+            return 252.0
+
+        seconds_per_period = float(intervals.median())
+        seconds_per_day = 24 * 60 * 60
+        if seconds_per_period >= seconds_per_day:
+            return 252.0
+        return (365.25 * seconds_per_day) / seconds_per_period
     
     def _calculate_trade_stats(self, trades: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Calculate trade statistics

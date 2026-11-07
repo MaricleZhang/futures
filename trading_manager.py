@@ -2,7 +2,7 @@ import logging
 import threading
 import time
 from trader import Trader
-from strategies.price_action_smc_strategy import PriceActionSMCStrategy
+from strategies.trend_breakout_15m_strategy import TrendBreakout15mStrategy
 from utils.logger import Logger
 import config
 
@@ -32,12 +32,11 @@ class TradingManager:
                 strategy_type = symbol_config.get('strategy', getattr(config, 'STRATEGY_TYPE', 'deepseek')).lower()
                 interval = symbol_config.get('interval', '15m')
 
-                if strategy_type == 'price_action_smc':
-                    strategy = PriceActionSMCStrategy(trader, interval=interval)
-                    symbol_logger.info(f"使用 Price Action SMC 策略 (BOS+CHOCH+Sweep)")
-                elif strategy_type == 'price_action_smc':
-                    strategy = PriceActionSMCStrategy(trader, interval=interval)
-                    symbol_logger.info(f"使用 Price Action SMC 策略 (BOS+CHOCH+Sweep)")
+                if strategy_type == 'trend_breakout_15m':
+                    strategy = TrendBreakout15mStrategy(trader, interval=interval)
+                    symbol_logger.info("使用 Trend Breakout 15m 策略")
+                elif strategy_type == 'trend_breakout_15':
+                    symbol_logger.info("使用 Trend Breakout 15m 策略")
 
                 self.traders[symbol] = trader
                 self.strategies[symbol] = strategy

@@ -96,21 +96,11 @@ class BacktestEngine:
         
         # Map strategy names to class names (use actual class names from files)
         strategy_map = {
-            'simple_adx_di': 'SimpleADXDIStrategy15m',  # Note: ADX, DI are caps, has 15m suffix
-            'deepseek': 'DeepSeekTradingStrategy',
-            'qwen': 'QwenTradingStrategy',
-            'xgboost': 'XGBoostStrategy',
-            'zec_ema_momentum': 'ZECEmaMomentumStrategy',
-            'kline_trend': 'KlineTrendStrategy',
+            'trend_breakout_15m': 'TrendBreakout15mStrategy',
         }
         
         strategy_files = {
-            'simple_adx_di': 'simple_adx_di_15m_strategy',
-            'deepseek': 'deepseek_trading_strategy',
-            'qwen': 'qwen_trading_strategy',
-            'xgboost': 'xgboost_strategy',
-            'zec_ema_momentum': 'zec_ema_momentum_strategy',
-            'kline_trend': 'kline_trend_strategy',
+            'trend_breakout_15m': 'trend_breakout_15m_strategy',
         }
         
         strategy_name_lower = self.strategy_name.lower().replace('_strategy', '').replace('-', '_')
